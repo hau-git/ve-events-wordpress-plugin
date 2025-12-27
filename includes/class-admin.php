@@ -52,11 +52,22 @@ final class VEV_Admin {
                         'type' => 'array',
                         'sanitize_callback' => array( __CLASS__, 'sanitize_settings' ),
                 ) );
+
+                add_action( 'update_option_' . VEV_Events::OPTION_SETTINGS, array( __CLASS__, 'maybe_flush_rewrite_rules' ), 10, 2 );
+        }
+
+        public static function maybe_flush_rewrite_rules( $old_value, $new_value ): void {
+                $old_single  = $old_value['slug_single'] ?? 'event';
+                $old_archive = $old_value['slug_archive'] ?? 'events';
+                $new_single  = $new_value['slug_single'] ?? 'event';
+                $new_archive = $new_value['slug_archive'] ?? 'events';
+
+                if ( $old_single !== $new_single || $old_archive !== $new_archive ) {
+                        set_transient( 'vev_flush_rewrite_rules', 1, 60 );
+                }
         }
 
         public static function sanitize_settings( $input ): array {
-                $old_settings = VEV_Events::get_settings();
-
                 $sanitized = array();
                 $sanitized['disable_gutenberg']     = ! empty( $input['disable_gutenberg'] );
                 $sanitized['hide_end_same_day']     = ! empty( $input['hide_end_same_day'] );
@@ -67,23 +78,26 @@ final class VEV_Admin {
                 $slug_single  = isset( $input['slug_single'] ) ? sanitize_title( $input['slug_single'] ) : '';
                 $slug_archive = isset( $input['slug_archive'] ) ? sanitize_title( $input['slug_archive'] ) : '';
 
-                $sanitized['slug_single']  = '' !== $slug_single ? $slug_single : 'event';
-                $sanitized['slug_archive'] = '' !== $slug_archive ? $slug_archive : 'events';
+                $reserved_slugs = array( 'post', 'page', 'attachment', 'revision', 'nav_menu_item', 'action', 'author', 'order', 'theme', 'category', 'tag', 'admin', 'wp-admin', 'wp-content', 'wp-includes' );
 
-                $slugs_changed = (
-                        ( $old_settings['slug_single'] ?? 'event' ) !== $sanitized['slug_single'] ||
-                        ( $old_settings['slug_archive'] ?? 'events' ) !== $sanitized['slug_archive']
-                );
-
-                if ( $slugs_changed ) {
-                        add_action( 'shutdown', array( __CLASS__, 'flush_rewrite_rules_on_shutdown' ) );
+                if ( '' === $slug_single || in_array( $slug_single, $reserved_slugs, true ) || is_numeric( $slug_single ) ) {
+                        $slug_single = 'event';
+                }
+                if ( '' === $slug_archive || in_array( $slug_archive, $reserved_slugs, true ) || is_numeric( $slug_archive ) ) {
+                        $slug_archive = 'events';
                 }
 
-                return $sanitized;
-        }
+                if ( $slug_single === $slug_archive ) {
+                        $slug_archive = $slug_single . 's';
+                        if ( '' === $slug_archive || 's' === $slug_archive ) {
+                                $slug_archive = 'events';
+                        }
+                }
 
-        public static function flush_rewrite_rules_on_shutdown(): void {
-                flush_rewrite_rules();
+                $sanitized['slug_single']  = $slug_single;
+                $sanitized['slug_archive'] = $slug_archive;
+
+                return $sanitized;
         }
 
         public static function render_settings_page(): void {
