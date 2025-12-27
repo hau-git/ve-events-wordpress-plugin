@@ -12,8 +12,7 @@ final class VEV_Frontend {
 	}
 
 	public static function computed_meta( $value, int $object_id, string $meta_key, bool $single ) {
-		// Primary virtual keys (ve_ prefix)
-		$primary_keys = array(
+		$virtual_keys = array(
 			've_start_date',
 			've_start_time',
 			've_end_date',
@@ -26,17 +25,7 @@ final class VEV_Frontend {
 			've_is_ongoing',
 		);
 
-		// Legacy keys (vev_ prefix) - backward compatibility
-		$legacy_keys = array(
-			'vev_status',
-			'vev_timerange',
-			'vev_start_local',
-			'vev_end_local',
-		);
-
-		$all_keys = array_merge( $primary_keys, $legacy_keys );
-
-		if ( ! in_array( $meta_key, $all_keys, true ) ) {
+		if ( ! in_array( $meta_key, $virtual_keys, true ) ) {
 			return $value;
 		}
 
@@ -54,7 +43,6 @@ final class VEV_Frontend {
 		$status = self::get_event_status( $data['start_utc'], $data['end_utc'] );
 
 		switch ( $meta_key ) {
-			// Primary keys (ve_)
 			case 've_start_date':
 				return self::format_date_only( $data['start_utc'] );
 
@@ -80,7 +68,6 @@ final class VEV_Frontend {
 				return self::format_datetime_full( $data );
 
 			case 've_status':
-			case 'vev_status': // Legacy alias
 				return self::status_label( $status );
 
 			case 've_is_upcoming':
@@ -88,16 +75,6 @@ final class VEV_Frontend {
 
 			case 've_is_ongoing':
 				return 'ongoing' === $status;
-
-			// Legacy keys (vev_)
-			case 'vev_timerange':
-				return self::format_timerange_legacy( $data, true );
-
-			case 'vev_start_local':
-				return self::format_single_datetime( $data['start_utc'], $data['all_day'], true );
-
-			case 'vev_end_local':
-				return self::format_single_datetime( $data['end_utc'], $data['all_day'], false );
 
 			default:
 				return '';
@@ -165,10 +142,6 @@ final class VEV_Frontend {
 				return __( 'Upcoming', VEV_Events::TEXTDOMAIN );
 		}
 	}
-
-	// ========================================
-	// New formatting methods (ve_ keys)
-	// ========================================
 
 	private static function format_date_only( int $ts_utc ): string {
 		if ( ! $ts_utc ) {
@@ -255,7 +228,6 @@ final class VEV_Frontend {
 		$start_date = wp_date( $date_format, $start, $tz );
 		$end_date   = wp_date( $date_format, $end, $tz );
 
-		// All-day event
 		if ( $all_day ) {
 			if ( $start_date === $end_date ) {
 				return sprintf( __( '%s (all day)', VEV_Events::TEXTDOMAIN ), $start_date );
@@ -266,7 +238,6 @@ final class VEV_Frontend {
 		$start_time = wp_date( $time_format, $start, $tz );
 		$end_time   = wp_date( $time_format, $end, $tz );
 
-		// Same day
 		if ( $start_date === $end_date ) {
 			if ( $hide_end ) {
 				return sprintf( __( '%1$s, %2$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time );
@@ -274,87 +245,14 @@ final class VEV_Frontend {
 			return sprintf( __( '%1$s, %2$s – %3$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_time );
 		}
 
-		// Multi-day
 		if ( $hide_end ) {
 			return sprintf( __( '%1$s, %2$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time );
 		}
 		return sprintf( __( '%1$s %2$s – %3$s %4$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_date, $end_time );
 	}
 
-	// ========================================
-	// Legacy formatting methods (vev_ keys)
-	// ========================================
-
-	private static function format_single_datetime( int $ts_utc, bool $all_day, bool $is_start ): string {
-		if ( ! $ts_utc ) {
-			return '';
-		}
-
-		$tz = wp_timezone();
-		$date_format = (string) get_option( 'date_format' );
-		$time_format = (string) get_option( 'time_format' );
-
-		if ( $all_day ) {
-			return wp_date( $date_format, $ts_utc, $tz );
-		}
-
-		return wp_date( $date_format . ' ' . $time_format, $ts_utc, $tz );
-	}
-
-	public static function format_timerange_legacy( array $data, bool $respect_hide_end ): string {
-		$start = (int) $data['start_utc'];
-		$end   = (int) $data['end_utc'];
-		$all_day = (bool) $data['all_day'];
-		$hide_end = (bool) $data['hide_end'];
-
-		if ( ! $start ) {
-			return '';
-		}
-		if ( ! $end ) {
-			$end = $start;
-		}
-
-		$tz = wp_timezone();
-		$date_format = (string) get_option( 'date_format' );
-		$time_format = (string) get_option( 'time_format' );
-
-		$start_date = wp_date( $date_format, $start, $tz );
-		$end_date   = wp_date( $date_format, $end, $tz );
-
-		$settings = VEV_Events::get_settings();
-		$hide_end_same_day = ! empty( $settings['hide_end_same_day'] );
-
-		if ( $all_day ) {
-			if ( $start_date === $end_date ) {
-				return sprintf( __( '%s (all day)', VEV_Events::TEXTDOMAIN ), $start_date );
-			}
-			return sprintf( __( '%1$s – %2$s (all day)', VEV_Events::TEXTDOMAIN ), $start_date, $end_date );
-		}
-
-		$start_time = wp_date( $time_format, $start, $tz );
-		$end_time   = wp_date( $time_format, $end, $tz );
-
-		if ( $respect_hide_end && $hide_end ) {
-			return sprintf( __( '%1$s, %2$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time );
-		}
-
-		if ( $start_date === $end_date ) {
-			if ( $hide_end_same_day ) {
-				return sprintf( __( '%1$s · %2$s – %3$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_time );
-			}
-			return sprintf( __( '%1$s · %2$s – %3$s · %4$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_date, $end_time );
-		}
-
-		return sprintf( __( '%1$s %2$s – %3$s %4$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_date, $end_time );
-	}
-
-	// ========================================
-	// REST API
-	// ========================================
-
 	public static function register_rest_fields(): void {
-		// Primary fields (ve_)
-		$primary_fields = array(
+		$fields = array(
 			've_start_date',
 			've_start_time',
 			've_end_date',
@@ -365,7 +263,7 @@ final class VEV_Frontend {
 			've_status',
 		);
 
-		foreach ( $primary_fields as $field ) {
+		foreach ( $fields as $field ) {
 			register_rest_field(
 				VEV_Events::POST_TYPE,
 				$field,
@@ -377,34 +275,7 @@ final class VEV_Frontend {
 				)
 			);
 		}
-
-		// Legacy fields (vev_) for backward compatibility
-		register_rest_field(
-			VEV_Events::POST_TYPE,
-			'vev_status',
-			array(
-				'get_callback' => static function ( array $object ) {
-					return get_post_meta( (int) $object['id'], 'vev_status', true );
-				},
-				'schema'       => array( 'type' => 'string' ),
-			)
-		);
-
-		register_rest_field(
-			VEV_Events::POST_TYPE,
-			'vev_timerange',
-			array(
-				'get_callback' => static function ( array $object ) {
-					return get_post_meta( (int) $object['id'], 'vev_timerange', true );
-				},
-				'schema'       => array( 'type' => 'string' ),
-			)
-		);
 	}
-
-	// ========================================
-	// Schema.org
-	// ========================================
 
 	public static function output_schema(): void {
 		if ( ! is_singular( VEV_Events::POST_TYPE ) ) {
@@ -423,8 +294,8 @@ final class VEV_Frontend {
 
 		$tz = wp_timezone();
 
-		$start_iso = self::schema_datetime( $data['start_utc'], $data['all_day'], true, $tz );
-		$end_iso   = self::schema_datetime( $data['end_utc'], $data['all_day'], false, $tz );
+		$start_iso = self::schema_datetime( $data['start_utc'], $data['all_day'], $tz );
+		$end_iso   = self::schema_datetime( $data['end_utc'], $data['all_day'], $tz );
 
 		$event = array(
 			'@context'    => 'https://schema.org',
@@ -479,7 +350,7 @@ final class VEV_Frontend {
 			}
 		}
 
-		$event = apply_filters( 'vev_schema_event', $event, $post_id );
+		$event = apply_filters( 've_schema_event', $event, $post_id );
 
 		printf(
 			"\n<script type=\"application/ld+json\">%s</script>\n",
@@ -487,7 +358,7 @@ final class VEV_Frontend {
 		);
 	}
 
-	private static function schema_datetime( int $ts_utc, bool $all_day, bool $is_start, \DateTimeZone $tz ): string {
+	private static function schema_datetime( int $ts_utc, bool $all_day, \DateTimeZone $tz ): string {
 		if ( ! $ts_utc ) {
 			return '';
 		}
