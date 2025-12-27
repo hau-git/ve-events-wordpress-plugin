@@ -1,0 +1,240 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: VE Events 1.2.0\\n"
+"Report-Msgid-Bugs-To: \\n"
+"POT-Creation-Date: 2025-12-27 00:00+0000\\n"
+"MIME-Version: 1.0\\n"
+"Content-Type: text/plain; charset=UTF-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+"X-Domain: ve-events\\n"
+
+msgid "%1$s %2$s – %3$s %4$s"
+msgstr ""
+
+msgid "%1$s – %2$s (all day)"
+msgstr ""
+
+msgid "%1$s, %2$s"
+msgstr ""
+
+msgid "%1$s, %2$s–%3$s"
+msgstr ""
+
+msgid "%s (all day)"
+msgstr ""
+
+msgid "Add New"
+msgstr ""
+
+msgid "Add New Event"
+msgstr ""
+
+msgid "Add New Event Category"
+msgstr ""
+
+msgid "Add New Location"
+msgstr ""
+
+msgid "Add New Series"
+msgstr ""
+
+msgid "Add New Topic"
+msgstr ""
+
+msgid "All Event Categories"
+msgstr ""
+
+msgid "All Events"
+msgstr ""
+
+msgid "All Locations"
+msgstr ""
+
+msgid "All Series"
+msgstr ""
+
+msgid "All Topics"
+msgstr ""
+
+msgid "All day"
+msgstr ""
+
+msgid "All-day events are stored as full-day ranges in your site time zone. Times will not be displayed in the virtual fields."
+msgstr ""
+
+msgid "Archived"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "E.g. registration, ticket costs, access notes, etc."
+msgstr ""
+
+msgid "Edit Event"
+msgstr ""
+
+msgid "Edit Event Category"
+msgstr ""
+
+msgid "Edit Location"
+msgstr ""
+
+msgid "Edit Series"
+msgstr ""
+
+msgid "Edit Topic"
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid "Event"
+msgstr ""
+
+msgid "Event Categories"
+msgstr ""
+
+msgid "Event Category"
+msgstr ""
+
+msgid "Event Details"
+msgstr ""
+
+msgid "Events"
+msgstr ""
+
+msgid "Featured image"
+msgstr ""
+
+msgid "For correct Berlin/Germany date output, set the WordPress time zone to Europe/Berlin (Settings → General)."
+msgstr ""
+
+msgid "Hide end time in listings"
+msgstr ""
+
+msgid "If empty, the end will default to the start."
+msgstr ""
+
+msgid "Info/Ticket URL"
+msgstr ""
+
+msgid "JetEngine/Elementor: Use these meta keys in listings (no shortcodes required):"
+msgstr ""
+
+msgid "Location"
+msgstr ""
+
+msgid "Locations"
+msgstr ""
+
+msgid "New Event"
+msgstr ""
+
+msgid "New Event Category Name"
+msgstr ""
+
+msgid "New Location Name"
+msgstr ""
+
+msgid "New Series Name"
+msgstr ""
+
+msgid "New Topic Name"
+msgstr ""
+
+msgid "No events found in Trash."
+msgstr ""
+
+msgid "No events found."
+msgstr ""
+
+msgid "Ongoing"
+msgstr ""
+
+msgid "Parent Event Category"
+msgstr ""
+
+msgid "Parent Event Category:"
+msgstr ""
+
+msgid "Parent Events:"
+msgstr ""
+
+msgid "Parent Series"
+msgstr ""
+
+msgid "Parent Series:"
+msgstr ""
+
+msgid "Past"
+msgstr ""
+
+msgid "Remove featured image"
+msgstr ""
+
+msgid "Search Event Categories"
+msgstr ""
+
+msgid "Search Events"
+msgstr ""
+
+msgid "Search Locations"
+msgstr ""
+
+msgid "Search Series"
+msgstr ""
+
+msgid "Search Topics"
+msgstr ""
+
+msgid "Series"
+msgstr ""
+
+msgid "Set featured image"
+msgstr ""
+
+msgid "Speaker / Host"
+msgstr ""
+
+msgid "Special information"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Topic"
+msgstr ""
+
+msgid "Topics"
+msgstr ""
+
+msgid "Upcoming"
+msgstr ""
+
+msgid "Update Event Category"
+msgstr ""
+
+msgid "Update Location"
+msgstr ""
+
+msgid "Update Series"
+msgstr ""
+
+msgid "Update Topic"
+msgstr ""
+
+msgid "Use as featured image"
+msgstr ""
+
+msgid "View Event"
+msgstr ""
