@@ -2,7 +2,7 @@
 /**
  * Plugin Name: VE Events
  * Description: Adds a lightweight Events post type with WordPress-native admin UI, Schema.org Event markup, and first-class support for Elementor/JetEngine listings.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Requires at least: 6.2
  * Requires PHP: 8.0
  * Author: Marc Probst
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class VEV_Events {
 
-        public const VERSION = '1.4.1';
+        public const VERSION = '1.4.2';
 
         public const TEXTDOMAIN = 've-events';
         public const POST_TYPE  = 've_event';
@@ -62,18 +62,8 @@ final class VEV_Events {
 
                 self::load_dependencies();
 
-                add_action( 'plugins_loaded', array( __CLASS__, 'load_textdomain' ) );
-
-                VEV_Post_Type::init();
-                VEV_Query::init();
-                VEV_Frontend::init();
-                VEV_Fields::init();
-                VEV_JetEngine::init();
-                VEV_Elementor::init();
-
-                if ( is_admin() ) {
-                        VEV_Admin::init();
-                }
+                add_action( 'init', array( __CLASS__, 'load_textdomain' ), 0 );
+                add_action( 'init', array( __CLASS__, 'init_components' ), 1 );
 
                 register_activation_hook( __FILE__, array( __CLASS__, 'activate' ) );
                 register_deactivation_hook( __FILE__, array( __CLASS__, 'deactivate' ) );
@@ -90,6 +80,19 @@ final class VEV_Events {
                 require_once $includes_dir . 'class-fields.php';
                 require_once $includes_dir . 'class-jetengine.php';
                 require_once $includes_dir . 'class-elementor.php';
+        }
+
+        public static function init_components(): void {
+                VEV_Post_Type::init();
+                VEV_Query::init();
+                VEV_Frontend::init();
+                VEV_Fields::init();
+                VEV_JetEngine::init();
+                VEV_Elementor::init();
+
+                if ( is_admin() ) {
+                        VEV_Admin::init();
+                }
         }
 
         public static function get_settings(): array {
