@@ -39,7 +39,7 @@ final class VEV_Events {
         public const META_SPECIAL     = '_vev_special_info';
         public const META_INFO_URL    = '_vev_info_url';
 
-        // Primary virtual meta keys (ve_ prefix)
+        // Virtual meta keys (ve_ prefix) - computed at runtime
         public const VIRTUAL_START_DATE    = 've_start_date';
         public const VIRTUAL_START_TIME    = 've_start_time';
         public const VIRTUAL_END_DATE      = 've_end_date';
@@ -50,12 +50,6 @@ final class VEV_Events {
         public const VIRTUAL_STATUS        = 've_status';
         public const VIRTUAL_IS_UPCOMING   = 've_is_upcoming';
         public const VIRTUAL_IS_ONGOING    = 've_is_ongoing';
-
-        // Legacy aliases (vev_ prefix) - kept for backward compatibility
-        public const LEGACY_STATUS         = 'vev_status';
-        public const LEGACY_TIMERANGE      = 'vev_timerange';
-        public const LEGACY_START_LOCAL    = 'vev_start_local';
-        public const LEGACY_END_LOCAL      = 'vev_end_local';
 
         public const QV_SCOPE            = 'vev_event_scope';
         public const QV_INCLUDE_ARCHIVED = 'vev_include_archived';
