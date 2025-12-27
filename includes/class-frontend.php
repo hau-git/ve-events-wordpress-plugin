@@ -12,17 +12,31 @@ final class VEV_Frontend {
 	}
 
 	public static function computed_meta( $value, int $object_id, string $meta_key, bool $single ) {
-		$virtual_keys = array(
-			VEV_Events::VIRTUAL_STATUS,
-			VEV_Events::VIRTUAL_STATUS_LABEL,
-			VEV_Events::VIRTUAL_IS_LIVE,
-			VEV_Events::VIRTUAL_IS_PAST,
-			VEV_Events::VIRTUAL_TIMERANGE,
-			VEV_Events::VIRTUAL_START_LOCAL,
-			VEV_Events::VIRTUAL_END_LOCAL,
+		// Primary virtual keys (ve_ prefix)
+		$primary_keys = array(
+			've_start_date',
+			've_start_time',
+			've_end_date',
+			've_end_time',
+			've_date_range',
+			've_time_range',
+			've_datetime_formatted',
+			've_status',
+			've_is_upcoming',
+			've_is_ongoing',
 		);
 
-		if ( ! in_array( $meta_key, $virtual_keys, true ) ) {
+		// Legacy keys (vev_ prefix) - backward compatibility
+		$legacy_keys = array(
+			'vev_status',
+			'vev_timerange',
+			'vev_start_local',
+			'vev_end_local',
+		);
+
+		$all_keys = array_merge( $primary_keys, $legacy_keys );
+
+		if ( ! in_array( $meta_key, $all_keys, true ) ) {
 			return $value;
 		}
 
@@ -30,45 +44,64 @@ final class VEV_Frontend {
 			return $value;
 		}
 
-		$data = self::get_event_data( $object_id );
+		$result = self::get_virtual_value( $meta_key, $object_id );
 
+		return $single ? $result : array( $result );
+	}
+
+	private static function get_virtual_value( string $meta_key, int $post_id ) {
+		$data = self::get_event_data( $post_id );
 		$status = self::get_event_status( $data['start_utc'], $data['end_utc'] );
 
-		if ( VEV_Events::VIRTUAL_STATUS === $meta_key ) {
-			return $single ? $status : array( $status );
-		}
+		switch ( $meta_key ) {
+			// Primary keys (ve_)
+			case 've_start_date':
+				return self::format_date_only( $data['start_utc'] );
 
-		if ( VEV_Events::VIRTUAL_STATUS_LABEL === $meta_key ) {
-			$label = self::status_label( $status );
-			return $single ? $label : array( $label );
-		}
+			case 've_start_time':
+				return $data['all_day'] ? '' : self::format_time_only( $data['start_utc'] );
 
-		if ( VEV_Events::VIRTUAL_IS_LIVE === $meta_key ) {
-			$is_live = ( 'ongoing' === $status ) ? '1' : '0';
-			return $single ? $is_live : array( $is_live );
-		}
+			case 've_end_date':
+				return self::format_date_only( $data['end_utc'] );
 
-		if ( VEV_Events::VIRTUAL_IS_PAST === $meta_key ) {
-			$is_past = ( 'past' === $status || 'archived' === $status ) ? '1' : '0';
-			return $single ? $is_past : array( $is_past );
-		}
+			case 've_end_time':
+				if ( $data['all_day'] || $data['hide_end'] ) {
+					return '';
+				}
+				return self::format_time_only( $data['end_utc'] );
 
-		if ( VEV_Events::VIRTUAL_TIMERANGE === $meta_key ) {
-			$timerange = self::format_timerange( $data, true );
-			return $single ? $timerange : array( $timerange );
-		}
+			case 've_date_range':
+				return self::format_date_range( $data );
 
-		if ( VEV_Events::VIRTUAL_START_LOCAL === $meta_key ) {
-			$val = self::format_single_datetime( $data['start_utc'], (bool) $data['all_day'], true );
-			return $single ? $val : array( $val );
-		}
+			case 've_time_range':
+				return self::format_time_range( $data );
 
-		if ( VEV_Events::VIRTUAL_END_LOCAL === $meta_key ) {
-			$val = self::format_single_datetime( $data['end_utc'], (bool) $data['all_day'], false );
-			return $single ? $val : array( $val );
-		}
+			case 've_datetime_formatted':
+				return self::format_datetime_full( $data );
 
-		return $value;
+			case 've_status':
+			case 'vev_status': // Legacy alias
+				return self::status_label( $status );
+
+			case 've_is_upcoming':
+				return 'upcoming' === $status;
+
+			case 've_is_ongoing':
+				return 'ongoing' === $status;
+
+			// Legacy keys (vev_)
+			case 'vev_timerange':
+				return self::format_timerange_legacy( $data, true );
+
+			case 'vev_start_local':
+				return self::format_single_datetime( $data['start_utc'], $data['all_day'], true );
+
+			case 'vev_end_local':
+				return self::format_single_datetime( $data['end_utc'], $data['all_day'], false );
+
+			default:
+				return '';
+		}
 	}
 
 	public static function get_event_data( int $post_id ): array {
@@ -133,13 +166,131 @@ final class VEV_Frontend {
 		}
 	}
 
+	// ========================================
+	// New formatting methods (ve_ keys)
+	// ========================================
+
+	private static function format_date_only( int $ts_utc ): string {
+		if ( ! $ts_utc ) {
+			return '';
+		}
+		return wp_date( get_option( 'date_format' ), $ts_utc, wp_timezone() );
+	}
+
+	private static function format_time_only( int $ts_utc ): string {
+		if ( ! $ts_utc ) {
+			return '';
+		}
+		return wp_date( get_option( 'time_format' ), $ts_utc, wp_timezone() );
+	}
+
+	private static function format_date_range( array $data ): string {
+		$start = (int) $data['start_utc'];
+		$end   = (int) $data['end_utc'];
+
+		if ( ! $start ) {
+			return '';
+		}
+		if ( ! $end ) {
+			$end = $start;
+		}
+
+		$tz = wp_timezone();
+		$date_format = get_option( 'date_format' );
+
+		$start_date = wp_date( $date_format, $start, $tz );
+		$end_date   = wp_date( $date_format, $end, $tz );
+
+		if ( $start_date === $end_date ) {
+			return $start_date;
+		}
+
+		return $start_date . ' – ' . $end_date;
+	}
+
+	private static function format_time_range( array $data ): string {
+		if ( $data['all_day'] ) {
+			return __( 'All day', VEV_Events::TEXTDOMAIN );
+		}
+
+		$start = (int) $data['start_utc'];
+		$end   = (int) $data['end_utc'];
+		$hide_end = (bool) $data['hide_end'];
+
+		if ( ! $start ) {
+			return '';
+		}
+
+		$tz = wp_timezone();
+		$time_format = get_option( 'time_format' );
+
+		$start_time = wp_date( $time_format, $start, $tz );
+
+		if ( ! $end || $hide_end ) {
+			return $start_time;
+		}
+
+		$end_time = wp_date( $time_format, $end, $tz );
+
+		return $start_time . ' – ' . $end_time;
+	}
+
+	private static function format_datetime_full( array $data ): string {
+		$start = (int) $data['start_utc'];
+		$end   = (int) $data['end_utc'];
+		$all_day  = (bool) $data['all_day'];
+		$hide_end = (bool) $data['hide_end'];
+
+		if ( ! $start ) {
+			return '';
+		}
+		if ( ! $end ) {
+			$end = $start;
+		}
+
+		$tz = wp_timezone();
+		$date_format = get_option( 'date_format' );
+		$time_format = get_option( 'time_format' );
+
+		$start_date = wp_date( $date_format, $start, $tz );
+		$end_date   = wp_date( $date_format, $end, $tz );
+
+		// All-day event
+		if ( $all_day ) {
+			if ( $start_date === $end_date ) {
+				return sprintf( __( '%s (all day)', VEV_Events::TEXTDOMAIN ), $start_date );
+			}
+			return sprintf( __( '%1$s – %2$s (all day)', VEV_Events::TEXTDOMAIN ), $start_date, $end_date );
+		}
+
+		$start_time = wp_date( $time_format, $start, $tz );
+		$end_time   = wp_date( $time_format, $end, $tz );
+
+		// Same day
+		if ( $start_date === $end_date ) {
+			if ( $hide_end ) {
+				return sprintf( __( '%1$s, %2$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time );
+			}
+			return sprintf( __( '%1$s, %2$s – %3$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_time );
+		}
+
+		// Multi-day
+		if ( $hide_end ) {
+			return sprintf( __( '%1$s, %2$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time );
+		}
+		return sprintf( __( '%1$s %2$s – %3$s %4$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_date, $end_time );
+	}
+
+	// ========================================
+	// Legacy formatting methods (vev_ keys)
+	// ========================================
+
 	private static function format_single_datetime( int $ts_utc, bool $all_day, bool $is_start ): string {
 		if ( ! $ts_utc ) {
 			return '';
 		}
 
 		$tz = wp_timezone();
-
 		$date_format = (string) get_option( 'date_format' );
 		$time_format = (string) get_option( 'time_format' );
 
@@ -150,7 +301,7 @@ final class VEV_Frontend {
 		return wp_date( $date_format . ' ' . $time_format, $ts_utc, $tz );
 	}
 
-	public static function format_timerange( array $data, bool $respect_hide_end ): string {
+	public static function format_timerange_legacy( array $data, bool $respect_hide_end ): string {
 		$start = (int) $data['start_utc'];
 		$end   = (int) $data['end_utc'];
 		$all_day = (bool) $data['all_day'];
@@ -175,67 +326,67 @@ final class VEV_Frontend {
 
 		if ( $all_day ) {
 			if ( $start_date === $end_date ) {
-				return sprintf(
-					__( '%s (all day)', VEV_Events::TEXTDOMAIN ),
-					$start_date
-				);
+				return sprintf( __( '%s (all day)', VEV_Events::TEXTDOMAIN ), $start_date );
 			}
-			return sprintf(
-				__( '%1$s – %2$s (all day)', VEV_Events::TEXTDOMAIN ),
-				$start_date,
-				$end_date
-			);
+			return sprintf( __( '%1$s – %2$s (all day)', VEV_Events::TEXTDOMAIN ), $start_date, $end_date );
 		}
 
 		$start_time = wp_date( $time_format, $start, $tz );
 		$end_time   = wp_date( $time_format, $end, $tz );
 
 		if ( $respect_hide_end && $hide_end ) {
-			return sprintf(
-				__( '%1$s, %2$s', VEV_Events::TEXTDOMAIN ),
-				$start_date,
-				$start_time
-			);
+			return sprintf( __( '%1$s, %2$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time );
 		}
 
 		if ( $start_date === $end_date ) {
 			if ( $hide_end_same_day ) {
-				return sprintf(
-					__( '%1$s · %2$s – %3$s', VEV_Events::TEXTDOMAIN ),
-					$start_date,
-					$start_time,
-					$end_time
-				);
+				return sprintf( __( '%1$s · %2$s – %3$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_time );
 			}
-			return sprintf(
-				__( '%1$s · %2$s – %3$s · %4$s', VEV_Events::TEXTDOMAIN ),
-				$start_date,
-				$start_time,
-				$end_date,
-				$end_time
+			return sprintf( __( '%1$s · %2$s – %3$s · %4$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_date, $end_time );
+		}
+
+		return sprintf( __( '%1$s %2$s – %3$s %4$s', VEV_Events::TEXTDOMAIN ), $start_date, $start_time, $end_date, $end_time );
+	}
+
+	// ========================================
+	// REST API
+	// ========================================
+
+	public static function register_rest_fields(): void {
+		// Primary fields (ve_)
+		$primary_fields = array(
+			've_start_date',
+			've_start_time',
+			've_end_date',
+			've_end_time',
+			've_date_range',
+			've_time_range',
+			've_datetime_formatted',
+			've_status',
+		);
+
+		foreach ( $primary_fields as $field ) {
+			register_rest_field(
+				VEV_Events::POST_TYPE,
+				$field,
+				array(
+					'get_callback' => static function ( array $object ) use ( $field ) {
+						return get_post_meta( (int) $object['id'], $field, true );
+					},
+					'schema'       => array( 'type' => 'string' ),
+				)
 			);
 		}
 
-		return sprintf(
-			__( '%1$s %2$s – %3$s %4$s', VEV_Events::TEXTDOMAIN ),
-			$start_date,
-			$start_time,
-			$end_date,
-			$end_time
-		);
-	}
-
-	public static function register_rest_fields(): void {
+		// Legacy fields (vev_) for backward compatibility
 		register_rest_field(
 			VEV_Events::POST_TYPE,
 			'vev_status',
 			array(
 				'get_callback' => static function ( array $object ) {
-					return get_post_meta( (int) $object['id'], VEV_Events::VIRTUAL_STATUS, true );
+					return get_post_meta( (int) $object['id'], 'vev_status', true );
 				},
-				'schema'       => array(
-					'type' => 'string',
-				),
+				'schema'       => array( 'type' => 'string' ),
 			)
 		);
 
@@ -244,14 +395,16 @@ final class VEV_Frontend {
 			'vev_timerange',
 			array(
 				'get_callback' => static function ( array $object ) {
-					return get_post_meta( (int) $object['id'], VEV_Events::VIRTUAL_TIMERANGE, true );
+					return get_post_meta( (int) $object['id'], 'vev_timerange', true );
 				},
-				'schema'       => array(
-					'type' => 'string',
-				),
+				'schema'       => array( 'type' => 'string' ),
 			)
 		);
 	}
+
+	// ========================================
+	// Schema.org
+	// ========================================
 
 	public static function output_schema(): void {
 		if ( ! is_singular( VEV_Events::POST_TYPE ) ) {
