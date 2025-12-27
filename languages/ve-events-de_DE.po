@@ -1,0 +1,539 @@
+# German translation for VE Events
+# Copyright (C) 2025 Marc Probst
+# This file is distributed under the GPL-2.0+.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VE Events 1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-27 00:00+0000\n"
+"PO-Revision-Date: 2025-12-27 00:00+0000\n"
+"Last-Translator: VE Events Team\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "VE Events Settings"
+msgstr "VE Events Einstellungen"
+
+msgid "These settings are only visible to administrators and control the global behavior of the VE Events plugin."
+msgstr "Diese Einstellungen sind nur für Administratoren sichtbar und steuern das Verhalten des VE-Events-Plugins global."
+
+msgid "Settings"
+msgstr "Einstellungen"
+
+msgid "Editor Settings"
+msgstr "Editor-Einstellungen"
+
+msgid "Gutenberg Editor"
+msgstr "Gutenberg-Editor"
+
+msgid "Disable Gutenberg block editor for Events"
+msgstr "Gutenberg Block-Editor für Events deaktivieren"
+
+msgid "When enabled, events will use the classic WordPress editor instead of the block editor."
+msgstr "Wenn aktiviert, verwenden Events den klassischen WordPress-Editor anstelle des Block-Editors."
+
+msgid "Display Settings"
+msgstr "Anzeige-Einstellungen"
+
+msgid "Hide End Date if Same Day"
+msgstr "Enddatum ausblenden wenn gleicher Tag"
+
+msgid "Automatically hide the end date if start and end are on the same day"
+msgstr "Enddatum automatisch ausblenden, wenn Start und Ende am selben Tag sind"
+
+msgid "Example: \"12.06.2025 · 10:00 – 12:00\" instead of \"12.06.2025 · 10:00 – 12.06.2025 · 12:00\""
+msgstr "Beispiel: \"12.06.2025 · 10:00 – 12:00\" statt \"12.06.2025 · 10:00 – 12.06.2025 · 12:00\""
+
+msgid "Event Visibility & Status"
+msgstr "Event-Sichtbarkeit & Status"
+
+msgid "Grace Period After Event End"
+msgstr "Karenzzeit nach Event-Ende"
+
+msgid "0 days (immediately hidden)"
+msgstr "0 Tage (sofort ausblenden)"
+
+msgid "1 day (recommended)"
+msgstr "1 Tag (empfohlen)"
+
+msgid "3 days"
+msgstr "3 Tage"
+
+msgid "7 days"
+msgstr "7 Tage"
+
+msgid "Choose how long events remain visible on the frontend after ending. Backend visibility is never affected."
+msgstr "Wählen Sie, wie lange Events nach dem Ende im Frontend sichtbar bleiben. Die Backend-Sichtbarkeit ist davon nicht betroffen."
+
+msgid "Hide Archived Events from Search"
+msgstr "Archivierte Events von Suche ausschließen"
+
+msgid "Exclude archived events from WordPress search results"
+msgstr "Archivierte Events aus WordPress-Suchergebnissen ausschließen"
+
+msgid "Schema.org Settings"
+msgstr "Schema.org-Einstellungen"
+
+msgid "Include Event Series in Schema"
+msgstr "Event-Serien in Schema einschließen"
+
+msgid "Add series name to Schema as eventSeries or superEvent"
+msgstr "Serienname als eventSeries oder superEvent zum Schema hinzufügen"
+
+msgid "Event Status Logic"
+msgstr "Event-Status-Logik"
+
+msgid "Event status is calculated dynamically based on the current time:"
+msgstr "Der Event-Status wird dynamisch basierend auf der aktuellen Zeit berechnet:"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "Event has not started yet"
+msgstr "Event hat noch nicht begonnen"
+
+msgid "Event is currently running"
+msgstr "Event läuft gerade"
+
+msgid "Event has ended"
+msgstr "Event ist beendet"
+
+msgid "Event ended more than the grace period ago"
+msgstr "Event ist seit mehr als der Karenzzeit beendet"
+
+msgid "Documentation"
+msgstr "Dokumentation"
+
+msgid "About VE Events"
+msgstr "Über VE Events"
+
+msgid "VE Events adds a lightweight Events custom post type with WordPress-native admin UI, Schema.org Event markup, and first-class support for Elementor/JetEngine listings."
+msgstr "VE Events fügt einen leichtgewichtigen Events Custom Post Type mit WordPress-nativer Admin-Oberfläche, Schema.org Event-Markup und erstklassiger Unterstützung für Elementor/JetEngine-Listings hinzu."
+
+msgid "Core Principle"
+msgstr "Kernprinzip"
+
+msgid "VE Events does not rely on shortcodes. All data is exposed via standard WordPress Meta Keys, Virtual (computed) Meta Keys, and Taxonomies. This ensures full compatibility with JetEngine Listings, sortable and filterable queries, and clean Elementor templates."
+msgstr "VE Events verwendet keine Shortcodes. Alle Daten werden über Standard-WordPress-Meta-Keys, virtuelle (berechnete) Meta-Keys und Taxonomien bereitgestellt. Dies gewährleistet volle Kompatibilität mit JetEngine-Listings, sortier- und filterbare Abfragen sowie saubere Elementor-Templates."
+
+msgid "Features"
+msgstr "Funktionen"
+
+msgid "Custom post type \"Events\" with date/time management"
+msgstr "Custom Post Type \"Events\" mit Datum/Zeit-Verwaltung"
+
+msgid "Event Categories, Locations, Topics, and Series taxonomies"
+msgstr "Event-Kategorien, Orte, Themen und Serien-Taxonomien"
+
+msgid "Speaker/Host and special information fields"
+msgstr "Referent/Moderator und Zusatzinformations-Felder"
+
+msgid "Schema.org structured data output for SEO"
+msgstr "Schema.org strukturierte Daten für SEO"
+
+msgid "Compatible with JetEngine/Elementor listings"
+msgstr "Kompatibel mit JetEngine/Elementor-Listings"
+
+msgid "Multilingual support (WPML & Polylang compatible)"
+msgstr "Mehrsprachig (WPML & Polylang kompatibel)"
+
+msgid "Automatic event status calculation"
+msgstr "Automatische Event-Status-Berechnung"
+
+msgid "Automatic hiding of past events from frontend"
+msgstr "Automatisches Ausblenden vergangener Events im Frontend"
+
+msgid "Stored Meta Keys (Database)"
+msgstr "Gespeicherte Meta-Keys (Datenbank)"
+
+msgid "Use these meta keys for sorting, filtering, and conditions:"
+msgstr "Verwenden Sie diese Meta-Keys für Sortierung, Filterung und Bedingungen:"
+
+msgid "Meta Key"
+msgstr "Meta-Key"
+
+msgid "Event start timestamp (UTC)"
+msgstr "Event-Startzeitpunkt (UTC)"
+
+msgid "Event end timestamp (UTC)"
+msgstr "Event-Endzeitpunkt (UTC)"
+
+msgid "All-day event (boolean)"
+msgstr "Ganztägiges Event (Boolean)"
+
+msgid "Hide end time"
+msgstr "Endzeit ausblenden"
+
+msgid "Speaker / Host"
+msgstr "Referent / Moderator"
+
+msgid "Special information"
+msgstr "Zusatzinformationen"
+
+msgid "Info / Ticket URL"
+msgstr "Info- / Ticket-URL"
+
+msgid "Virtual / Computed Meta Keys"
+msgstr "Virtuelle / Berechnete Meta-Keys"
+
+msgid "Computed at runtime and usable like normal meta fields:"
+msgstr "Zur Laufzeit berechnet und wie normale Meta-Felder verwendbar:"
+
+msgid "upcoming / ongoing / past / archived"
+msgstr "bevorstehend / laufend / vergangen / archiviert"
+
+msgid "Translated status label"
+msgstr "Übersetztes Status-Label"
+
+msgid "1 if currently running"
+msgstr "1 wenn gerade laufend"
+
+msgid "1 if past"
+msgstr "1 wenn vergangen"
+
+msgid "Fully formatted date/time range"
+msgstr "Vollständig formatierter Datum/Zeit-Bereich"
+
+msgid "Start date/time (site timezone)"
+msgstr "Startdatum/-zeit (Website-Zeitzone)"
+
+msgid "End date/time (site timezone)"
+msgstr "Enddatum/-zeit (Website-Zeitzone)"
+
+msgid "JetEngine Query Setup (Recommended)"
+msgstr "JetEngine Query-Einrichtung (Empfohlen)"
+
+msgid "Upcoming Events"
+msgstr "Bevorstehende Events"
+
+msgid "Post Type: ve_event"
+msgstr "Post Type: ve_event"
+
+msgid "Order By: Meta Value (Number)"
+msgstr "Sortieren nach: Meta Value (Number)"
+
+msgid "Meta Key: _vev_start_utc"
+msgstr "Meta Key: _vev_start_utc"
+
+msgid "Order: ASC"
+msgstr "Reihenfolge: ASC"
+
+msgid "Past Events"
+msgstr "Vergangene Events"
+
+msgid "Same query as above"
+msgstr "Gleiche Query wie oben"
+
+msgid "Add Query Var: vev_event_scope = past"
+msgstr "Query Var hinzufügen: vev_event_scope = past"
+
+msgid "Query Scopes"
+msgstr "Query Scopes"
+
+msgid "Use these query vars to filter events:"
+msgstr "Verwenden Sie diese Query-Vars zum Filtern von Events:"
+
+msgid "Filter by scope (upcoming, past, live, all)"
+msgstr "Nach Scope filtern (upcoming, past, live, all)"
+
+msgid "Include archived/past events"
+msgstr "Archivierte/vergangene Events einschließen"
+
+msgid "Taxonomies"
+msgstr "Taxonomien"
+
+msgid "Taxonomy"
+msgstr "Taxonomie"
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Event Categories"
+msgstr "Event-Kategorien"
+
+msgid "Hierarchical"
+msgstr "Hierarchisch"
+
+msgid "Locations"
+msgstr "Orte"
+
+msgid "Non-hierarchical"
+msgstr "Nicht-hierarchisch"
+
+msgid "Topics"
+msgstr "Themen"
+
+msgid "Series"
+msgstr "Serien"
+
+msgid "Multilingual Support"
+msgstr "Mehrsprachigkeit"
+
+msgid "VE Events is fully compatible with WPML and Polylang. Included:"
+msgstr "VE Events ist voll kompatibel mit WPML und Polylang. Enthalten:"
+
+msgid "English default strings"
+msgstr "Englische Standardtexte"
+
+msgid "German translation (de_DE)"
+msgstr "Deutsche Übersetzung (de_DE)"
+
+msgid "wpml-config.xml"
+msgstr "wpml-config.xml"
+
+msgid "Translation behavior: Dates/times are copied, Speaker/Info fields are translatable, Taxonomies are translatable."
+msgstr "Übersetzungsverhalten: Datum/Zeit werden kopiert, Referent/Info-Felder sind übersetzbar, Taxonomien sind übersetzbar."
+
+msgid "Debugging"
+msgstr "Debugging"
+
+msgid "Enable debugging by adding to wp-config.php:"
+msgstr "Debugging aktivieren durch Hinzufügen zu wp-config.php:"
+
+msgid "Log file: %s"
+msgstr "Log-Datei: %s"
+
+msgid "Logs include: Status calculations, Query modifications, Schema generation"
+msgstr "Logs enthalten: Status-Berechnungen, Query-Modifikationen, Schema-Generierung"
+
+msgid "Version Information"
+msgstr "Versionsinformationen"
+
+msgid "VE Events Version: %s"
+msgstr "VE Events Version: %s"
+
+msgid "Author: Marc Probst"
+msgstr "Autor: Marc Probst"
+
+msgid "License: GPL-2.0+"
+msgstr "Lizenz: GPL-2.0+"
+
+msgid "Events"
+msgstr "Events"
+
+msgid "Event"
+msgstr "Event"
+
+msgid "Add New"
+msgstr "Neu hinzufügen"
+
+msgid "Add New Event"
+msgstr "Neues Event hinzufügen"
+
+msgid "New Event"
+msgstr "Neues Event"
+
+msgid "Edit Event"
+msgstr "Event bearbeiten"
+
+msgid "View Event"
+msgstr "Event anzeigen"
+
+msgid "All Events"
+msgstr "Alle Events"
+
+msgid "Search Events"
+msgstr "Events suchen"
+
+msgid "Parent Events:"
+msgstr "Übergeordnete Events:"
+
+msgid "No events found."
+msgstr "Keine Events gefunden."
+
+msgid "No events found in Trash."
+msgstr "Keine Events im Papierkorb gefunden."
+
+msgid "Featured image"
+msgstr "Beitragsbild"
+
+msgid "Set featured image"
+msgstr "Beitragsbild festlegen"
+
+msgid "Remove featured image"
+msgstr "Beitragsbild entfernen"
+
+msgid "Use as featured image"
+msgstr "Als Beitragsbild verwenden"
+
+msgid "Event Category"
+msgstr "Event-Kategorie"
+
+msgid "Search Event Categories"
+msgstr "Event-Kategorien suchen"
+
+msgid "All Event Categories"
+msgstr "Alle Event-Kategorien"
+
+msgid "Parent Event Category"
+msgstr "Übergeordnete Event-Kategorie"
+
+msgid "Parent Event Category:"
+msgstr "Übergeordnete Event-Kategorie:"
+
+msgid "Edit Event Category"
+msgstr "Event-Kategorie bearbeiten"
+
+msgid "Update Event Category"
+msgstr "Event-Kategorie aktualisieren"
+
+msgid "Add New Event Category"
+msgstr "Neue Event-Kategorie hinzufügen"
+
+msgid "New Event Category Name"
+msgstr "Neuer Event-Kategorie-Name"
+
+msgid "Categories"
+msgstr "Kategorien"
+
+msgid "Location"
+msgstr "Ort"
+
+msgid "Search Locations"
+msgstr "Orte suchen"
+
+msgid "All Locations"
+msgstr "Alle Orte"
+
+msgid "Edit Location"
+msgstr "Ort bearbeiten"
+
+msgid "Update Location"
+msgstr "Ort aktualisieren"
+
+msgid "Add New Location"
+msgstr "Neuen Ort hinzufügen"
+
+msgid "New Location Name"
+msgstr "Neuer Ort-Name"
+
+msgid "Topic"
+msgstr "Thema"
+
+msgid "Search Topics"
+msgstr "Themen suchen"
+
+msgid "All Topics"
+msgstr "Alle Themen"
+
+msgid "Edit Topic"
+msgstr "Thema bearbeiten"
+
+msgid "Update Topic"
+msgstr "Thema aktualisieren"
+
+msgid "Add New Topic"
+msgstr "Neues Thema hinzufügen"
+
+msgid "New Topic Name"
+msgstr "Neuer Thema-Name"
+
+msgid "Search Series"
+msgstr "Serien suchen"
+
+msgid "All Series"
+msgstr "Alle Serien"
+
+msgid "Parent Series"
+msgstr "Übergeordnete Serie"
+
+msgid "Parent Series:"
+msgstr "Übergeordnete Serie:"
+
+msgid "Edit Series"
+msgstr "Serie bearbeiten"
+
+msgid "Update Series"
+msgstr "Serie aktualisieren"
+
+msgid "Add New Series"
+msgstr "Neue Serie hinzufügen"
+
+msgid "New Series Name"
+msgstr "Neuer Serien-Name"
+
+msgid "Event Details"
+msgstr "Event-Details"
+
+msgid "Start Date"
+msgstr "Startdatum"
+
+msgid "Start Time"
+msgstr "Startzeit"
+
+msgid "End Date"
+msgstr "Enddatum"
+
+msgid "End Time"
+msgstr "Endzeit"
+
+msgid "All-day event"
+msgstr "Ganztägiges Event"
+
+msgid "Special Info"
+msgstr "Zusatzinfo"
+
+msgid "Info URL"
+msgstr "Info-URL"
+
+msgid "Ticket / Info URL"
+msgstr "Ticket- / Info-URL"
+
+msgid "Date/Time"
+msgstr "Datum/Zeit"
+
+msgid "Upcoming"
+msgstr "Bevorstehend"
+
+msgid "Live"
+msgstr "Live"
+
+msgid "Past"
+msgstr "Vergangen"
+
+msgid "Archived"
+msgstr "Archiviert"
+
+msgid "Ongoing"
+msgstr "Laufend"
+
+msgid "Start"
+msgstr "Start"
+
+msgid "End"
+msgstr "Ende"
+
+msgid "All day"
+msgstr "Ganztägig"
+
+msgid "Hide end time in listings"
+msgstr "Endzeit in Listings ausblenden"
+
+msgid "If empty, the end will default to the start."
+msgstr "Wenn leer, entspricht das Ende dem Start."
+
+msgid "All-day events are stored as full-day ranges in your site time zone. Times will not be displayed in the virtual fields."
+msgstr "Ganztägige Events werden als ganztägige Zeitspannen in der Website-Zeitzone gespeichert. Zeiten werden in den virtuellen Feldern nicht angezeigt."
+
+msgid "E.g. registration, ticket costs, access notes, etc."
+msgstr "Z.B. Anmeldung, Ticketkosten, Zugangshinweise, etc."
+
+msgid "Info/Ticket URL"
+msgstr "Info-/Ticket-URL"
+
+msgid "JetEngine/Elementor: Use these meta keys in listings (no shortcodes required):"
+msgstr "JetEngine/Elementor: Verwenden Sie diese Meta-Keys in Listings (keine Shortcodes erforderlich):"
+
+msgid "For correct Berlin/Germany date output, set the WordPress time zone to Europe/Berlin (Settings → General)."
+msgstr "Für korrekte Berlin/Deutschland-Datumsausgabe, stellen Sie die WordPress-Zeitzone auf Europe/Berlin (Einstellungen → Allgemein)."
