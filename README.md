@@ -1,28 +1,58 @@
-# VE Events WordPress Plugin
+# VE Events (WordPress Plugin)
 
-A lightweight WordPress Events custom post type plugin with Schema.org markup, JetEngine/Elementor support, and multilingual capabilities.
+A lightweight Events custom post type designed to stay close to WordPress core conventions and integrate cleanly with Elementor + JetEngine listings.
 
-## Features
+## Post type
 
-- Custom post type "Events" with date/time management
-- Event Categories, Locations, Topics, and Series taxonomies
-- Speaker/Host and special information fields
-- Schema.org structured data output for SEO
-- Compatible with JetEngine/Elementor listings
-- Multilingual support (WPML & Polylang compatible)
-- German translation included
-- Automatic event status calculation
+- Post type key: `ve_event`
+- Public + REST enabled (`show_in_rest = true`)
+- Supports: title, editor, featured image, excerpt
 
-## Installation
+## Taxonomies
 
-1. Download or clone this repository
-2. Upload to your WordPress `/wp-content/plugins/ve-events` directory
-3. Activate the plugin through the WordPress admin
+- `ve_event_category` (hierarchical)
+- `ve_event_location` (non-hierarchical)
+- `ve_event_topic` (non-hierarchical, tag-like)
+- `ve_event_series` (hierarchical)
 
-## Author
+## Meta keys (stored)
 
-Marc Probst
+All timestamps are stored as UTC Unix timestamps (integers). Input/output is handled in the site time zone.
 
-## License
+- `_vev_start_utc` (int)
+- `_vev_end_utc` (int)
+- `_vev_all_day` (bool/int)
+- `_vev_hide_end` (bool/int)
+- `_vev_speaker` (string)
+- `_vev_special_info` (string)
+- `_vev_info_url` (string, URL)
 
-GPL-2.0+
+## Virtual meta keys (computed)
+
+These are not stored in the database. They are computed at runtime via the `get_post_metadata` filter.
+This allows JetEngine/Elementor listings to display them without any shortcodes.
+
+- `vev_status` => upcoming|ongoing|past|archived
+- `vev_status_label` => localized label
+- `vev_is_live` => 1|0
+- `vev_is_past` => 1|0
+- `vev_timerange` => localized date/time range, respects `_vev_hide_end`
+- `vev_start_local` => localized date/time
+- `vev_end_local` => localized date/time
+
+## Default frontend behavior
+
+- Sort event queries by `_vev_start_utc` ascending (unless you already set a meta ordering)
+- Hide events one day after the event end (`_vev_end_utc < now - 86400`)
+
+Optional query var:
+- `vev_event_scope`: upcoming|ongoing|past|archived|all
+
+## Schema.org
+
+On single event pages the plugin outputs an `Event` JSON-LD block.
+
+## Debugging
+
+- Enable via `WP_DEBUG` or `define('VEV_DEBUG', true);`
+- Log file: `wp-content/uploads/ve-events.log`
