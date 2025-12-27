@@ -616,3 +616,79 @@ msgstr "Titel"
 
 msgid "Date"
 msgstr "Datum"
+
+# VE Fields class translations (v1.4.0 - JetEngine/Elementor integration)
+msgid "Start Date/Time"
+msgstr "Startdatum/-zeit"
+
+msgid "End Date/Time"
+msgstr "Enddatum/-zeit"
+
+msgid "All Day Event"
+msgstr "Ganztägiges Event"
+
+msgid "Hide End Time"
+msgstr "Endzeit ausblenden"
+
+msgid "Start Date (formatted)"
+msgstr "Startdatum (formatiert)"
+
+msgid "Start Time (formatted)"
+msgstr "Startzeit (formatiert)"
+
+msgid "End Date (formatted)"
+msgstr "Enddatum (formatiert)"
+
+msgid "End Time (formatted)"
+msgstr "Endzeit (formatiert)"
+
+msgid "Date Range"
+msgstr "Datumsbereich"
+
+msgid "Time Range"
+msgstr "Zeitbereich"
+
+msgid "Full Date & Time"
+msgstr "Vollständiges Datum & Zeit"
+
+msgid "Is Upcoming"
+msgstr "Ist bevorstehend"
+
+msgid "Is Ongoing"
+msgstr "Läuft gerade"
+
+msgid "Event Status"
+msgstr "Event-Status"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nein"
+
+msgid "Date & Time"
+msgstr "Datum & Zeit"
+
+msgid "Formatted Output"
+msgstr "Formatierte Ausgabe"
+
+msgid "VE Events"
+msgstr "VE Events"
+
+msgid "Event Field"
+msgstr "Event-Feld"
+
+msgid "Field"
+msgstr "Feld"
+
+msgid "Event URL"
+msgstr "Event-URL"
+
+msgid "URL Type"
+msgstr "URL-Typ"
+
+msgid "Event Permalink"
+msgstr "Event-Permalink"
+
+msgid "Fallback to Permalink"
+msgstr "Fallback auf Permalink"
