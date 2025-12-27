@@ -13,6 +13,14 @@ final class VEV_Post_Type {
                 self::register_post_type();
                 self::register_taxonomies();
                 self::register_meta();
+                self::maybe_flush_rewrite_rules();
+        }
+
+        private static function maybe_flush_rewrite_rules(): void {
+                if ( get_transient( 'vev_flush_rewrite_rules' ) ) {
+                        delete_transient( 'vev_flush_rewrite_rules' );
+                        flush_rewrite_rules();
+                }
         }
 
         private static function register_post_type(): void {
