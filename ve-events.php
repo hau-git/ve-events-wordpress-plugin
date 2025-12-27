@@ -2,7 +2,7 @@
 /**
  * Plugin Name: VE Events
  * Description: Adds a lightweight Events post type with WordPress-native admin UI, Schema.org Event markup, and first-class support for Elementor/JetEngine listings.
- * Version: 1.4.3
+ * Version: 1.4.4
  * Requires at least: 6.2
  * Requires PHP: 8.0
  * Author: Marc Probst
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class VEV_Events {
 
-        public const VERSION = '1.4.3';
+        public const VERSION = '1.4.4';
 
         public const TEXTDOMAIN = 've-events';
         public const POST_TYPE  = 've_event';
@@ -39,13 +39,23 @@ final class VEV_Events {
         public const META_SPECIAL     = '_vev_special_info';
         public const META_INFO_URL    = '_vev_info_url';
 
-        public const VIRTUAL_STATUS        = 'vev_status';
-        public const VIRTUAL_STATUS_LABEL  = 'vev_status_label';
-        public const VIRTUAL_IS_LIVE       = 'vev_is_live';
-        public const VIRTUAL_IS_PAST       = 'vev_is_past';
-        public const VIRTUAL_TIMERANGE     = 'vev_timerange';
-        public const VIRTUAL_START_LOCAL   = 'vev_start_local';
-        public const VIRTUAL_END_LOCAL     = 'vev_end_local';
+        // Primary virtual meta keys (ve_ prefix)
+        public const VIRTUAL_START_DATE    = 've_start_date';
+        public const VIRTUAL_START_TIME    = 've_start_time';
+        public const VIRTUAL_END_DATE      = 've_end_date';
+        public const VIRTUAL_END_TIME      = 've_end_time';
+        public const VIRTUAL_DATE_RANGE    = 've_date_range';
+        public const VIRTUAL_TIME_RANGE    = 've_time_range';
+        public const VIRTUAL_DATETIME      = 've_datetime_formatted';
+        public const VIRTUAL_STATUS        = 've_status';
+        public const VIRTUAL_IS_UPCOMING   = 've_is_upcoming';
+        public const VIRTUAL_IS_ONGOING    = 've_is_ongoing';
+
+        // Legacy aliases (vev_ prefix) - kept for backward compatibility
+        public const LEGACY_STATUS         = 'vev_status';
+        public const LEGACY_TIMERANGE      = 'vev_timerange';
+        public const LEGACY_START_LOCAL    = 'vev_start_local';
+        public const LEGACY_END_LOCAL      = 'vev_end_local';
 
         public const QV_SCOPE            = 'vev_event_scope';
         public const QV_INCLUDE_ARCHIVED = 'vev_include_archived';
