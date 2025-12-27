@@ -2,7 +2,7 @@
 /**
  * Plugin Name: VE Events
  * Description: Adds a lightweight Events post type with WordPress-native admin UI, Schema.org Event markup, and first-class support for Elementor/JetEngine listings.
- * Version: 1.3.1
+ * Version: 1.4.0
  * Requires at least: 6.2
  * Requires PHP: 8.0
  * Author: Marc Probst
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class VEV_Events {
 
-        public const VERSION = '1.3.1';
+        public const VERSION = '1.4.0';
 
         public const TEXTDOMAIN = 've-events';
         public const POST_TYPE  = 've_event';
@@ -67,6 +67,9 @@ final class VEV_Events {
                 VEV_Post_Type::init();
                 VEV_Query::init();
                 VEV_Frontend::init();
+                VEV_Fields::init();
+                VEV_JetEngine::init();
+                VEV_Elementor::init();
 
                 if ( is_admin() ) {
                         VEV_Admin::init();
@@ -84,6 +87,9 @@ final class VEV_Events {
                 require_once $includes_dir . 'class-frontend.php';
                 require_once $includes_dir . 'class-query.php';
                 require_once $includes_dir . 'class-github-updater.php';
+                require_once $includes_dir . 'class-fields.php';
+                require_once $includes_dir . 'class-jetengine.php';
+                require_once $includes_dir . 'class-elementor.php';
         }
 
         public static function get_settings(): array {
