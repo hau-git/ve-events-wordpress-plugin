@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VE Events 1.2.0\n"
+"Project-Id-Version: VE Events 1.3.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-27 00:00+0000\n"
 "PO-Revision-Date: 2025-12-27 00:00+0000\n"
@@ -537,3 +537,82 @@ msgstr "JetEngine/Elementor: Verwenden Sie diese Meta-Keys in Listings (keine Sh
 
 msgid "For correct Berlin/Germany date output, set the WordPress time zone to Europe/Berlin (Settings → General)."
 msgstr "Für korrekte Berlin/Deutschland-Datumsausgabe, stellen Sie die WordPress-Zeitzone auf Europe/Berlin (Einstellungen → Allgemein)."
+
+# URL Settings translations (v1.3.1)
+msgid "URL Settings"
+msgstr "URL-Einstellungen"
+
+msgid "Event Slug (Single)"
+msgstr "Event-Slug (Einzelansicht)"
+
+msgid "URL slug for single events (e.g., \"event\" or \"veranstaltung\"). Default: event"
+msgstr "URL-Slug für einzelne Events (z.B. \"event\" oder \"veranstaltung\"). Standard: event"
+
+msgid "Archive Slug"
+msgstr "Archiv-Slug"
+
+msgid "URL slug for event archive (e.g., \"events\" or \"veranstaltungen\"). Default: events"
+msgstr "URL-Slug für das Event-Archiv (z.B. \"events\" oder \"veranstaltungen\"). Standard: events"
+
+msgid "Note: After changing slugs, permalinks will be automatically refreshed. Existing event URLs will change accordingly."
+msgstr "Hinweis: Nach Änderung der Slugs werden die Permalinks automatisch aktualisiert. Bestehende Event-URLs ändern sich entsprechend."
+
+# Context-based translations for CPT labels
+msgctxt "post type general name"
+msgid "Events"
+msgstr "Veranstaltungen"
+
+msgctxt "post type singular name"
+msgid "Event"
+msgstr "Veranstaltung"
+
+msgctxt "event"
+msgid "Add New"
+msgstr "Neu hinzufügen"
+
+msgctxt "admin menu"
+msgid "Events"
+msgstr "Veranstaltungen"
+
+# Additional CPT labels
+msgid "View Events"
+msgstr "Veranstaltungen anzeigen"
+
+msgid "Event Archives"
+msgstr "Veranstaltungsarchiv"
+
+msgid "Event Attributes"
+msgstr "Veranstaltungseigenschaften"
+
+msgid "Insert into event"
+msgstr "In Veranstaltung einfügen"
+
+msgid "Uploaded to this event"
+msgstr "Zu dieser Veranstaltung hochgeladen"
+
+msgid "Event Image"
+msgstr "Veranstaltungsbild"
+
+msgid "Set event image"
+msgstr "Veranstaltungsbild festlegen"
+
+msgid "Remove event image"
+msgstr "Veranstaltungsbild entfernen"
+
+msgid "Use as event image"
+msgstr "Als Veranstaltungsbild verwenden"
+
+msgid "No events found"
+msgstr "Keine Veranstaltungen gefunden"
+
+msgid "No events found in Trash"
+msgstr "Keine Veranstaltungen im Papierkorb gefunden"
+
+msgid "Category"
+msgstr "Kategorie"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Date"
+msgstr "Datum"
