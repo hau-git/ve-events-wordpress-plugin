@@ -25,47 +25,46 @@ A lightweight Events custom post type designed to stay close to WordPress core c
 
 | Prefix | Type | Description |
 |--------|------|-------------|
-| `_vev_*` | Stored | Database fields (underscore = private meta) |
-| `ve_*` | Virtual | Computed/formatted output (primary) |
-| `vev_*` | Legacy | Old virtual keys (backward compatibility) |
+| `_vev_*` | Stored | Database fields (underscore = private) |
+| `ve_*` | Virtual | Computed/formatted output |
 
 ---
 
 ### Stored Meta Keys (Database)
 
-These are stored in the database. All timestamps are UTC Unix timestamps (integers).
+These are stored in the database. All timestamps are UTC Unix timestamps.
 
 | Meta Key | Type | Description | Example |
 |----------|------|-------------|---------|
-| `_vev_start_utc` | int | Start timestamp (UTC Unix) | `1736935200` |
-| `_vev_end_utc` | int | End timestamp (UTC Unix) | `1736946000` |
+| `_vev_start_utc` | int | Start timestamp (UTC) | `1736935200` |
+| `_vev_end_utc` | int | End timestamp (UTC) | `1736946000` |
 | `_vev_all_day` | bool | All-day event flag | `1` or `0` |
-| `_vev_hide_end` | bool | Hide end time in display | `1` or `0` |
-| `_vev_speaker` | string | Speaker/Presenter name | `"Dr. Jane Smith"` |
-| `_vev_special_info` | string | Additional info text | `"Free parking"` |
-| `_vev_info_url` | string | External info URL | `"https://example.com"` |
+| `_vev_hide_end` | bool | Hide end time | `1` or `0` |
+| `_vev_speaker` | string | Speaker name | `"Dr. Jane Smith"` |
+| `_vev_special_info` | string | Additional info | `"Free parking"` |
+| `_vev_info_url` | string | External URL | `"https://example.com"` |
 
 ---
 
-### Virtual Meta Keys (Primary - `ve_*`)
+### Virtual Meta Keys (Computed Output)
 
-These are computed at runtime. Use these in JetEngine, Elementor, or PHP templates.
+These are computed at runtime. Use in JetEngine, Elementor, or PHP.
 
 #### Date Only
 
 | Meta Key | Description | Example Output |
 |----------|-------------|----------------|
-| `ve_start_date` | Start date (localized) | `"January 15, 2025"` |
-| `ve_end_date` | End date (localized) | `"January 17, 2025"` |
+| `ve_start_date` | Start date | `"January 15, 2025"` |
+| `ve_end_date` | End date | `"January 17, 2025"` |
 | `ve_date_range` | Smart date range | `"January 15 – 17, 2025"` |
 
 #### Time Only
 
 | Meta Key | Description | Example Output |
 |----------|-------------|----------------|
-| `ve_start_time` | Start time only | `"2:00 PM"` |
-| `ve_end_time` | End time only | `"5:00 PM"` |
-| `ve_time_range` | Time range or "All day" | `"2:00 PM – 5:00 PM"` |
+| `ve_start_time` | Start time | `"2:00 PM"` |
+| `ve_end_time` | End time | `"5:00 PM"` |
+| `ve_time_range` | Time range | `"2:00 PM – 5:00 PM"` or `"All day"` |
 
 #### Date + Time Combined
 
@@ -77,22 +76,9 @@ These are computed at runtime. Use these in JetEngine, Elementor, or PHP templat
 
 | Meta Key | Description | Example Output |
 |----------|-------------|----------------|
-| `ve_status` | Localized status text | `"Upcoming"` / `"Ongoing"` / `"Past"` |
-| `ve_is_upcoming` | Boolean check | `true` / `false` |
-| `ve_is_ongoing` | Boolean check | `true` / `false` |
-
----
-
-### Legacy Meta Keys (`vev_*`)
-
-These are kept for backward compatibility. New projects should use `ve_*` keys.
-
-| Meta Key | Alias For | Description |
-|----------|-----------|-------------|
-| `vev_status` | `ve_status` | Status label |
-| `vev_timerange` | `ve_datetime_formatted` | Full date/time range |
-| `vev_start_local` | - | Start date+time combined |
-| `vev_end_local` | - | End date+time combined |
+| `ve_status` | Status text | `"Upcoming"` / `"Ongoing"` / `"Past"` |
+| `ve_is_upcoming` | Boolean | `true` / `false` |
+| `ve_is_ongoing` | Boolean | `true` / `false` |
 
 ---
 
@@ -100,50 +86,44 @@ These are kept for backward compatibility. New projects should use `ve_*` keys.
 
 ### JetEngine Dynamic Field
 
-In JetEngine Listing Grid -> Dynamic Field widget:
-1. Source: **Post**
-2. Object Field: Select from **VE Events** group
-3. Choose a field like `ve_datetime_formatted`
+1. Add Dynamic Field widget
+2. Source: **Post**
+3. Object Field: Select from **VE Events** group (e.g., `ve_datetime_formatted`)
 
 ### Elementor Pro Dynamic Tags
 
-In any text widget:
-1. Click the Dynamic Tags icon
+1. Click Dynamic Tags icon in any text widget
 2. Select **VE Events: Event Field**
-3. Choose from available fields
+3. Choose field
 
 ### PHP Usage
 
 ```php
 // Date only
-$start_date = get_post_meta( $post_id, 've_start_date', true );
+$date = get_post_meta( $post_id, 've_start_date', true );
 // => "January 15, 2025"
 
 // Time only
-$start_time = get_post_meta( $post_id, 've_start_time', true );
+$time = get_post_meta( $post_id, 've_start_time', true );
 // => "2:00 PM"
 
-// Date + Time combined
-$datetime = get_post_meta( $post_id, 've_datetime_formatted', true );
-// => "January 15, 2025, 2:00 PM – 5:00 PM"
-
-// Date range (smart - same day vs multi-day)
-$date_range = get_post_meta( $post_id, 've_date_range', true );
+// Date range (smart)
+$range = get_post_meta( $post_id, 've_date_range', true );
 // => "January 15, 2025" (same day)
 // => "January 15 – 17, 2025" (multi-day)
 
 // Time range
-$time_range = get_post_meta( $post_id, 've_time_range', true );
+$times = get_post_meta( $post_id, 've_time_range', true );
 // => "2:00 PM – 5:00 PM"
-// => "All day" (if all-day event)
+// => "All day" (all-day event)
+
+// Full date + time
+$full = get_post_meta( $post_id, 've_datetime_formatted', true );
+// => "January 15, 2025, 2:00 PM – 5:00 PM"
 
 // Status
 $status = get_post_meta( $post_id, 've_status', true );
 // => "Upcoming", "Ongoing", or "Past"
-
-// Check status (boolean)
-$is_upcoming = get_post_meta( $post_id, 've_is_upcoming', true );
-// => true or false
 ```
 
 ### REST API
@@ -152,19 +132,14 @@ $is_upcoming = get_post_meta( $post_id, 've_is_upcoming', true );
 GET /wp-json/wp/v2/ve_event/123
 ```
 
-Response:
 ```json
 {
-  "meta": {
-    "_vev_start_utc": 1736935200,
-    "_vev_end_utc": 1736946000,
-    "ve_start_date": "January 15, 2025",
-    "ve_start_time": "2:00 PM",
-    "ve_date_range": "January 15, 2025",
-    "ve_time_range": "2:00 PM – 5:00 PM",
-    "ve_datetime_formatted": "January 15, 2025, 2:00 PM – 5:00 PM",
-    "ve_status": "Upcoming"
-  }
+  "ve_start_date": "January 15, 2025",
+  "ve_start_time": "2:00 PM",
+  "ve_date_range": "January 15, 2025",
+  "ve_time_range": "2:00 PM – 5:00 PM",
+  "ve_datetime_formatted": "January 15, 2025, 2:00 PM – 5:00 PM",
+  "ve_status": "Upcoming"
 }
 ```
 
@@ -172,37 +147,24 @@ Response:
 
 ## Query Variables
 
-| Variable | Values | Description |
-|----------|--------|-------------|
-| `vev_event_scope` | `upcoming`, `ongoing`, `past`, `archived`, `all` | Filter events by status |
-
 ```php
 $args = array(
     'post_type' => 've_event',
-    'vev_event_scope' => 'upcoming',
+    'vev_event_scope' => 'upcoming', // upcoming|ongoing|past|archived|all
 );
-$query = new WP_Query( $args );
 ```
 
 ---
 
 ## Schema.org
 
-On single event pages, the plugin outputs an `Event` JSON-LD block with:
-- Event name, description, image
-- Start/end dates (ISO 8601)
-- Location, Performer, Offers
+Outputs `Event` JSON-LD on single event pages with name, dates, location, performer.
 
 ---
 
 ## Settings
 
-Navigate to **Events -> Settings** for:
-- URL slugs customization
-- Gutenberg editor toggle
-- Display options (hide end date same day)
-- Visibility settings (grace period)
-- Schema.org options
+**Events -> Settings** for URL slugs, Gutenberg toggle, display options, visibility.
 
 ---
 
@@ -212,12 +174,10 @@ Navigate to **Events -> Settings** for:
 define( 'VEV_DEBUG', true );
 ```
 
-Log file: `wp-content/uploads/ve-events.log`
+Log: `wp-content/uploads/ve-events.log`
 
 ---
 
 ## Auto-Updates
 
-The plugin checks GitHub for new releases.
-
-**Repository**: https://github.com/hau-git/ve-events-wordpress-plugin
+Checks GitHub for releases: https://github.com/hau-git/ve-events-wordpress-plugin
