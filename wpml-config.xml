@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wpml-config>
+    <custom-types>
+        <custom-type translate="1">ve_event</custom-type>
+    </custom-types>
+    <taxonomies>
+        <taxonomy translate="1">ve_event_category</taxonomy>
+        <taxonomy translate="1">ve_event_location</taxonomy>
+        <taxonomy translate="1">ve_event_topic</taxonomy>
+        <taxonomy translate="1">ve_event_series</taxonomy>
+    </taxonomies>
+    <custom-fields>
+        <custom-field action="copy">_vev_start_utc</custom-field>
+        <custom-field action="copy">_vev_end_utc</custom-field>
+        <custom-field action="copy">_vev_all_day</custom-field>
+        <custom-field action="copy">_vev_hide_end</custom-field>
+        <custom-field action="translate">_vev_speaker</custom-field>
+        <custom-field action="translate">_vev_special_info</custom-field>
+        <custom-field action="copy">_vev_info_url</custom-field>
+    </custom-fields>
+    <admin-texts>
+        <key name="vev_settings">
+            <key name="disable_gutenberg" />
+            <key name="hide_end_same_day" />
+            <key name="grace_period" />
+            <key name="hide_archived_search" />
+            <key name="include_series_schema" />
+        </key>
+    </admin-texts>
+</wpml-config>
