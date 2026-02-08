@@ -130,7 +130,7 @@ final class VEV_JetEngine {
                         return $url;
                 }
 
-                $info_url = get_post_meta( $post_id, '_vev_info_url', true );
+                $info_url = get_post_meta( $post_id, VEV_Events::META_INFO_URL, true );
                 return $info_url ?: $url;
         }
 }
