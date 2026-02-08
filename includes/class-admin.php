@@ -277,13 +277,16 @@ final class VEV_Admin {
                                                 </tr>
                                         </thead>
                                         <tbody>
-                                                <tr><td><code>vev_status</code></td><td><?php esc_html_e( 'upcoming / ongoing / past / archived', VEV_Events::TEXTDOMAIN ); ?></td></tr>
-                                                <tr><td><code>vev_status_label</code></td><td><?php esc_html_e( 'Translated status label', VEV_Events::TEXTDOMAIN ); ?></td></tr>
-                                                <tr><td><code>vev_is_live</code></td><td><?php esc_html_e( '1 if currently running', VEV_Events::TEXTDOMAIN ); ?></td></tr>
-                                                <tr><td><code>vev_is_past</code></td><td><?php esc_html_e( '1 if past', VEV_Events::TEXTDOMAIN ); ?></td></tr>
-                                                <tr><td><code>vev_timerange</code></td><td><?php esc_html_e( 'Fully formatted date/time range', VEV_Events::TEXTDOMAIN ); ?></td></tr>
-                                                <tr><td><code>vev_start_local</code></td><td><?php esc_html_e( 'Start date/time (site timezone)', VEV_Events::TEXTDOMAIN ); ?></td></tr>
-                                                <tr><td><code>vev_end_local</code></td><td><?php esc_html_e( 'End date/time (site timezone)', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_start_date</code></td><td><?php esc_html_e( 'Start date (formatted)', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_start_time</code></td><td><?php esc_html_e( 'Start time (formatted)', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_end_date</code></td><td><?php esc_html_e( 'End date (formatted)', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_end_time</code></td><td><?php esc_html_e( 'End time (formatted)', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_date_range</code></td><td><?php esc_html_e( 'Date range (smart)', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_time_range</code></td><td><?php esc_html_e( 'Time range or "All day"', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_datetime_formatted</code></td><td><?php esc_html_e( 'Full date & time', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_status</code></td><td><?php esc_html_e( 'Status: Upcoming / Ongoing / Past', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_is_upcoming</code></td><td><?php esc_html_e( 'Boolean: is upcoming', VEV_Events::TEXTDOMAIN ); ?></td></tr>
+                                                <tr><td><code>ve_is_ongoing</code></td><td><?php esc_html_e( 'Boolean: is ongoing', VEV_Events::TEXTDOMAIN ); ?></td></tr>
                                         </tbody>
                                 </table>
 
@@ -501,11 +504,10 @@ JS;
                         <p style="margin:0;">
                                 <?php echo esc_html__( 'JetEngine/Elementor: Use these meta keys in listings (no shortcodes required):', VEV_Events::TEXTDOMAIN ); ?>
                                 <br />
-                                <code><?php echo esc_html( VEV_Events::META_START_UTC ); ?></code>,
-                                <code><?php echo esc_html( VEV_Events::META_END_UTC ); ?></code>,
-                                <code><?php echo esc_html( VEV_Events::VIRTUAL_TIMERANGE ); ?></code>,
-                                <code><?php echo esc_html( VEV_Events::VIRTUAL_STATUS_LABEL ); ?></code>,
-                                <code><?php echo esc_html( VEV_Events::VIRTUAL_IS_LIVE ); ?></code>
+                                <code><?php echo esc_html( VEV_Events::VIRTUAL_DATETIME ); ?></code>,
+                                <code><?php echo esc_html( VEV_Events::VIRTUAL_DATE_RANGE ); ?></code>,
+                                <code><?php echo esc_html( VEV_Events::VIRTUAL_TIME_RANGE ); ?></code>,
+                                <code><?php echo esc_html( VEV_Events::VIRTUAL_STATUS ); ?></code>
                         </p>
                 </div>
                 <?php
@@ -699,11 +701,12 @@ JS;
                         return $post_states;
                 }
 
-                $status = (string) get_post_meta( $post->ID, VEV_Events::VIRTUAL_STATUS, true );
-                if ( 'ongoing' === $status ) {
-                        $post_states['vev_ongoing'] = __( 'Ongoing', VEV_Events::TEXTDOMAIN );
-                } elseif ( 'past' === $status || 'archived' === $status ) {
-                        $post_states['vev_past'] = __( 'Past', VEV_Events::TEXTDOMAIN );
+                $data = VEV_Frontend::get_event_data( $post->ID );
+                $raw_status = VEV_Frontend::get_event_status( $data['start_utc'], $data['end_utc'] );
+                if ( 'ongoing' === $raw_status ) {
+                        $post_states['ve_ongoing'] = __( 'Ongoing', VEV_Events::TEXTDOMAIN );
+                } elseif ( 'past' === $raw_status || 'archived' === $raw_status ) {
+                        $post_states['ve_past'] = __( 'Past', VEV_Events::TEXTDOMAIN );
                 }
 
                 return $post_states;
