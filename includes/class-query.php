@@ -42,6 +42,48 @@ final class VEV_Query {
 
                 if ( is_admin() && $query->is_main_query() ) {
                         if ( VEV_Events::POST_TYPE === $post_type && 'edit.php' === $GLOBALS['pagenow'] ) {
+                                $vev_view    = isset( $_GET['vev_view'] ) ? sanitize_key( $_GET['vev_view'] ) : '';
+                                $post_status = isset( $_GET['post_status'] ) ? sanitize_key( $_GET['post_status'] ) : '';
+
+                                if ( '' === $vev_view && '' === $post_status ) {
+                                        $vev_view = 'upcoming';
+                                }
+
+                                if ( '' !== $vev_view && '' === $post_status ) {
+                                        $now        = time();
+                                        $meta_query = (array) $query->get( 'meta_query' );
+                                        if ( empty( $meta_query ) ) {
+                                                $meta_query = array();
+                                        }
+
+                                        if ( 'upcoming' === $vev_view ) {
+                                                $meta_query[] = array(
+                                                        'relation' => 'OR',
+                                                        array(
+                                                                'key'     => VEV_Events::META_END_UTC,
+                                                                'value'   => $now,
+                                                                'compare' => '>=',
+                                                                'type'    => 'NUMERIC',
+                                                        ),
+                                                        array(
+                                                                'key'     => VEV_Events::META_END_UTC,
+                                                                'compare' => 'NOT EXISTS',
+                                                        ),
+                                                );
+                                        } elseif ( 'past' === $vev_view ) {
+                                                $meta_query[] = array(
+                                                        'key'     => VEV_Events::META_END_UTC,
+                                                        'value'   => $now,
+                                                        'compare' => '<',
+                                                        'type'    => 'NUMERIC',
+                                                );
+                                        }
+
+                                        if ( ! empty( $meta_query ) ) {
+                                                $query->set( 'meta_query', $meta_query );
+                                        }
+                                }
+
                                 $orderby = (string) $query->get( 'orderby' );
                                 $order   = strtoupper( (string) $query->get( 'order' ) );
                                 if ( 'DESC' !== $order ) {
