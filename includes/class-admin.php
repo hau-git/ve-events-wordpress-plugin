@@ -16,6 +16,8 @@ final class VEV_Admin {
 
                 add_filter( 'display_post_states', array( __CLASS__, 'display_post_states' ), 10, 2 );
 
+                add_filter( 'views_edit-' . VEV_Events::POST_TYPE, array( __CLASS__, 'admin_views' ) );
+
                 add_action( 'admin_menu', array( __CLASS__, 'add_settings_page' ) );
                 add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
 
@@ -694,6 +696,99 @@ JS;
                                 }
                                 break;
                 }
+        }
+
+        public static function admin_views( array $views ): array {
+                $base_url = admin_url( 'edit.php?post_type=' . VEV_Events::POST_TYPE );
+                $now      = time();
+
+                $current_view = isset( $_GET['vev_view'] ) ? sanitize_key( $_GET['vev_view'] ) : '';
+                $post_status  = isset( $_GET['post_status'] ) ? sanitize_key( $_GET['post_status'] ) : '';
+
+                if ( '' === $current_view && '' === $post_status ) {
+                        $current_view = 'upcoming';
+                }
+
+                global $wpdb;
+                $pt = VEV_Events::POST_TYPE;
+
+                $count_upcoming = (int) $wpdb->get_var( $wpdb->prepare(
+                        "SELECT COUNT( DISTINCT p.ID ) FROM {$wpdb->posts} p
+                         LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+                         WHERE p.post_type = %s AND p.post_status = 'publish'
+                         AND ( CAST( pm.meta_value AS SIGNED ) >= %d OR pm.meta_value IS NULL )",
+                        VEV_Events::META_END_UTC,
+                        $pt,
+                        $now
+                ) );
+
+                $count_past = (int) $wpdb->get_var( $wpdb->prepare(
+                        "SELECT COUNT( DISTINCT p.ID ) FROM {$wpdb->posts} p
+                         INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+                         WHERE p.post_type = %s AND p.post_status = 'publish'
+                         AND CAST( pm.meta_value AS SIGNED ) < %d",
+                        VEV_Events::META_END_UTC,
+                        $pt,
+                        $now
+                ) );
+
+                $counts      = wp_count_posts( $pt );
+                $count_all   = (int) ( $counts->publish ?? 0 );
+                $count_draft = (int) ( $counts->draft ?? 0 );
+                $count_trash = (int) ( $counts->trash ?? 0 );
+
+                $new_views = array();
+
+                $class = ( 'upcoming' === $current_view ) ? 'current' : '';
+                $new_views['upcoming'] = sprintf(
+                        '<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
+                        esc_url( add_query_arg( 'vev_view', 'upcoming', $base_url ) ),
+                        $class,
+                        __( 'Upcoming', VEV_Events::TEXTDOMAIN ),
+                        number_format_i18n( $count_upcoming )
+                );
+
+                $class = ( 'past' === $current_view ) ? 'current' : '';
+                $new_views['past'] = sprintf(
+                        '<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
+                        esc_url( add_query_arg( 'vev_view', 'past', $base_url ) ),
+                        $class,
+                        __( 'Past', VEV_Events::TEXTDOMAIN ),
+                        number_format_i18n( $count_past )
+                );
+
+                $class = ( 'all' === $current_view ) ? 'current' : '';
+                $new_views['all'] = sprintf(
+                        '<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
+                        esc_url( add_query_arg( 'vev_view', 'all', $base_url ) ),
+                        $class,
+                        __( 'All', VEV_Events::TEXTDOMAIN ),
+                        number_format_i18n( $count_all )
+                );
+
+                if ( $count_draft > 0 ) {
+                        $class = ( 'draft' === $post_status ) ? 'current' : '';
+                        $new_views['draft'] = sprintf(
+                                '<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
+                                esc_url( add_query_arg( 'post_status', 'draft', $base_url ) ),
+                                $class,
+                                __( 'Drafts', VEV_Events::TEXTDOMAIN ),
+                                number_format_i18n( $count_draft )
+                        );
+                }
+
+                if ( $count_trash > 0 ) {
+                        $class = ( 'trash' === $post_status ) ? 'current' : '';
+                        $new_views['trash'] = sprintf(
+                                '<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
+                                esc_url( add_query_arg( 'post_status', 'trash', $base_url ) ),
+                                $class,
+                                __( 'Trash', VEV_Events::TEXTDOMAIN ),
+                                number_format_i18n( $count_trash )
+                        );
+                }
+
+                return $new_views;
         }
 
         public static function display_post_states( array $post_states, \WP_Post $post ): array {
