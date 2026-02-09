@@ -494,13 +494,13 @@ msgid "Date/Time"
 msgstr "Datum/Zeit"
 
 msgid "Upcoming"
-msgstr "Bevorstehend"
+msgstr "Kommende"
 
 msgid "Live"
 msgstr "Live"
 
 msgid "Past"
-msgstr "Vergangen"
+msgstr "Vergangene"
 
 msgid "Archived"
 msgstr "Archiviert"
@@ -692,3 +692,12 @@ msgstr "Event-Permalink"
 
 msgid "Fallback to Permalink"
 msgstr "Fallback auf Permalink"
+
+msgid "All"
+msgstr "Alle"
+
+msgid "Drafts"
+msgstr "Entwürfe"
+
+msgid "Trash"
+msgstr "Papierkorb"
