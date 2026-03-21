@@ -31,6 +31,8 @@ final class VEV_Admin {
 
                 add_filter( 'use_block_editor_for_post_type', array( __CLASS__, 'maybe_disable_gutenberg' ), 10, 2 );
 
+                add_action( 'wp_ajax_vev_resync_computed_meta', array( __CLASS__, 'ajax_resync_computed_meta' ) );
+
                 self::init_taxonomy_forms();
                 self::init_series_suggestions();
         }
@@ -225,6 +227,28 @@ final class VEV_Admin {
                                                 );
                                         ?></p>
                                         <a href="<?php echo esc_url( $import_url ); ?>" class="button"><?php esc_html_e( 'Manage Import Feeds', VEV_Events::TEXTDOMAIN ); ?></a>
+
+                                        <h2><?php esc_html_e( 'Tools', VEV_Events::TEXTDOMAIN ); ?></h2>
+                                        <p class="description"><?php esc_html_e( 'Re-computes _vev_start_date, _vev_start_month and _vev_time_slot for all existing events. Run this once after updating the plugin.', VEV_Events::TEXTDOMAIN ); ?></p>
+                                        <button type="button" class="button" id="vev-resync-meta"><?php esc_html_e( 'Sync computed fields (JetEngine filters)', VEV_Events::TEXTDOMAIN ); ?></button>
+                                        <span id="vev-resync-result" style="margin-left:10px;color:#2271b1;"></span>
+                                        <script>
+                                        document.getElementById('vev-resync-meta').addEventListener('click', function(e) {
+                                                e.preventDefault();
+                                                this.disabled = true;
+                                                document.getElementById('vev-resync-result').textContent = '<?php esc_html_e( 'Running…', VEV_Events::TEXTDOMAIN ); ?>';
+                                                var body = new URLSearchParams({
+                                                        action: 'vev_resync_computed_meta',
+                                                        _ajax_nonce: '<?php echo esc_js( wp_create_nonce( 'vev_resync_computed_meta' ) ); ?>'
+                                                });
+                                                fetch(ajaxurl, { method: 'POST', body: body })
+                                                        .then(function(r) { return r.json(); })
+                                                        .then(function(d) {
+                                                                document.getElementById('vev-resync-result').textContent =
+                                                                        d.success ? d.data.count + ' <?php esc_html_e( 'events synced.', VEV_Events::TEXTDOMAIN ); ?>' : '<?php esc_html_e( 'Error.', VEV_Events::TEXTDOMAIN ); ?>';
+                                                        });
+                                        });
+                                        </script>
                                 </div>
 
                                 <!-- TAB: Display -->
@@ -1467,6 +1491,23 @@ JS;
                 })(jQuery);
                 </script>
                 <?php
+        }
+
+        public static function ajax_resync_computed_meta(): void {
+                check_ajax_referer( 'vev_resync_computed_meta' );
+                if ( ! current_user_can( 'manage_options' ) ) {
+                        wp_die( -1 );
+                }
+                $ids = get_posts( array(
+                        'post_type'      => VEV_Events::POST_TYPE,
+                        'post_status'    => 'any',
+                        'posts_per_page' => -1,
+                        'fields'         => 'ids',
+                ) );
+                foreach ( $ids as $id ) {
+                        VEV_Post_Type::sync_computed_date_meta( 0, (int) $id, VEV_Events::META_START_UTC );
+                }
+                wp_send_json_success( array( 'count' => count( $ids ) ) );
         }
 
         public static function handle_series_suggestion_ajax(): void {

@@ -50,6 +50,9 @@ final class VEV_Events {
         // Computed/stored date meta (auto-synced from META_START_UTC)
         public const META_START_HOUR    = '_vev_start_hour';     // 0–23, local timezone
         public const META_START_WEEKDAY = '_vev_weekday';        // 1=Mon … 7=Sun (ISO)
+        public const META_START_DATE    = '_vev_start_date';     // Y-m-d, local timezone (JetEngine date range filter)
+        public const META_START_MONTH   = '_vev_start_month';    // 1–12, local timezone (JetEngine month filter)
+        public const META_TIME_SLOT     = '_vev_time_slot';      // morning|afternoon|evening|night (JetEngine time-of-day filter)
 
         // Virtual meta keys (ve_ prefix) - computed at runtime
         public const VIRTUAL_START_DATE    = 've_start_date';

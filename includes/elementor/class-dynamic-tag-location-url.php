@@ -14,7 +14,10 @@ class VEV_Elementor_Dynamic_Tag_Location_URL extends VEV_Elementor_Dynamic_Tag_B
 	}
 
 	public function get_categories(): array {
-		return [ \Elementor\Modules\DynamicTags\Module::URL_CATEGORY ];
+		return [
+			\Elementor\Modules\DynamicTags\Module::URL_CATEGORY,
+			\Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY,
+		];
 	}
 
 	protected function register_controls(): void {}

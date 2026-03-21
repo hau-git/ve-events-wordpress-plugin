@@ -10,11 +10,14 @@ class VEV_Elementor_Dynamic_Tag_Event_URL extends VEV_Elementor_Dynamic_Tag_Base
         }
 
         public function get_title(): string {
-                return __( 'Event URL', 've-events' );
+                return __( 'Event URL / Permalink', 've-events' );
         }
 
         public function get_categories(): array {
-                return array( \Elementor\Modules\DynamicTags\Module::URL_CATEGORY );
+                return array(
+                        \Elementor\Modules\DynamicTags\Module::URL_CATEGORY,
+                        \Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY,
+                );
         }
 
         protected function register_controls(): void {

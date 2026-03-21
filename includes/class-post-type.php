@@ -212,8 +212,12 @@ final class VEV_Post_Type {
 
                 // Computed date meta — internal, not exposed via REST
                 $int_args = array( 'type' => 'integer', 'single' => true, 'show_in_rest' => false );
+                $str_args = array( 'type' => 'string',  'single' => true, 'show_in_rest' => false );
                 register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_START_HOUR,    $int_args );
                 register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_START_WEEKDAY, $int_args );
+                register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_START_MONTH,   $int_args );
+                register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_START_DATE,    $str_args );
+                register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_TIME_SLOT,     $str_args );
         }
 
         /**
@@ -231,11 +235,28 @@ final class VEV_Post_Type {
                 if ( ! $start_utc ) {
                         delete_post_meta( $post_id, VEV_Events::META_START_HOUR );
                         delete_post_meta( $post_id, VEV_Events::META_START_WEEKDAY );
+                        delete_post_meta( $post_id, VEV_Events::META_START_DATE );
+                        delete_post_meta( $post_id, VEV_Events::META_START_MONTH );
+                        delete_post_meta( $post_id, VEV_Events::META_TIME_SLOT );
                         return;
                 }
-                $dt = ( new \DateTimeImmutable( '@' . $start_utc ) )->setTimezone( wp_timezone() );
-                update_post_meta( $post_id, VEV_Events::META_START_HOUR,    (int) $dt->format( 'G' ) ); // 0–23
+                $dt   = ( new \DateTimeImmutable( '@' . $start_utc ) )->setTimezone( wp_timezone() );
+                $hour = (int) $dt->format( 'G' );
+                update_post_meta( $post_id, VEV_Events::META_START_HOUR,    $hour );
                 update_post_meta( $post_id, VEV_Events::META_START_WEEKDAY, (int) $dt->format( 'N' ) ); // 1–7
+                update_post_meta( $post_id, VEV_Events::META_START_DATE,    $dt->format( 'Y-m-d' ) );
+                update_post_meta( $post_id, VEV_Events::META_START_MONTH,   (int) $dt->format( 'n' ) ); // 1–12
+
+                if ( $hour >= 8 && $hour < 12 ) {
+                        $slot = 'morning';
+                } elseif ( $hour >= 12 && $hour < 17 ) {
+                        $slot = 'afternoon';
+                } elseif ( $hour >= 17 && $hour < 21 ) {
+                        $slot = 'evening';
+                } else {
+                        $slot = 'night'; // 21–23 und 0–7
+                }
+                update_post_meta( $post_id, VEV_Events::META_TIME_SLOT, $slot );
         }
 
         public static function activate(): void {

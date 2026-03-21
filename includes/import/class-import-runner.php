@@ -23,9 +23,10 @@ class VEV_Import_Runner {
 	const META_SERIES_UID    = '_vev_import_series_uid';
 
 	private array  $config;
-	private array  $counts  = array( 'created' => 0, 'updated' => 0, 'deleted' => 0, 'skipped' => 0 );
-	private array  $errors  = array();
+	private array  $counts        = array( 'created' => 0, 'updated' => 0, 'deleted' => 0, 'skipped' => 0 );
+	private array  $errors        = array();
 	private int    $feed_id;
+	private array  $processed_uids = array(); // UIDs actually written this run
 
 	public function __construct( int $feed_id ) {
 		$this->feed_id = $feed_id;
@@ -85,7 +86,7 @@ class VEV_Import_Runner {
 
 		// 4. Handle removed events (if configured)
 		if ( $this->config['delete_removed'] ) {
-			$this->delete_removed( array_keys( $groups ), $events );
+			$this->delete_removed();
 		}
 
 		$status = empty( $this->errors ) ? 'success' : ( $this->counts['created'] + $this->counts['updated'] > 0 ? 'partial' : 'error' );
@@ -101,6 +102,9 @@ class VEV_Import_Runner {
 		$import_uid = $is_series
 			? $base_uid . '__' . ( $event->dtstart ?? md5( serialize( $event ) ) )
 			: $base_uid;
+
+		// Track every UID processed this run so delete_removed() uses the exact same strings.
+		$this->processed_uids[] = $import_uid;
 
 		// Map fields
 		try {
@@ -228,26 +232,11 @@ class VEV_Import_Runner {
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Trashes events that are no longer in the source feed.
-	 *
-	 * @param string[]           $source_base_uids All UIDs from current feed fetch.
-	 * @param \VEV_Import\Event[] $events           All parsed events.
+	 * Trashes events from this feed that were not processed in the current run.
+	 * Uses $this->processed_uids which contains the exact UID strings written
+	 * during this run — no recomputation needed.
 	 */
-	private function delete_removed( array $source_base_uids, array $events ): void {
-		// Build the full set of import UIDs from this run
-		$source_import_uids = array();
-		$uid_groups         = $this->group_by_uid( $events );
-
-		foreach ( $uid_groups as $base_uid => $group ) {
-			$is_series = count( $group ) > 1;
-			foreach ( $group as $ev ) {
-				$source_import_uids[] = $is_series
-					? $base_uid . '__' . ( $ev->dtstart ?? '' )
-					: $base_uid;
-			}
-		}
-
-		// Query all posts from this feed
+	private function delete_removed(): void {
 		$existing_posts = get_posts( array(
 			'post_type'      => VEV_Events::POST_TYPE,
 			'post_status'    => array( 'publish', 'draft', 'future' ),
@@ -263,7 +252,7 @@ class VEV_Import_Runner {
 
 		foreach ( $existing_posts as $post_id ) {
 			$uid = get_post_meta( $post_id, self::META_UID, true );
-			if ( $uid && ! in_array( $uid, $source_import_uids, true ) ) {
+			if ( $uid && ! in_array( $uid, $this->processed_uids, true ) ) {
 				wp_trash_post( $post_id );
 				$this->counts['deleted']++;
 			}
