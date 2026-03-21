@@ -27,7 +27,7 @@ abstract class VEV_Elementor_Dynamic_Tag_Base extends \Elementor\Core\DynamicTag
                 }
 
                 if ( \Elementor\Plugin::$instance->editor->is_edit_mode() ) {
-                        $preview_id = (int) ( $_GET['preview_id'] ?? 0 );
+                        $preview_id = absint( $_GET['preview_id'] ?? 0 );
                         if ( $preview_id && get_post_type( $preview_id ) === VEV_Events::POST_TYPE ) {
                                 return $preview_id;
                         }

@@ -21,6 +21,11 @@ final class VEV_Elementor {
 		require_once __DIR__ . '/elementor/class-dynamic-tag-base.php';
 		require_once __DIR__ . '/elementor/class-dynamic-tag-event-field.php';
 		require_once __DIR__ . '/elementor/class-dynamic-tag-event-url.php';
+		require_once __DIR__ . '/elementor/class-dynamic-tag-location.php';
+		require_once __DIR__ . '/elementor/class-dynamic-tag-location-url.php';
+		require_once __DIR__ . '/elementor/class-dynamic-tag-category.php';
+		require_once __DIR__ . '/elementor/class-dynamic-tag-series.php';
+		require_once __DIR__ . '/elementor/class-dynamic-tag-topic.php';
 
 		$dynamic_tags_manager->register_group(
 			've-events',
@@ -31,5 +36,10 @@ final class VEV_Elementor {
 
 		$dynamic_tags_manager->register( new VEV_Elementor_Dynamic_Tag_Event_Field() );
 		$dynamic_tags_manager->register( new VEV_Elementor_Dynamic_Tag_Event_URL() );
+		$dynamic_tags_manager->register( new VEV_Elementor_Dynamic_Tag_Location() );
+		$dynamic_tags_manager->register( new VEV_Elementor_Dynamic_Tag_Location_URL() );
+		$dynamic_tags_manager->register( new VEV_Elementor_Dynamic_Tag_Category() );
+		$dynamic_tags_manager->register( new VEV_Elementor_Dynamic_Tag_Series() );
+		$dynamic_tags_manager->register( new VEV_Elementor_Dynamic_Tag_Topic() );
 	}
 }

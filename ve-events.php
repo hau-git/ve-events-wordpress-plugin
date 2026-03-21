@@ -2,7 +2,7 @@
 /**
  * Plugin Name: VE Events
  * Description: Adds a lightweight Events post type with WordPress-native admin UI, Schema.org Event markup, and first-class support for Elementor/JetEngine listings.
- * Version: 1.5.0
+ * Version: 1.9.0
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: Marc Probst
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class VEV_Events {
 
-        public const VERSION = '1.5.0';
+        public const VERSION = '1.9.0';
 
         public const TEXTDOMAIN = 've-events';
         public const POST_TYPE  = 've_event';
@@ -33,13 +33,23 @@ final class VEV_Events {
         public const TAX_TOPIC    = 've_event_topic';
         public const TAX_SERIES   = 've_event_series';
 
-        public const META_START_UTC   = '_vev_start_utc';
-        public const META_END_UTC     = '_vev_end_utc';
-        public const META_ALL_DAY     = '_vev_all_day';
-        public const META_HIDE_END    = '_vev_hide_end';
-        public const META_SPEAKER     = '_vev_speaker';
-        public const META_SPECIAL     = '_vev_special_info';
-        public const META_INFO_URL    = '_vev_info_url';
+        // Term meta keys
+        public const TERM_META_LOCATION_ADDRESS  = 've_location_address';
+        public const TERM_META_LOCATION_MAPS_URL = 've_location_maps_url';
+        public const TERM_META_CATEGORY_COLOR    = 've_category_color';
+
+        public const META_START_UTC     = '_vev_start_utc';
+        public const META_END_UTC       = '_vev_end_utc';
+        public const META_ALL_DAY       = '_vev_all_day';
+        public const META_HIDE_END      = '_vev_hide_end';
+        public const META_SPEAKER       = '_vev_speaker';
+        public const META_SPECIAL       = '_vev_special_info';
+        public const META_INFO_URL      = '_vev_info_url';
+        public const META_EVENT_STATUS  = '_vev_event_status';   // cancelled|postponed|rescheduled|movedOnline|''
+
+        // Computed/stored date meta (auto-synced from META_START_UTC)
+        public const META_START_HOUR    = '_vev_start_hour';     // 0–23, local timezone
+        public const META_START_WEEKDAY = '_vev_weekday';        // 1=Mon … 7=Sun (ISO)
 
         // Virtual meta keys (ve_ prefix) - computed at runtime
         public const VIRTUAL_START_DATE    = 've_start_date';
@@ -52,13 +62,23 @@ final class VEV_Events {
         public const VIRTUAL_STATUS        = 've_status';
         public const VIRTUAL_IS_UPCOMING   = 've_is_upcoming';
         public const VIRTUAL_IS_ONGOING    = 've_is_ongoing';
+        public const VIRTUAL_STATUS_LABEL  = 've_event_status_label';
+        public const VIRTUAL_STATUS_COLOR  = 've_event_status_color';
+        public const VIRTUAL_IS_CANCELLED  = 've_is_cancelled';
 
         public const QV_SCOPE            = 'vev_event_scope';
         public const QV_INCLUDE_ARCHIVED = 'vev_include_archived';
+        public const QV_DATE_FROM        = 'vev_date_from';   // Y-m-d or UTC timestamp
+        public const QV_DATE_TO          = 'vev_date_to';     // Y-m-d or UTC timestamp
+        public const QV_MONTH            = 'vev_month';       // YYYY-MM
+        public const QV_TIME_FROM        = 'vev_time_from';   // 0–23
+        public const QV_TIME_TO          = 'vev_time_to';     // 0–23
+        public const QV_WEEKDAY          = 'vev_weekday';     // 1–7 or comma-separated "1,3,5"
 
         public const OPTION_SETTINGS = 'vev_settings';
 
-        private static bool $loaded = false;
+        private static bool  $loaded   = false;
+        private static ?array $settings = null;
 
         public static function init(): void {
                 if ( self::$loaded ) {
@@ -86,6 +106,11 @@ final class VEV_Events {
                 require_once $includes_dir . 'class-fields.php';
                 require_once $includes_dir . 'class-jetengine.php';
                 require_once $includes_dir . 'class-elementor.php';
+
+                // Import module (admin + cron only)
+                if ( is_admin() || defined( 'DOING_CRON' ) ) {
+                        require_once $includes_dir . 'import/class-import-manager.php';
+                }
         }
 
         public static function init_components(): void {
@@ -99,20 +124,36 @@ final class VEV_Events {
                 if ( is_admin() ) {
                         VEV_Admin::init();
                 }
+
+                // Import module
+                if ( is_admin() || defined( 'DOING_CRON' ) ) {
+                        VEV_Import_Manager::init();
+                }
         }
 
         public static function get_settings(): array {
+                if ( null !== self::$settings ) {
+                        return self::$settings;
+                }
                 $defaults = array(
-                        'disable_gutenberg'     => false,
-                        'hide_end_same_day'     => true,
-                        'grace_period'          => 1,
-                        'hide_archived_search'  => true,
-                        'include_series_schema' => true,
-                        'slug_single'           => 'event',
-                        'slug_archive'          => 'events',
+                        'disable_gutenberg'         => false,
+                        'hide_end_same_day'         => true,
+                        'grace_period'              => 1,
+                        'hide_archived_search'      => true,
+                        'include_series_schema'     => true,
+                        'slug_single'               => 'event',
+                        'slug_archive'              => 'events',
+                        'series_suggestions'        => false,
+                        'output_category_colors'    => true,
+                        'og_tags'                   => 'auto',  // 'auto'|'always'|'disabled'
                 );
-                $settings = get_option( self::OPTION_SETTINGS, array() );
-                return wp_parse_args( $settings, $defaults );
+                self::$settings = wp_parse_args( get_option( self::OPTION_SETTINGS, array() ), $defaults );
+                return self::$settings;
+        }
+
+        /** Clears the settings cache (called after option is saved). */
+        public static function flush_settings_cache(): void {
+                self::$settings = null;
         }
 
         public static function load_textdomain(): void {
@@ -125,10 +166,19 @@ final class VEV_Events {
 
         public static function activate(): void {
                 VEV_Post_Type::activate();
+                // Import module needs admin loaded for DB table creation
+                if ( ! class_exists( 'VEV_Import_Manager' ) ) {
+                        require_once plugin_dir_path( __FILE__ ) . 'includes/import/class-import-manager.php';
+                }
+                VEV_Import_Manager::on_activate();
         }
 
         public static function deactivate(): void {
                 VEV_Post_Type::deactivate();
+                if ( ! class_exists( 'VEV_Import_Manager' ) ) {
+                        require_once plugin_dir_path( __FILE__ ) . 'includes/import/class-import-manager.php';
+                }
+                VEV_Import_Manager::on_deactivate();
         }
 
         public static function log( string $message ): void {

@@ -17,6 +17,12 @@ final class VEV_Query {
         public static function register_query_vars( array $vars ): array {
                 $vars[] = VEV_Events::QV_SCOPE;
                 $vars[] = VEV_Events::QV_INCLUDE_ARCHIVED;
+                $vars[] = VEV_Events::QV_DATE_FROM;
+                $vars[] = VEV_Events::QV_DATE_TO;
+                $vars[] = VEV_Events::QV_MONTH;
+                $vars[] = VEV_Events::QV_TIME_FROM;
+                $vars[] = VEV_Events::QV_TIME_TO;
+                $vars[] = VEV_Events::QV_WEEKDAY;
                 return $vars;
         }
 
@@ -105,6 +111,14 @@ final class VEV_Query {
                         $include_archived = (int) $query->get( VEV_Events::QV_INCLUDE_ARCHIVED );
                         $scope            = (string) $query->get( VEV_Events::QV_SCOPE );
 
+                        // Read date range vars early so we can decide whether to skip the cutoff.
+                        $date_from = (string) $query->get( VEV_Events::QV_DATE_FROM );
+                        $date_to   = (string) $query->get( VEV_Events::QV_DATE_TO );
+                        $month_qv  = (string) $query->get( VEV_Events::QV_MONTH );
+
+                        $has_explicit_date_range = $date_from || $date_to
+                                || ( $month_qv && preg_match( '/^\d{4}-\d{2}$/', $month_qv ) );
+
                         $now = time();
                         $settings = VEV_Events::get_settings();
                         $grace_period = absint( $settings['grace_period'] ?? 1 );
@@ -116,7 +130,9 @@ final class VEV_Query {
                                 $meta_query = array();
                         }
 
-                        if ( 1 !== $include_archived ) {
+                        // Skip the archived cutoff when an explicit date range is requested —
+                        // otherwise querying past months would always return zero results.
+                        if ( 1 !== $include_archived && ! $has_explicit_date_range ) {
                                 $meta_query[] = array(
                                         'key'     => VEV_Events::META_END_UTC,
                                         'value'   => $cutoff,
@@ -181,6 +197,49 @@ final class VEV_Query {
                                 }
                         }
 
+                        // --- Date range / Month filter ---
+                        if ( $month_qv && preg_match( '/^\d{4}-\d{2}$/', $month_qv ) && ! $date_from && ! $date_to ) {
+                                $tz      = wp_timezone();
+                                $m_start = new \DateTimeImmutable( $month_qv . '-01 00:00:00', $tz );
+                                $m_end   = $m_start->modify( 'last day of this month 23:59:59' );
+                                $date_from = (string) $m_start->getTimestamp();
+                                $date_to   = (string) $m_end->getTimestamp();
+                        }
+                        if ( $date_from ) {
+                                $ts = is_numeric( $date_from )
+                                        ? (int) $date_from
+                                        : ( new \DateTimeImmutable( $date_from . ' 00:00:00', wp_timezone() ) )->getTimestamp();
+                                $meta_query[] = array( 'key' => VEV_Events::META_START_UTC, 'value' => $ts, 'compare' => '>=', 'type' => 'NUMERIC' );
+                        }
+                        if ( $date_to ) {
+                                $ts = is_numeric( $date_to )
+                                        ? (int) $date_to
+                                        : ( new \DateTimeImmutable( $date_to . ' 23:59:59', wp_timezone() ) )->getTimestamp();
+                                $meta_query[] = array( 'key' => VEV_Events::META_START_UTC, 'value' => $ts, 'compare' => '<=', 'type' => 'NUMERIC' );
+                        }
+
+                        // --- Time of day filter ---
+                        $time_from = $query->get( VEV_Events::QV_TIME_FROM );
+                        $time_to   = $query->get( VEV_Events::QV_TIME_TO );
+                        if ( '' !== $time_from && false !== $time_from && '' !== $time_to && false !== $time_to ) {
+                                $meta_query[] = array( 'key' => VEV_Events::META_START_HOUR, 'value' => array( (int) $time_from, (int) $time_to ), 'compare' => 'BETWEEN', 'type' => 'NUMERIC' );
+                        } elseif ( '' !== $time_from && false !== $time_from ) {
+                                $meta_query[] = array( 'key' => VEV_Events::META_START_HOUR, 'value' => (int) $time_from, 'compare' => '>=', 'type' => 'NUMERIC' );
+                        } elseif ( '' !== $time_to && false !== $time_to ) {
+                                $meta_query[] = array( 'key' => VEV_Events::META_START_HOUR, 'value' => (int) $time_to, 'compare' => '<=', 'type' => 'NUMERIC' );
+                        }
+
+                        // --- Weekday filter ---
+                        $weekday_qv = $query->get( VEV_Events::QV_WEEKDAY );
+                        if ( '' !== $weekday_qv && false !== $weekday_qv ) {
+                                if ( is_string( $weekday_qv ) && str_contains( $weekday_qv, ',' ) ) {
+                                        $weekday_qv = array_map( 'absint', explode( ',', $weekday_qv ) );
+                                }
+                                $meta_query[] = is_array( $weekday_qv )
+                                        ? array( 'key' => VEV_Events::META_START_WEEKDAY, 'value' => $weekday_qv, 'compare' => 'IN', 'type' => 'NUMERIC' )
+                                        : array( 'key' => VEV_Events::META_START_WEEKDAY, 'value' => (int) $weekday_qv, 'compare' => '=', 'type' => 'NUMERIC' );
+                        }
+
                         $query->set( 'meta_query', $meta_query );
 
                         $orderby = $query->get( 'orderby' );
@@ -230,7 +289,11 @@ final class VEV_Query {
                 }
 
                 if ( false === strpos( $join, 'vev_pm_end' ) ) {
-                        $join .= " LEFT JOIN {$wpdb->postmeta} vev_pm_end ON ({$wpdb->posts}.ID = vev_pm_end.post_id AND vev_pm_end.meta_key = '" . esc_sql( VEV_Events::META_END_UTC ) . "') ";
+                        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table names are safe WP globals
+                        $join .= $wpdb->prepare(
+                                " LEFT JOIN {$wpdb->postmeta} vev_pm_end ON ({$wpdb->posts}.ID = vev_pm_end.post_id AND vev_pm_end.meta_key = %s) ",
+                                VEV_Events::META_END_UTC
+                        );
                 }
 
                 if ( false === strpos( $join, 'vev_tr' ) ) {

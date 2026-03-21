@@ -7,12 +7,15 @@ final class VEV_Post_Type {
 
         public static function init(): void {
                 add_action( 'init', array( __CLASS__, 'register' ) );
+                add_action( 'added_post_meta',   array( __CLASS__, 'sync_computed_date_meta' ), 10, 3 );
+                add_action( 'updated_post_meta', array( __CLASS__, 'sync_computed_date_meta' ), 10, 3 );
         }
 
         public static function register(): void {
                 self::register_post_type();
                 self::register_taxonomies();
                 self::register_meta();
+                self::register_term_meta();
                 self::maybe_flush_rewrite_rules();
         }
 
@@ -172,6 +175,22 @@ final class VEV_Post_Type {
                 );
         }
 
+        private static function register_term_meta(): void {
+                $auth = static function () {
+                        return current_user_can( 'manage_categories' );
+                };
+                $base = array(
+                        'type'          => 'string',
+                        'single'        => true,
+                        'show_in_rest'  => true,
+                        'auth_callback' => $auth,
+                );
+
+                register_term_meta( VEV_Events::TAX_LOCATION, VEV_Events::TERM_META_LOCATION_ADDRESS, $base );
+                register_term_meta( VEV_Events::TAX_LOCATION, VEV_Events::TERM_META_LOCATION_MAPS_URL, $base );
+                register_term_meta( VEV_Events::TAX_CATEGORY, VEV_Events::TERM_META_CATEGORY_COLOR, $base );
+        }
+
         private static function register_meta(): void {
                 $args = array(
                         'type'              => 'string',
@@ -189,6 +208,34 @@ final class VEV_Post_Type {
                 register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_SPEAKER, $args );
                 register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_SPECIAL, $args );
                 register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_INFO_URL, array_merge( $args, array( 'type' => 'string' ) ) );
+                register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_EVENT_STATUS, $args );
+
+                // Computed date meta — internal, not exposed via REST
+                $int_args = array( 'type' => 'integer', 'single' => true, 'show_in_rest' => false );
+                register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_START_HOUR,    $int_args );
+                register_post_meta( VEV_Events::POST_TYPE, VEV_Events::META_START_WEEKDAY, $int_args );
+        }
+
+        /**
+         * Auto-compute hour-of-day and weekday meta whenever _vev_start_utc is written.
+         * Fires on both add and update, covering admin saves AND import runner.
+         */
+        public static function sync_computed_date_meta( $meta_id, int $post_id, string $meta_key ): void {
+                if ( VEV_Events::META_START_UTC !== $meta_key ) {
+                        return;
+                }
+                if ( VEV_Events::POST_TYPE !== get_post_type( $post_id ) ) {
+                        return;
+                }
+                $start_utc = (int) get_post_meta( $post_id, VEV_Events::META_START_UTC, true );
+                if ( ! $start_utc ) {
+                        delete_post_meta( $post_id, VEV_Events::META_START_HOUR );
+                        delete_post_meta( $post_id, VEV_Events::META_START_WEEKDAY );
+                        return;
+                }
+                $dt = ( new \DateTimeImmutable( '@' . $start_utc ) )->setTimezone( wp_timezone() );
+                update_post_meta( $post_id, VEV_Events::META_START_HOUR,    (int) $dt->format( 'G' ) ); // 0–23
+                update_post_meta( $post_id, VEV_Events::META_START_WEEKDAY, (int) $dt->format( 'N' ) ); // 1–7
         }
 
         public static function activate(): void {

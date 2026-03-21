@@ -125,8 +125,101 @@ final class VEV_Fields {
 				'group'    => 'status',
 				'callback' => array( __CLASS__, 'get_is_ongoing' ),
 			),
-		);
-	}
+			've_location_name' => array(
+				'label'    => __( 'Location Name', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'text',
+				'group'    => 'taxonomy',
+				'callback' => array( __CLASS__, 'get_location_name' ),
+			),
+			've_location_address' => array(
+				'label'    => __( 'Location Address', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'text',
+				'group'    => 'taxonomy',
+				'callback' => array( __CLASS__, 'get_location_address' ),
+			),
+			've_location_maps_url' => array(
+				'label'    => __( 'Location Maps URL', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'url',
+				'group'    => 'taxonomy',
+				'callback' => array( __CLASS__, 'get_location_maps_url' ),
+			),
+			've_category_name' => array(
+				'label'    => __( 'Category Name', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'text',
+				'group'    => 'taxonomy',
+				'callback' => array( __CLASS__, 'get_category_name' ),
+			),
+			've_category_color' => array(
+				'label'    => __( 'Category Color', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'text',
+				'group'    => 'taxonomy',
+				'callback' => array( __CLASS__, 'get_category_color' ),
+			),
+			've_series_name' => array(
+				'label'    => __( 'Series Name', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'text',
+				'group'    => 'taxonomy',
+				'callback' => array( __CLASS__, 'get_series_name' ),
+			),
+			've_topic_names' => array(
+				'label'    => __( 'Topic Name(s)', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'text',
+				'group'    => 'taxonomy',
+				'callback' => array( __CLASS__, 'get_topic_names' ),
+			),
+		've_category_class' => array(
+			'label'    => __( 'Category CSS Class', 've-events' ),
+			'type'     => 'virtual',
+			'format'   => 'text',
+			'group'    => 'taxonomy',
+			'callback' => array( __CLASS__, 'get_category_class' ),
+		),
+
+		// Event status override
+		've_event_status_label' => array(
+			'label'    => __( 'Event Status Label', 've-events' ),
+			'type'     => 'virtual',
+			'format'   => 'text',
+			'group'    => 'status',
+			'callback' => array( __CLASS__, 'get_event_status_label' ),
+		),
+		've_event_status_color' => array(
+			'label'    => __( 'Event Status Color', 've-events' ),
+			'type'     => 'virtual',
+			'format'   => 'text',
+			'group'    => 'status',
+			'callback' => array( __CLASS__, 'get_event_status_color' ),
+		),
+		've_is_cancelled' => array(
+			'label'    => __( 'Is Cancelled', 've-events' ),
+			'type'     => 'virtual',
+			'format'   => 'boolean',
+			'group'    => 'status',
+			'callback' => array( __CLASS__, 'get_is_cancelled' ),
+		),
+
+		// Computed date meta — stored, directly filterable in JetEngine
+		VEV_Events::META_START_HOUR => array(
+			'label'  => __( 'Start Hour (0–23)', 've-events' ),
+			'type'   => 'stored',
+			'format' => 'text',
+			'group'  => 'date',
+		),
+		VEV_Events::META_START_WEEKDAY => array(
+			'label'  => __( 'Weekday (1=Mon, 7=Sun)', 've-events' ),
+			'type'   => 'stored',
+			'format' => 'text',
+			'group'  => 'date',
+		),
+	);
+}
 
 	public static function get_fields(): array {
 		if ( empty( self::$fields ) ) {
@@ -264,11 +357,111 @@ final class VEV_Fields {
 		return 'ongoing' === $status;
 	}
 
+	public static function get_location_name( int $post_id ): string {
+		$terms = get_the_terms( $post_id, VEV_Events::TAX_LOCATION );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+		return $terms[0]->name;
+	}
+
+	public static function get_location_address( int $post_id ): string {
+		$terms = get_the_terms( $post_id, VEV_Events::TAX_LOCATION );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+		return (string) get_term_meta( $terms[0]->term_id, VEV_Events::TERM_META_LOCATION_ADDRESS, true );
+	}
+
+	public static function get_location_maps_url( int $post_id ): string {
+		$terms = get_the_terms( $post_id, VEV_Events::TAX_LOCATION );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+		$term_id = $terms[0]->term_id;
+		$custom  = (string) get_term_meta( $term_id, VEV_Events::TERM_META_LOCATION_MAPS_URL, true );
+		if ( $custom ) {
+			return $custom;
+		}
+		$address = (string) get_term_meta( $term_id, VEV_Events::TERM_META_LOCATION_ADDRESS, true );
+		if ( $address ) {
+			return 'https://maps.google.com/?q=' . rawurlencode( $address );
+		}
+		return '';
+	}
+
+	public static function get_category_name( int $post_id ): string {
+		$terms = get_the_terms( $post_id, VEV_Events::TAX_CATEGORY );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+		return $terms[0]->name;
+	}
+
+	public static function get_category_color( int $post_id ): string {
+		$terms = get_the_terms( $post_id, VEV_Events::TAX_CATEGORY );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+		return (string) get_term_meta( $terms[0]->term_id, VEV_Events::TERM_META_CATEGORY_COLOR, true );
+	}
+
+	public static function get_series_name( int $post_id ): string {
+		$terms = get_the_terms( $post_id, VEV_Events::TAX_SERIES );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+		return $terms[0]->name;
+	}
+
+	public static function get_topic_names( int $post_id ): string {
+		$terms = get_the_terms( $post_id, VEV_Events::TAX_TOPIC );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+		return implode( ', ', wp_list_pluck( $terms, 'name' ) );
+	}
+
+	public static function get_category_class( int $post_id ): string {
+		$terms = get_the_terms( $post_id, VEV_Events::TAX_CATEGORY );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+		return 've-cat-' . sanitize_html_class( $terms[0]->slug );
+	}
+
+	public static function get_event_status_label( int $post_id ): string {
+		$status = (string) get_post_meta( $post_id, VEV_Events::META_EVENT_STATUS, true );
+		return match ( $status ) {
+			'cancelled'   => __( 'Cancelled',    've-events' ),
+			'postponed'   => __( 'Postponed',    've-events' ),
+			'rescheduled' => __( 'Rescheduled',  've-events' ),
+			'movedOnline' => __( 'Moved Online', 've-events' ),
+			default       => '',
+		};
+	}
+
+	public static function get_event_status_color( int $post_id ): string {
+		$status = (string) get_post_meta( $post_id, VEV_Events::META_EVENT_STATUS, true );
+		return match ( $status ) {
+			'cancelled'   => '#d63638',
+			'postponed'   => '#dba617',
+			'rescheduled' => '#2271b1',
+			'movedOnline' => '#007cba',
+			default       => '',
+		};
+	}
+
+	public static function get_is_cancelled( int $post_id ): bool {
+		return 'cancelled' === (string) get_post_meta( $post_id, VEV_Events::META_EVENT_STATUS, true );
+	}
+
 	public static function get_fields_for_dropdown( bool $include_internal = false ): array {
 		$fields = self::get_fields();
 		$options = array();
 
 		$groups = array(
+			'taxonomy'  => __( 'Location & Taxonomy', 've-events' ),
 			'formatted' => __( 'Formatted Output', 've-events' ),
 			'details'   => __( 'Event Details', 've-events' ),
 			'status'    => __( 'Event Status', 've-events' ),

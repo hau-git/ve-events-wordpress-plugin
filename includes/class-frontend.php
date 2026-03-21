@@ -5,7 +5,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 final class VEV_Frontend {
 
+	/** Per-request cache: post_id → event data array. */
+	private static array $event_data_cache = array();
+
 	public static function init(): void {
+		add_action( 'wp_head', array( __CLASS__, 'output_og_tags' ), 2 );
+		add_action( 'wp_head', array( __CLASS__, 'output_category_colors' ), 5 );
 		add_action( 'wp_head', array( __CLASS__, 'output_schema' ), 99 );
 		add_filter( 'get_post_metadata', array( __CLASS__, 'computed_meta' ), 10, 4 );
 		add_action( 'rest_api_init', array( __CLASS__, 'register_rest_fields' ) );
@@ -24,9 +29,12 @@ final class VEV_Frontend {
 	}
 
 	public static function get_event_data( int $post_id ): array {
+		if ( isset( self::$event_data_cache[ $post_id ] ) ) {
+			return self::$event_data_cache[ $post_id ];
+		}
+
 		$start_utc = (int) get_post_meta( $post_id, VEV_Events::META_START_UTC, true );
 		$end_utc   = (int) get_post_meta( $post_id, VEV_Events::META_END_UTC, true );
-
 		$all_day   = (int) get_post_meta( $post_id, VEV_Events::META_ALL_DAY, true );
 		$hide_end  = (int) get_post_meta( $post_id, VEV_Events::META_HIDE_END, true );
 
@@ -34,12 +42,14 @@ final class VEV_Frontend {
 			$end_utc = $start_utc;
 		}
 
-		return array(
+		self::$event_data_cache[ $post_id ] = array(
 			'start_utc' => $start_utc,
 			'end_utc'   => $end_utc,
 			'all_day'   => (bool) $all_day,
 			'hide_end'  => (bool) $hide_end,
 		);
+
+		return self::$event_data_cache[ $post_id ];
 	}
 
 	public static function get_event_status( int $start_utc, int $end_utc ): string {
@@ -72,17 +82,12 @@ final class VEV_Frontend {
 	}
 
 	public static function status_label( string $status ): string {
-		switch ( $status ) {
-			case 'ongoing':
-				return __( 'Ongoing', VEV_Events::TEXTDOMAIN );
-			case 'past':
-				return __( 'Past', VEV_Events::TEXTDOMAIN );
-			case 'archived':
-				return __( 'Archived', VEV_Events::TEXTDOMAIN );
-			case 'upcoming':
-			default:
-				return __( 'Upcoming', VEV_Events::TEXTDOMAIN );
-		}
+		return match ( $status ) {
+			'ongoing'  => __( 'Ongoing',  VEV_Events::TEXTDOMAIN ),
+			'past'     => __( 'Past',     VEV_Events::TEXTDOMAIN ),
+			'archived' => __( 'Archived', VEV_Events::TEXTDOMAIN ),
+			default    => __( 'Upcoming', VEV_Events::TEXTDOMAIN ),
+		};
 	}
 
 	public static function format_date_only( int $ts_utc ): string {
@@ -203,6 +208,13 @@ final class VEV_Frontend {
 			've_time_range',
 			've_datetime_formatted',
 			've_status',
+			've_location_name',
+			've_location_address',
+			've_location_maps_url',
+			've_category_name',
+			've_category_color',
+			've_series_name',
+			've_topic_names',
 		);
 
 		foreach ( $fields as $field ) {
@@ -239,6 +251,14 @@ final class VEV_Frontend {
 		$start_iso = self::schema_datetime( $data['start_utc'], $data['all_day'], $tz );
 		$end_iso   = self::schema_datetime( $data['end_utc'], $data['all_day'], $tz );
 
+		$event_status_val = (string) get_post_meta( $post_id, VEV_Events::META_EVENT_STATUS, true );
+		$schema_status_map = array(
+			'cancelled'   => 'https://schema.org/EventCancelled',
+			'postponed'   => 'https://schema.org/EventPostponed',
+			'rescheduled' => 'https://schema.org/EventRescheduled',
+			'movedOnline' => 'https://schema.org/EventMovedOnline',
+		);
+
 		$event = array(
 			'@context'    => 'https://schema.org',
 			'@type'       => 'Event',
@@ -247,6 +267,7 @@ final class VEV_Frontend {
 			'url'         => get_permalink( $post_id ),
 			'startDate'   => $start_iso,
 			'endDate'     => $end_iso,
+			'eventStatus' => $schema_status_map[ $event_status_val ] ?? 'https://schema.org/EventScheduled',
 		);
 
 		$img = get_the_post_thumbnail_url( $post_id, 'full' );
@@ -256,11 +277,19 @@ final class VEV_Frontend {
 
 		$loc_terms = get_the_terms( $post_id, VEV_Events::TAX_LOCATION );
 		if ( is_array( $loc_terms ) && ! empty( $loc_terms ) ) {
-			$loc = $loc_terms[0];
-			$event['location'] = array(
+			$loc     = $loc_terms[0];
+			$address = (string) get_term_meta( $loc->term_id, VEV_Events::TERM_META_LOCATION_ADDRESS, true );
+			$place   = array(
 				'@type' => 'Place',
 				'name'  => $loc->name,
 			);
+			if ( $address ) {
+				$place['address'] = array(
+					'@type'           => 'PostalAddress',
+					'streetAddress'   => $address,
+				);
+			}
+			$event['location'] = $place;
 		}
 
 		$speaker = (string) get_post_meta( $post_id, VEV_Events::META_SPEAKER, true );
@@ -310,6 +339,113 @@ final class VEV_Frontend {
 		}
 
 		return wp_date( 'c', $ts_utc, $tz );
+	}
+
+	public static function output_category_colors(): void {
+		$settings = VEV_Events::get_settings();
+		if ( empty( $settings['output_category_colors'] ) ) {
+			return;
+		}
+		$terms = get_terms( array(
+			'taxonomy'   => VEV_Events::TAX_CATEGORY,
+			'hide_empty' => false,
+			'fields'     => 'ids',
+		) );
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return;
+		}
+		$vars  = '';
+		$rules = '';
+		update_termmeta_cache( $terms );
+
+	foreach ( $terms as $term_id ) {
+			$color = (string) get_term_meta( (int) $term_id, VEV_Events::TERM_META_CATEGORY_COLOR, true );
+			if ( ! $color || ! preg_match( '/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/', $color ) ) {
+				continue;
+			}
+			$term  = get_term( (int) $term_id, VEV_Events::TAX_CATEGORY );
+			if ( ! $term || is_wp_error( $term ) ) {
+				continue;
+			}
+			$slug   = sanitize_html_class( $term->slug );
+			$color  = esc_attr( $color );
+			$vars  .= '--vev-cat-' . $slug . ':' . $color . ';';
+			$rules .= '.ve-cat-' . $slug . '{--vev-cat-color:' . $color . ';}';
+		}
+		if ( ! $rules ) {
+			return;
+		}
+		echo '<style id="vev-category-colors">:root{' . $vars . '}' . $rules . "</style>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	public static function output_og_tags(): void {
+		if ( ! is_singular( VEV_Events::POST_TYPE ) ) {
+			return;
+		}
+		$settings = VEV_Events::get_settings();
+		$mode     = $settings['og_tags'] ?? 'auto';
+		if ( 'disabled' === $mode ) {
+			return;
+		}
+		if ( 'auto' === $mode ) {
+			if (
+				defined( 'WPSEO_VERSION' ) ||
+				defined( 'RANK_MATH_VERSION' ) ||
+				defined( 'AIOSEO_VERSION' ) ||
+				class_exists( 'The_SEO_Framework\Load' )
+			) {
+				return;
+			}
+		}
+
+		$post_id = (int) get_queried_object_id();
+		if ( ! $post_id ) {
+			return;
+		}
+
+		$data        = self::get_event_data( $post_id );
+		$title       = get_the_title( $post_id );
+		$description = self::schema_description( $post_id );
+		$url         = (string) get_permalink( $post_id );
+		$img         = (string) get_the_post_thumbnail_url( $post_id, 'large' );
+		$tz          = wp_timezone();
+		$start_iso   = $data['start_utc'] ? self::schema_datetime( $data['start_utc'], $data['all_day'], $tz ) : '';
+		$end_iso     = $data['end_utc']   ? self::schema_datetime( $data['end_utc'],   $data['all_day'], $tz ) : '';
+
+		$metas = array(
+			array( 'property', 'og:type',  'event' ),
+			array( 'property', 'og:title', $title ),
+			array( 'property', 'og:url',   $url ),
+		);
+		if ( $description ) {
+			$metas[] = array( 'property', 'og:description', $description );
+			$metas[] = array( 'name',     'description',    $description );
+		}
+		if ( $img ) {
+			$metas[] = array( 'property', 'og:image',       $img );
+			$metas[] = array( 'name',     'twitter:image',  $img );
+		}
+		if ( $start_iso ) {
+			$metas[] = array( 'property', 'og:start_time', $start_iso );
+		}
+		if ( $end_iso ) {
+			$metas[] = array( 'property', 'og:end_time', $end_iso );
+		}
+		$metas[] = array( 'name', 'twitter:card',  $img ? 'summary_large_image' : 'summary' );
+		$metas[] = array( 'name', 'twitter:title', $title );
+		if ( $description ) {
+			$metas[] = array( 'name', 'twitter:description', $description );
+		}
+
+		echo "\n<!-- VE Events OG Tags -->\n";
+		foreach ( $metas as $m ) {
+			printf(
+				"<meta %s=\"%s\" content=\"%s\">\n",
+				esc_attr( $m[0] ),
+				esc_attr( $m[1] ),
+				esc_attr( $m[2] )
+			);
+		}
 	}
 
 	private static function schema_description( int $post_id ): string {
