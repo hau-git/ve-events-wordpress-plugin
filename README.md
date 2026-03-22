@@ -36,7 +36,7 @@ A lightweight WordPress Events plugin with native admin UI, Schema.org markup, O
 - Frontend scope filtering: upcoming / ongoing / past / archived
 - Advanced query filters: date range, month, time-of-day, weekday
 - Schema.org `Event` JSON-LD with full `eventStatus`, location, performer, offers, EventSeries
-- Open Graph / Twitter Card meta tags (auto-detects conflicting SEO plugins)
+- Open Graph / X Card meta tags (auto-detects conflicting SEO plugins)
 - Category color system — CSS custom properties output in `wp_head`
 - iCal/ICS feed importer with cron scheduling and admin log viewer
 - 7 Elementor dynamic tag types
