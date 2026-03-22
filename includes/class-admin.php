@@ -126,7 +126,7 @@ final class VEV_Admin {
                 $sanitized = array();
                 $sanitized['disable_gutenberg']     = ! empty( $input['disable_gutenberg'] );
                 $sanitized['hide_end_same_day']     = ! empty( $input['hide_end_same_day'] );
-                $sanitized['grace_period']          = absint( $input['grace_period'] ?? 1 );
+                $sanitized['grace_period']          = absint( $input['grace_period'] ?? 24 );
                 $sanitized['hide_archived_search']  = ! empty( $input['hide_archived_search'] );
                 $sanitized['include_series_schema'] = ! empty( $input['include_series_schema'] );
 
@@ -170,6 +170,7 @@ final class VEV_Admin {
                 ?>
                 <div class="wrap">
                         <h1><?php esc_html_e( 'VE Events', VEV_Events::TEXTDOMAIN ); ?></h1>
+                        <?php settings_errors(); ?>
 
                         <nav class="nav-tab-wrapper" id="vev-settings-tabs">
                                 <a href="#tab-general"  class="nav-tab nav-tab-active"><?php esc_html_e( 'General',     VEV_Events::TEXTDOMAIN ); ?></a>
@@ -273,10 +274,16 @@ final class VEV_Admin {
                                                         <th scope="row"><?php esc_html_e( 'Grace Period After Event End', VEV_Events::TEXTDOMAIN ); ?></th>
                                                         <td>
                                                                 <select name="<?php echo esc_attr( $opt ); ?>[grace_period]">
-                                                                        <option value="0" <?php selected( $settings['grace_period'], 0 ); ?>><?php esc_html_e( '0 days – hide immediately', VEV_Events::TEXTDOMAIN ); ?></option>
-                                                                        <option value="1" <?php selected( $settings['grace_period'], 1 ); ?>><?php esc_html_e( '1 day (recommended)', VEV_Events::TEXTDOMAIN ); ?></option>
-                                                                        <option value="3" <?php selected( $settings['grace_period'], 3 ); ?>><?php esc_html_e( '3 days', VEV_Events::TEXTDOMAIN ); ?></option>
-                                                                        <option value="7" <?php selected( $settings['grace_period'], 7 ); ?>><?php esc_html_e( '7 days', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="0" <?php selected( $settings['grace_period'], 0 ); ?>><?php esc_html_e( 'Sofort ausblenden', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="1" <?php selected( $settings['grace_period'], 1 ); ?>><?php esc_html_e( '1 Stunde', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="2" <?php selected( $settings['grace_period'], 2 ); ?>><?php esc_html_e( '2 Stunden', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="4" <?php selected( $settings['grace_period'], 4 ); ?>><?php esc_html_e( '4 Stunden', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="6" <?php selected( $settings['grace_period'], 6 ); ?>><?php esc_html_e( '6 Stunden', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="12" <?php selected( $settings['grace_period'], 12 ); ?>><?php esc_html_e( '12 Stunden', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="24" <?php selected( $settings['grace_period'], 24 ); ?>><?php esc_html_e( '1 Tag (empfohlen)', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="72" <?php selected( $settings['grace_period'], 72 ); ?>><?php esc_html_e( '3 Tage', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="168" <?php selected( $settings['grace_period'], 168 ); ?>><?php esc_html_e( '7 Tage', VEV_Events::TEXTDOMAIN ); ?></option>
+                                                                        <option value="999999" <?php selected( $settings['grace_period'], 999999 ); ?>><?php esc_html_e( 'Immer anzeigen', VEV_Events::TEXTDOMAIN ); ?></option>
                                                                 </select>
                                                                 <p class="description"><?php esc_html_e( 'How long events stay visible on the frontend after ending. Backend is never affected.', VEV_Events::TEXTDOMAIN ); ?></p>
                                                         </td>
@@ -454,9 +461,10 @@ final class VEV_Admin {
                 </div>
                 <script>
                 (function(){
-                        var tabs    = document.querySelectorAll('#vev-settings-tabs .nav-tab');
-                        var panels  = document.querySelectorAll('.vev-tab-panel');
-                        var actions = document.querySelector('.vev-tab-actions');
+                        var tabs     = document.querySelectorAll('#vev-settings-tabs .nav-tab');
+                        var panels   = document.querySelectorAll('.vev-tab-panel');
+                        var actions  = document.querySelector('.vev-tab-actions');
+                        var referer  = document.querySelector('input[name="_wp_http_referer"]');
 
                         function activate(hash) {
                                 var target = hash || '#tab-general';
@@ -473,24 +481,45 @@ final class VEV_Admin {
                                 panels.forEach(function(panel){
                                         panel.hidden = ('#' + panel.id) !== target;
                                 });
-                                // Move submit button inside active panel
-                                var activePanel = document.querySelector(target);
-                                if(activePanel && actions) {
-                                        // Hide for docs tab
+                                if(actions) {
                                         actions.style.display = (target === '#tab-docs') ? 'none' : '';
                                 }
+                        }
+
+                        function setRefererTab(tabId) {
+                                if(!referer) return;
+                                try {
+                                        var url = new URL(referer.value, location.origin);
+                                        url.searchParams.set('vev_tab', tabId);
+                                        referer.value = url.pathname + url.search;
+                                } catch(e) {}
                         }
 
                         tabs.forEach(function(tab){
                                 tab.addEventListener('click', function(e){
                                         e.preventDefault();
-                                        var hash = tab.getAttribute('href');
+                                        var hash  = tab.getAttribute('href');
+                                        var tabId = hash.replace('#', '');
                                         history.replaceState(null, '', location.pathname + location.search + hash);
+                                        setRefererTab(tabId);
                                         activate(hash);
                                 });
                         });
 
-                        activate(location.hash || '#tab-general');
+                        // Determine initial tab: prefer query param (after save redirect), then hash
+                        var urlParams = new URLSearchParams(location.search);
+                        var tabParam  = urlParams.get('vev_tab');
+                        var initial   = tabParam ? ('#' + tabParam) : (location.hash || '#tab-general');
+
+                        activate(initial);
+                        setRefererTab(initial.replace('#', ''));
+
+                        // Clean up the query param from the URL after reading it
+                        if(tabParam) {
+                                var clean = new URL(location.href);
+                                clean.searchParams.delete('vev_tab');
+                                history.replaceState(null, '', clean.pathname + clean.search + '#' + tabParam);
+                        }
                 })();
                 </script>
                 <style>

@@ -71,8 +71,8 @@ final class VEV_Frontend {
 		}
 
 		$settings = VEV_Events::get_settings();
-		$grace_period = absint( $settings['grace_period'] ?? 1 );
-		$grace_seconds = $grace_period * DAY_IN_SECONDS;
+		$grace_period = absint( $settings['grace_period'] ?? 24 );
+		$grace_seconds = $grace_period * HOUR_IN_SECONDS;
 
 		if ( $now <= ( $end_utc + $grace_seconds ) ) {
 			return 'past';
@@ -356,6 +356,7 @@ final class VEV_Frontend {
 		}
 		$vars  = '';
 		$rules = '';
+		$jet   = '';
 		update_termmeta_cache( $terms );
 
 	foreach ( $terms as $term_id ) {
@@ -371,11 +372,19 @@ final class VEV_Frontend {
 			$color  = esc_attr( $color );
 			$vars  .= '--vev-cat-' . $slug . ':' . $color . ';';
 			$rules .= '.ve-cat-' . $slug . '{--vev-cat-color:' . $color . ';}';
+
+			// JetEngine Smart Filter checkboxes – target by slug AND term_id
+			// (JetEngine uses either depending on filter configuration)
+			foreach ( array( esc_attr( $term->slug ), (int) $term_id ) as $val ) {
+				$base  = '.jet-checkboxes-filter__item:has(input[value="' . $val . '"])';
+				$jet  .= $base . ' .jet-check-label{background-color:' . $color . ';padding:2px 8px;border-radius:3px;}';
+				$jet  .= $base . ' .jet-check-label::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:' . $color . ';margin-right:6px;vertical-align:middle;}';
+			}
 		}
 		if ( ! $rules ) {
 			return;
 		}
-		echo '<style id="vev-category-colors">:root{' . $vars . '}' . $rules . "</style>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<style id="vev-category-colors">:root{' . $vars . '}' . $rules . $jet . "</style>\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	public static function output_og_tags(): void {

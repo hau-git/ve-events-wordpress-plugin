@@ -145,7 +145,7 @@ Use these in `WP_Query` args or as URL parameters on frontend archive/listing pa
 **Scope definitions:**
 - `upcoming` — start > now
 - `ongoing` — start ≤ now AND end ≥ now
-- `past` — end < now but within grace period
+- `past` — end < now but within grace period (in hours)
 - `archived` — end older than grace period
 - `all` — no timeline filter
 
@@ -178,7 +178,7 @@ $query = new WP_Query( [
 | `slug_archive` | `events` | URL slug for the event archive |
 | `disable_gutenberg` | `false` | Use Classic Editor instead of Gutenberg |
 | `hide_end_same_day` | `true` | Hide end date when start and end are the same day |
-| `grace_period` | `1` | Days to keep showing events after they end |
+| `grace_period` | `24` | Hours to keep showing events after they end. Options: `0` (hide immediately) · `1` · `2` · `4` · `6` · `12` · `24` (1 day) · `72` (3 days) · `168` (7 days) · `999999` (always show) |
 | `hide_archived_search` | `true` | Exclude archived events from WordPress search |
 | `include_series_schema` | `true` | Add `EventSeries` superEvent to Schema.org output |
 | `output_category_colors` | `true` | Output category color CSS variables in `wp_head` |
@@ -298,13 +298,36 @@ Outputs: `og:type`, `og:title`, `og:url`, `og:description`, `og:image`, `og:star
 When `output_category_colors` is enabled, outputs in `wp_head`:
 
 ```css
+/* CSS custom properties for use in themes/templates */
 :root {
   --vev-cat-workshop: #e84040;
   --vev-cat-concert: #2271b1;
 }
 .ve-cat-workshop { --vev-cat-color: #e84040; }
 .ve-cat-concert  { --vev-cat-color: #2271b1; }
+
+/* JetEngine Smart Filter checkboxes – label background + color dot */
+/* Generated for both term slug and term ID so either filter config works */
+.jet-checkboxes-filter__item:has(input[value="workshop"]) .jet-check-label,
+.jet-checkboxes-filter__item:has(input[value="42"]) .jet-check-label {
+  background-color: #e84040;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+.jet-checkboxes-filter__item:has(input[value="workshop"]) .jet-check-label::before,
+.jet-checkboxes-filter__item:has(input[value="42"]) .jet-check-label::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e84040;
+  margin-right: 6px;
+  vertical-align: middle;
+}
 ```
+
+The `:has()` selector is supported in all modern browsers (Chrome 105+, Firefox 121+, Safari 15.4+). JetEngine Smart Filter checkbox inputs use either the term slug or term ID as their `value` attribute depending on the filter configuration — the plugin outputs CSS rules for both.
 
 ---
 
@@ -333,6 +356,29 @@ All virtual fields are available as **JetEngine dynamic fields**:
 3. Object Field: select from the **VE Events** group
 
 All `ve_*` keys listed in [Virtual Meta Keys](#virtual-meta-keys) are available.
+
+### Smart Filter – Checkbox Color Styling
+
+When `output_category_colors` is enabled, JetEngine **Smart Filter** checkbox widgets for `ve_event_category` automatically receive per-term styling via CSS in `wp_head`:
+
+- **Label background color** — the category color as `background-color` on `.jet-check-label`
+- **Color dot** — a filled circle via `.jet-check-label::before`
+
+No additional configuration is needed. The CSS uses the `:has()` selector and targets both the term slug and the term ID as the checkbox `value`, covering all JetEngine filter configurations.
+
+To override the default styling (padding, border-radius, dot size), add custom CSS after the plugin's output:
+
+```css
+/* Example: larger dot, no background, rounded pill */
+.jet-checkboxes-filter__item:has(input[value="workshop"]) .jet-check-label {
+  background-color: transparent;
+  padding: 0;
+}
+.jet-checkboxes-filter__item:has(input[value="workshop"]) .jet-check-label::before {
+  width: 14px;
+  height: 14px;
+}
+```
 
 ---
 

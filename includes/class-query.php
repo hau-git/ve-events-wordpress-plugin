@@ -121,8 +121,8 @@ final class VEV_Query {
 
                         $now = time();
                         $settings = VEV_Events::get_settings();
-                        $grace_period = absint( $settings['grace_period'] ?? 1 );
-                        $grace_seconds = $grace_period * DAY_IN_SECONDS;
+                        $grace_period = absint( $settings['grace_period'] ?? 24 );
+                        $grace_seconds = $grace_period * HOUR_IN_SECONDS;
                         $cutoff = $now - $grace_seconds;
 
                         $meta_query = (array) $query->get( 'meta_query' );
@@ -317,8 +317,8 @@ final class VEV_Query {
 
                 global $wpdb;
                 $now = time();
-                $grace_period = absint( $settings['grace_period'] ?? 1 );
-                $grace_seconds = $grace_period * DAY_IN_SECONDS;
+                $grace_period = absint( $settings['grace_period'] ?? 24 );
+                $grace_seconds = $grace_period * HOUR_IN_SECONDS;
                 $cutoff = $now - $grace_seconds;
 
                 $where .= $wpdb->prepare(

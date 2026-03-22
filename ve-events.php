@@ -141,7 +141,7 @@ final class VEV_Events {
                 $defaults = array(
                         'disable_gutenberg'         => false,
                         'hide_end_same_day'         => true,
-                        'grace_period'              => 1,
+                        'grace_period'              => 24,
                         'hide_archived_search'      => true,
                         'include_series_schema'     => true,
                         'slug_single'               => 'event',
