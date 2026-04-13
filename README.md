@@ -2,7 +2,7 @@
 
 A lightweight WordPress Events plugin with native admin UI, Schema.org markup, Open Graph tags, iCal import, and first-class support for Elementor and JetEngine.
 
-**Version:** 1.9.0 · **Requires:** WordPress 6.4+, PHP 8.0+
+**Version:** 1.9.1 · **Requires:** WordPress 6.4+, PHP 8.0+
 
 ---
 
