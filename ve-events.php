@@ -4,7 +4,7 @@
  * Description: Adds a lightweight Events post type with WordPress-native admin UI, Schema.org Event markup, and first-class support for Elementor/JetEngine listings.
  * Version: 2.0.0
  * Requires at least: 6.4
- * Requires PHP: 8.0
+ * Requires PHP: 8.3
  * Author: Marc Probst
  * Author URI: https://github.com/hau-git
  * Plugin URI: https://github.com/hau-git/ve-events-wordpress-plugin
