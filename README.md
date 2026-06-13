@@ -2,7 +2,7 @@
 
 A lightweight WordPress Events plugin with native admin UI, Schema.org markup, Open Graph tags, iCal import, and first-class support for Elementor and JetEngine.
 
-**Version:** 2.0.0 · **Requires:** WordPress 6.4+, PHP 8.0+
+**Version:** 2.0.0 · **Requires:** WordPress 6.4+, PHP 8.3+
 
 ---
 
@@ -178,7 +178,7 @@ $query = new WP_Query( [
 | `slug_archive` | `events` | URL slug for the event archive |
 | `disable_gutenberg` | `false` | Use Classic Editor instead of Gutenberg |
 | `hide_end_same_day` | `true` | Hide end date when start and end are the same day |
-| `grace_period` | `24` | Hours to keep showing events after they end. Options: `0` (hide immediately) · `1` · `2` · `4` · `6` · `12` · `24` (1 day) · `72` (3 days) · `168` (7 days) · `999999` (always show) |
+| `grace_period` | `24` | Hours to keep showing events after they end. Options: `0` (hide immediately) · `1` · `2` · `4` · `6` · `12` · `24` (1 day) · `72` (3 days) · `168` (7 days) · `999999` |
 | `hide_archived_search` | `true` | Exclude archived events from WordPress search |
 | `include_series_schema` | `true` | Add `EventSeries` superEvent to Schema.org output |
 | `output_category_colors` | `true` | Output category color CSS variables in `wp_head` |
@@ -327,7 +327,7 @@ When `output_category_colors` is enabled, outputs in `wp_head`:
 }
 ```
 
-The `:has()` selector is supported in all modern browsers (Chrome 105+, Firefox 121+, Safari 15.4+). JetEngine Smart Filter checkbox inputs use either the term slug or term ID as their `value` attribute depending on the filter configuration — the plugin outputs CSS rules for both.
+The `:has()` selector is supported in all modern browsers (Chrome 105+, Firefox 121+, Safari 15.4+). JetEngine Smart Filter checkbox inputs use either the term slug or term ID as their `value` attribute, so the CSS targets both formats.
 
 ---
 
