@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<ruleset name="VE Events">
+	<description>Coding standards for the VE Events plugin (WordPress, PHP 8.0+).</description>
+
+	<!-- Scan plugin source only. -->
+	<file>ve-events.php</file>
+	<file>src/</file>
+
+	<!-- Third-party vendored library is excluded from our standard. -->
+	<exclude-pattern>*/src/ThirdParty/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<!-- WordPress coding standards (tabs enforced by this ruleset). -->
+	<rule ref="WordPress-Extra">
+		<!--
+		PSR-4 autoloading uses StudlyCase filenames (e.g. DateFormatter.php),
+		which is incompatible with WordPress' historical class-*.php convention.
+		These sniffs are excluded for the namespaced src/ tree.
+		-->
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+	</rule>
+	<rule ref="WordPress-Docs"/>
+
+	<!-- Project text domain & prefixes. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="ve-events"/>
+			</property>
+		</properties>
+	</rule>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="vev"/>
+				<element value="VEV"/>
+				<element value="ve_event"/>
+			</property>
+		</properties>
+		<!--
+		"vev"/"VEV"/"ve_event" are the plugin's established public API prefixes
+		(meta keys, post type, options) and cannot change without breaking every
+		existing integration. The src/ tree is additionally namespaced under
+		VEV\, which provides the collision safety this sniff guards against.
+		-->
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedNamespaceFound"/>
+	</rule>
+
+	<!-- Target environment. -->
+	<config name="minimum_supported_wp_version" value="6.4"/>
+	<config name="testVersion" value="8.0-"/>
+	<rule ref="PHPCompatibilityWP"/>
+</ruleset>
