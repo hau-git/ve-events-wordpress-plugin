@@ -1,0 +1,19 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# Dependencies (dev-only — never shipped)
+/vendor/
+/node_modules/
+
+# Tooling caches & reports
+.phpunit.result.cache
+.phpcs.cache
+/coverage/
+
+# Plugin runtime artifacts
+*.log

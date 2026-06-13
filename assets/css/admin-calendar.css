@@ -1,0 +1,13 @@
+.vev-cal-header { display:flex; align-items:center; justify-content:flex-end; gap:16px; margin:16px 0 12px; }
+.vev-cal-title  { margin:0; font-size:20px; font-weight:600; min-width:180px; text-align:center; }
+.vev-cal-grid   { display:grid; grid-template-columns:repeat(7,1fr); border:1px solid #c3c4c7; border-radius:4px; overflow:hidden; background:#f6f7f7; }
+.vev-cal-dow    { text-align:center; padding:8px 4px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:#50575e; border-right:1px solid #c3c4c7; border-bottom:1px solid #c3c4c7; }
+.vev-cal-dow:last-child { border-right:none; }
+.vev-cal-day    { border-right:1px solid #c3c4c7; border-bottom:1px solid #c3c4c7; padding:5px 6px; min-height:80px; background:#fff; }
+.vev-cal-day:nth-child(7n) { border-right:none; }
+.vev-cal-day--empty  { background:#fafafa; }
+.vev-cal-day--today  { background:#f0f6fc; }
+.vev-cal-day-num     { font-weight:700; font-size:12px; color:#1d2327; margin-bottom:3px; }
+.vev-cal-day--today .vev-cal-day-num { color:#2271b1; }
+.vev-cal-event       { display:block; padding:2px 5px; margin:2px 0; border-radius:3px; font-size:11px; line-height:1.4; color:#fff; text-decoration:none; background:#2271b1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vev-cal-event:hover { opacity:.82; color:#fff; }
