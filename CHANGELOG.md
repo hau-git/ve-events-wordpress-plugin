@@ -13,6 +13,7 @@ slug (`ve_event`), meta key, virtual field key, query var, REST field, Schema.or
 exactly as in 1.9.x.
 
 ### Changed
+- Raised the minimum PHP requirement to **8.3** (8.0–8.2 reached end of life).
 - Restructured the codebase into a namespaced `src/` tree (root namespace
   `VEV\`) loaded by a lightweight custom PSR-4 autoloader. The 8 manual
   `require_once` calls in the bootstrap are gone.
