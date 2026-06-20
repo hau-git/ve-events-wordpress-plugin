@@ -5,6 +5,34 @@ All notable changes to the VE Events plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] - 2026-06-20
+
+### Added
+- **ChurchDesk import** as a second feed source alongside iCal/ICS. A feed's
+  **Source Type** can now be *iCal / ICS URL* or *ChurchDesk*. ChurchDesk feeds
+  support two endpoints, selectable per feed:
+  - **Pull API** — the documented, versioned API (`https://api.churchdesk.com/v3.0.0/events`),
+    authenticated with an `organizationId` and a `partnerToken` (obtained from
+    ChurchDesk support).
+  - **Calendar View** — the public portal endpoint
+    (`https://api2.churchdesk.com/collaboration/calendar-view`), authenticated
+    with an `organizationId` only.
+- ChurchDesk events are matched to `ve_event` fields: title, description,
+  summary → excerpt, start/end (UTC), all-day, `showEndtime` → hide-end,
+  contributor → speaker, price → special info, categories (with colour) →
+  Category taxonomy, location (name + address) → Location taxonomy, and the
+  event image → featured image (optional, via media sideload).
+- Optional category-id filter and image-format selection per ChurchDesk feed.
+- `ChurchDeskMapperTest` unit tests covering the field mapping (ISO→UTC,
+  show-end inversion, category colour, address composition, change hash, …).
+
+### Changed
+- Refactored the import engine: the source-agnostic create/update/delete/match/
+  log logic now lives in `VEV\Import\AbstractRunner`; `VEV\Import\IcsRunner`
+  (iCal) and `VEV\Import\ChurchDeskRunner` extend it. `VEV\Import\Runner` is
+  retained as a backward-compatible alias of `IcsRunner`. The iCal import is
+  behaviourally unchanged.
+
 ## [2.0.0] - 2026-06-13
 
 Internal re-architecture. **No functional changes** — every feature, post type

@@ -152,7 +152,19 @@ class Manager {
 	 * @param int $feed_id Feed post ID.
 	 */
 	public static function run_feed( int $feed_id ): array {
-		$runner = new Runner( $feed_id );
+		// Featured-image sideload needs the media/file/image admin helpers, which
+		// are not loaded during WP-Cron requests — pull them in on demand.
+		if ( ! function_exists( 'media_sideload_image' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+		}
+
+		$config = Feed::get_config( $feed_id );
+		$runner = 'churchdesk' === ( $config['type'] ?? 'ics_url' )
+			? new ChurchDeskRunner( $feed_id )
+			: new IcsRunner( $feed_id );
+
 		return $runner->run();
 	}
 

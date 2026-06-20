@@ -196,7 +196,21 @@ class AdminPage {
 						</span>
 					</div>
 				</td>
-				<td class="vev-url-cell"><?php echo esc_html( $cfg['url'] ); ?></td>
+				<td class="vev-url-cell">
+					<?php
+					if ( 'churchdesk' === ( $cfg['type'] ?? 'ics_url' ) ) {
+						$endpoints = \VEV\Import\ChurchDesk\SourceFactory::get_endpoints();
+						printf(
+							/* translators: 1: endpoint label, 2: organization id. */
+							esc_html__( 'ChurchDesk · %1$s · org %2$s', 've-events' ),
+							esc_html( $endpoints[ $cfg['cd_endpoint'] ] ?? $cfg['cd_endpoint'] ),
+							esc_html( $cfg['cd_org_id'] )
+						);
+					} else {
+						echo esc_html( $cfg['url'] );
+					}
+					?>
+				</td>
 				<td><?php echo esc_html( $schedule_label ); ?></td>
 				<td>
 					<?php
@@ -247,16 +261,23 @@ class AdminPage {
 		$is_new = 0 === $feed_id;
 		$cfg    = $is_new
 			? array(
-				'title'          => '',
-				'url'            => '',
-				'schedule'       => 'daily',
-				'field_map'      => Feed::DEFAULT_FIELD_MAP,
-				'tax_defaults'   => array(),
-				'update_mode'    => 'if_newer',
-				'delete_removed' => false,
-				'post_status'    => 'publish',
-				'http_timeout'   => 30,
-				'active'         => true,
+				'title'           => '',
+				'type'            => 'ics_url',
+				'url'             => '',
+				'schedule'        => 'daily',
+				'field_map'       => Feed::DEFAULT_FIELD_MAP,
+				'tax_defaults'    => array(),
+				'update_mode'     => 'if_newer',
+				'delete_removed'  => false,
+				'post_status'     => 'publish',
+				'http_timeout'    => 30,
+				'active'          => true,
+				'cd_endpoint'     => 'pull_api',
+				'cd_org_id'       => '',
+				'cd_token'        => '',
+				'cd_categories'   => array(),
+				'cd_image_format' => 'span7_16-9',
+				'cd_import_image' => true,
 			)
 			: Feed::get_config( $feed_id );
 
@@ -286,20 +307,102 @@ class AdminPage {
 					<td><input type="text" name="title" value="<?php echo esc_attr( $cfg['title'] ); ?>" class="regular-text" required></td>
 				</tr>
 				<tr>
+					<th><?php esc_html_e( 'Source Type', 've-events' ); ?></th>
+					<td>
+						<select name="type" id="vev-source-type">
+							<option value="ics_url" <?php selected( $cfg['type'], 'ics_url' ); ?>><?php esc_html_e( 'iCal / ICS URL', 've-events' ); ?></option>
+							<option value="churchdesk" <?php selected( $cfg['type'], 'churchdesk' ); ?>><?php esc_html_e( 'ChurchDesk', 've-events' ); ?></option>
+						</select>
+					</td>
+				</tr>
+			</table>
+
+			<!-- iCal panel -->
+			<table class="form-table vev-panel vev-panel-ics_url">
+				<tr>
 					<th><?php esc_html_e( 'ICS URL', 've-events' ); ?></th>
 					<td>
-						<input type="url" name="url" value="<?php echo esc_attr( $cfg['url'] ); ?>" class="large-text" required>
+						<input type="url" name="url" value="<?php echo esc_attr( $cfg['url'] ); ?>" class="large-text">
 						<p class="description"><?php esc_html_e( 'The .ics subscription URL (e.g. from Outlook, Google Calendar, etc.)', 've-events' ); ?></p>
-						<?php if ( ! $is_new ) : ?>
+					</td>
+				</tr>
+			</table>
+
+			<!-- ChurchDesk panel -->
+			<table class="form-table vev-panel vev-panel-churchdesk">
+				<tr>
+					<th><?php esc_html_e( 'Endpoint', 've-events' ); ?></th>
+					<td>
+						<select name="cd_endpoint" id="vev-cd-endpoint">
+						<?php foreach ( \VEV\Import\ChurchDesk\SourceFactory::get_endpoints() as $key => $label ) : ?>
+							<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $cfg['cd_endpoint'], $key ); ?>>
+								<?php echo esc_html( $label ); ?>
+							</option>
+						<?php endforeach; ?>
+						</select>
+						<p class="description">
+							<?php esc_html_e( 'Pull API: documented, versioned (api.churchdesk.com/v3.0.0), requires a partner token from ChurchDesk support. Calendar View: public portal endpoint, organization id only.', 've-events' ); ?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Organization ID', 've-events' ); ?></th>
+					<td><input type="text" name="cd_org_id" value="<?php echo esc_attr( $cfg['cd_org_id'] ); ?>" class="regular-text"></td>
+				</tr>
+				<tr class="vev-cd-token-row">
+					<th><?php esc_html_e( 'Partner Token', 've-events' ); ?></th>
+					<td>
+						<input type="text" name="cd_token" value="<?php echo esc_attr( $cfg['cd_token'] ); ?>" class="large-text" autocomplete="off">
+						<p class="description"><?php esc_html_e( 'Obtain a partner token from support@churchdesk.com (Pull API only).', 've-events' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Category Filter', 've-events' ); ?></th>
+					<td>
+						<input type="text" name="cd_categories" value="<?php echo esc_attr( implode( ',', array_map( 'intval', (array) $cfg['cd_categories'] ) ) ); ?>" class="regular-text" placeholder="14, 16">
+						<p class="description"><?php esc_html_e( 'Optional comma-separated category IDs to limit the import. Leave empty for all categories.', 've-events' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Featured Image', 've-events' ); ?></th>
+					<td>
+						<label>
+							<input type="checkbox" name="cd_import_image" value="1" <?php checked( $cfg['cd_import_image'] ); ?>>
+							<?php esc_html_e( 'Import the event image as the featured image', 've-events' ); ?>
+						</label>
+						<p>
+							<label>
+								<?php esc_html_e( 'Image format', 've-events' ); ?>
+								<select name="cd_image_format">
+								<?php
+								$formats = array( 'span3_16-9', 'span4_16-9', 'span5_16-9', 'span7_16-9', 'span12_16-9' );
+								foreach ( $formats as $format ) :
+									?>
+									<option value="<?php echo esc_attr( $format ); ?>" <?php selected( $cfg['cd_image_format'], $format ); ?>><?php echo esc_html( $format ); ?></option>
+								<?php endforeach; ?>
+								</select>
+							</label>
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<!-- Common source settings -->
+			<table class="form-table">
+				<?php if ( ! $is_new ) : ?>
+				<tr>
+					<th><?php esc_html_e( 'Connection', 've-events' ); ?></th>
+					<td>
 						<button type="button" class="button" id="vev-test-btn"
 							data-feed-id="<?php echo esc_attr( $feed_id ); ?>"
 							data-nonce="<?php echo esc_attr( wp_create_nonce( 'vev_test_' . $feed_id ) ); ?>">
 							<?php esc_html_e( 'Test Connection', 've-events' ); ?>
 						</button>
 						<span id="vev-test-result" style="margin-left:10px"></span>
-						<?php endif; ?>
+						<p class="description"><?php esc_html_e( 'Save the feed first, then test against the saved settings.', 've-events' ); ?></p>
 					</td>
 				</tr>
+				<?php endif; ?>
 				<tr>
 					<th><?php esc_html_e( 'Schedule', 've-events' ); ?></th>
 					<td>
@@ -364,7 +467,8 @@ class AdminPage {
 				</tr>
 			</table>
 
-			<!-- Field Mapping -->
+			<!-- Field Mapping (iCal only) -->
+			<div class="vev-panel vev-panel-ics_url">
 			<h2><?php esc_html_e( 'Field Mapping', 've-events' ); ?></h2>
 			<p class="description"><?php esc_html_e( 'Define how ICS fields are mapped to event fields. Dates are always imported automatically.', 've-events' ); ?></p>
 			<table class="wp-list-table widefat fixed" style="max-width:700px">
@@ -412,6 +516,7 @@ class AdminPage {
 				<?php endforeach; ?>
 				</tbody>
 			</table>
+			</div><!-- /.vev-panel-ics_url -->
 
 			<!-- Default Taxonomies -->
 			<h2><?php esc_html_e( 'Default Taxonomy Assignment', 've-events' ); ?></h2>
@@ -580,18 +685,40 @@ class AdminPage {
 		$raw_url   = trim( wp_unslash( $_POST['url'] ?? '' ) );
 		$valid_url = filter_var( $raw_url, FILTER_VALIDATE_URL ) ? esc_url_raw( $raw_url ) : '';
 
+		$type     = in_array( $_POST['type'] ?? '', array( 'ics_url', 'churchdesk' ), true ) ? sanitize_key( $_POST['type'] ) : 'ics_url';
+		$endpoint = in_array( $_POST['cd_endpoint'] ?? '', array( 'pull_api', 'calendar_view' ), true ) ? sanitize_key( $_POST['cd_endpoint'] ) : 'pull_api';
+
+		// Parse comma-separated ChurchDesk category IDs.
+		$cd_categories = array();
+		$raw_cats      = sanitize_text_field( wp_unslash( $_POST['cd_categories'] ?? '' ) );
+		if ( '' !== $raw_cats ) {
+			foreach ( explode( ',', $raw_cats ) as $cat_id ) {
+				$cat_id = absint( trim( $cat_id ) );
+				if ( $cat_id ) {
+					$cd_categories[] = $cat_id;
+				}
+			}
+		}
+
 		$data = array(
-			'title'          => sanitize_text_field( $_POST['title'] ?? '' ),
-			'url'            => $valid_url,
-			'schedule'       => sanitize_key( $_POST['schedule'] ?? 'daily' ),
-			'update_mode'    => sanitize_key( $_POST['update_mode'] ?? 'if_newer' ),
-			'post_status'    => in_array( $_POST['post_status'] ?? '', array( 'publish', 'draft' ), true )
+			'title'           => sanitize_text_field( $_POST['title'] ?? '' ),
+			'type'            => $type,
+			'url'             => $valid_url,
+			'schedule'        => sanitize_key( $_POST['schedule'] ?? 'daily' ),
+			'update_mode'     => sanitize_key( $_POST['update_mode'] ?? 'if_newer' ),
+			'post_status'     => in_array( $_POST['post_status'] ?? '', array( 'publish', 'draft' ), true )
 								? $_POST['post_status'] : 'publish',
-			'http_timeout'   => min( 120, max( 5, (int) ( $_POST['http_timeout'] ?? 30 ) ) ),
-			'delete_removed' => ! empty( $_POST['delete_removed'] ),
-			'active'         => ! empty( $_POST['active'] ),
-			'field_map'      => $field_map,
-			'tax_defaults'   => $tax_defaults,
+			'http_timeout'    => min( 120, max( 5, (int) ( $_POST['http_timeout'] ?? 30 ) ) ),
+			'delete_removed'  => ! empty( $_POST['delete_removed'] ),
+			'active'          => ! empty( $_POST['active'] ),
+			'field_map'       => $field_map,
+			'tax_defaults'    => $tax_defaults,
+			'cd_endpoint'     => $endpoint,
+			'cd_org_id'       => sanitize_text_field( wp_unslash( $_POST['cd_org_id'] ?? '' ) ),
+			'cd_token'        => sanitize_text_field( wp_unslash( $_POST['cd_token'] ?? '' ) ),
+			'cd_categories'   => $cd_categories,
+			'cd_image_format' => sanitize_text_field( wp_unslash( $_POST['cd_image_format'] ?? 'span7_16-9' ) ),
+			'cd_import_image' => ! empty( $_POST['cd_import_image'] ),
 		);
 
 		if ( $feed_id ) {
@@ -684,6 +811,25 @@ class AdminPage {
 		}
 
 		$cfg = Feed::get_config( $feed_id );
+
+		if ( 'churchdesk' === ( $cfg['type'] ?? 'ics_url' ) ) {
+			if ( empty( $cfg['cd_org_id'] ) ) {
+				wp_send_json_error( 'No ChurchDesk organization id configured.' );
+			}
+
+			$result = \VEV\Import\ChurchDesk\SourceFactory::make( $cfg )->test();
+			if ( empty( $result['ok'] ) ) {
+				wp_send_json_error( $result['error'] ? $result['error'] : 'Connection failed.' );
+			}
+
+			wp_send_json_success(
+				array(
+					'count'   => $result['count'],
+					'preview' => $result['sample'],
+				)
+			);
+		}
+
 		if ( empty( $cfg['url'] ) ) {
 			wp_send_json_error( 'No URL configured.' );
 		}
@@ -792,9 +938,26 @@ class AdminPage {
 		.vev-test-ok     { color: #00a32a; }
 		.vev-test-err    { color: #d63638; }
 		.column-name     { width: 28%; }
+		.vev-panel       { display: none; }
 		</style>
 		<script>
 		(function($){
+			// Toggle source-type panels (iCal vs ChurchDesk).
+			function vevToggleSource(){
+				var type = $('#vev-source-type').val();
+				$('.vev-panel').hide();
+				$('.vev-panel-' + type).show();
+			}
+			// Hide the partner-token row for the calendar-view endpoint.
+			function vevToggleEndpoint(){
+				var ep = $('#vev-cd-endpoint').val();
+				$('.vev-cd-token-row').toggle(ep === 'pull_api');
+			}
+			$('#vev-source-type').on('change', vevToggleSource);
+			$('#vev-cd-endpoint').on('change', vevToggleEndpoint);
+			vevToggleSource();
+			vevToggleEndpoint();
+
 			// Run now
 			$(document).on('click', '.vev-run-now', function(){
 				var btn     = $(this);
