@@ -32,6 +32,14 @@ class Feed {
 	const META_LAST_COUNTS    = '_vev_if_last_counts';
 	const META_HTTP_TIMEOUT   = '_vev_if_http_timeout';
 
+	// ChurchDesk-specific config.
+	const META_CD_ENDPOINT     = '_vev_if_cd_endpoint';
+	const META_CD_ORG_ID       = '_vev_if_cd_org_id';
+	const META_CD_TOKEN        = '_vev_if_cd_token';
+	const META_CD_CATEGORIES   = '_vev_if_cd_categories';
+	const META_CD_IMAGE_FORMAT = '_vev_if_cd_image_format';
+	const META_CD_IMPORT_IMAGE = '_vev_if_cd_import_image';
+
 	// Default field mapping.
 	const DEFAULT_FIELD_MAP = array(
 		'summary'     => array(
@@ -233,12 +241,16 @@ class Feed {
 	 */
 	private static function save_meta( int $post_id, array $data ): void {
 		$map = array(
-			'type'         => self::META_TYPE,
-			'url'          => self::META_URL,
-			'schedule'     => self::META_SCHEDULE,
-			'update_mode'  => self::META_UPDATE_MODE,
-			'post_status'  => self::META_POST_STATUS,
-			'http_timeout' => self::META_HTTP_TIMEOUT,
+			'type'            => self::META_TYPE,
+			'url'             => self::META_URL,
+			'schedule'        => self::META_SCHEDULE,
+			'update_mode'     => self::META_UPDATE_MODE,
+			'post_status'     => self::META_POST_STATUS,
+			'http_timeout'    => self::META_HTTP_TIMEOUT,
+			'cd_endpoint'     => self::META_CD_ENDPOINT,
+			'cd_org_id'       => self::META_CD_ORG_ID,
+			'cd_token'        => self::META_CD_TOKEN,
+			'cd_image_format' => self::META_CD_IMAGE_FORMAT,
 		);
 
 		foreach ( $map as $key => $meta_key ) {
@@ -249,6 +261,14 @@ class Feed {
 
 		if ( isset( $data['delete_removed'] ) ) {
 			update_post_meta( $post_id, self::META_DELETE_REMOVED, (int) (bool) $data['delete_removed'] );
+		}
+
+		if ( isset( $data['cd_import_image'] ) ) {
+			update_post_meta( $post_id, self::META_CD_IMPORT_IMAGE, (int) (bool) $data['cd_import_image'] );
+		}
+
+		if ( isset( $data['cd_categories'] ) && is_array( $data['cd_categories'] ) ) {
+			update_post_meta( $post_id, self::META_CD_CATEGORIES, array_map( 'absint', $data['cd_categories'] ) );
 		}
 
 		if ( isset( $data['field_map'] ) && is_array( $data['field_map'] ) ) {
@@ -279,22 +299,32 @@ class Feed {
 		$http_timeout_meta = get_post_meta( $feed_id, self::META_HTTP_TIMEOUT, true );
 		$last_counts_meta  = get_post_meta( $feed_id, self::META_LAST_COUNTS, true );
 
+		$cd_endpoint_meta = get_post_meta( $feed_id, self::META_CD_ENDPOINT, true );
+		$cd_format_meta   = get_post_meta( $feed_id, self::META_CD_IMAGE_FORMAT, true );
+		$cd_categories    = get_post_meta( $feed_id, self::META_CD_CATEGORIES, true );
+
 		return array(
-			'id'             => $feed_id,
-			'title'          => get_the_title( $feed_id ),
-			'active'         => get_post_status( $feed_id ) === 'publish',
-			'type'           => $type_meta ? $type_meta : 'ics_url',
-			'url'            => get_post_meta( $feed_id, self::META_URL, true ),
-			'schedule'       => $schedule_meta ? $schedule_meta : 'daily',
-			'field_map'      => $field_map,
-			'tax_defaults'   => $tax_default,
-			'update_mode'    => $update_mode_meta ? $update_mode_meta : 'if_newer',
-			'delete_removed' => (bool) get_post_meta( $feed_id, self::META_DELETE_REMOVED, true ),
-			'post_status'    => $post_status_meta ? $post_status_meta : 'publish',
-			'http_timeout'   => (int) ( $http_timeout_meta ? $http_timeout_meta : 30 ),
-			'last_run'       => (int) get_post_meta( $feed_id, self::META_LAST_RUN, true ),
-			'last_status'    => get_post_meta( $feed_id, self::META_LAST_STATUS, true ),
-			'last_counts'    => json_decode( $last_counts_meta ? $last_counts_meta : '{}', true ),
+			'id'              => $feed_id,
+			'title'           => get_the_title( $feed_id ),
+			'active'          => get_post_status( $feed_id ) === 'publish',
+			'type'            => $type_meta ? $type_meta : 'ics_url',
+			'url'             => get_post_meta( $feed_id, self::META_URL, true ),
+			'schedule'        => $schedule_meta ? $schedule_meta : 'daily',
+			'field_map'       => $field_map,
+			'tax_defaults'    => $tax_default,
+			'update_mode'     => $update_mode_meta ? $update_mode_meta : 'if_newer',
+			'delete_removed'  => (bool) get_post_meta( $feed_id, self::META_DELETE_REMOVED, true ),
+			'post_status'     => $post_status_meta ? $post_status_meta : 'publish',
+			'http_timeout'    => (int) ( $http_timeout_meta ? $http_timeout_meta : 30 ),
+			'last_run'        => (int) get_post_meta( $feed_id, self::META_LAST_RUN, true ),
+			'last_status'     => get_post_meta( $feed_id, self::META_LAST_STATUS, true ),
+			'last_counts'     => json_decode( $last_counts_meta ? $last_counts_meta : '{}', true ),
+			'cd_endpoint'     => $cd_endpoint_meta ? $cd_endpoint_meta : 'pull_api',
+			'cd_org_id'       => get_post_meta( $feed_id, self::META_CD_ORG_ID, true ),
+			'cd_token'        => get_post_meta( $feed_id, self::META_CD_TOKEN, true ),
+			'cd_categories'   => is_array( $cd_categories ) ? $cd_categories : array(),
+			'cd_image_format' => $cd_format_meta ? $cd_format_meta : 'span7_16-9',
+			'cd_import_image' => (bool) get_post_meta( $feed_id, self::META_CD_IMPORT_IMAGE, true ),
 		);
 	}
 

@@ -2,7 +2,7 @@
 
 A lightweight WordPress Events plugin with native admin UI, Schema.org markup, Open Graph tags, iCal import, and first-class support for Elementor and JetEngine.
 
-**Version:** 2.0.0 · **Requires:** WordPress 6.4+, PHP 8.3+
+**Version:** 2.1.0 · **Requires:** WordPress 6.4+, PHP 8.3+
 
 ---
 
@@ -16,6 +16,7 @@ A lightweight WordPress Events plugin with native admin UI, Schema.org markup, O
 - [Settings](#settings)
 - [Admin Interface](#admin-interface)
 - [iCal Import](#ical-import)
+- [ChurchDesk Import](#churchdesk-import)
 - [Schema.org & SEO](#schemaorg--seo)
 - [Elementor Dynamic Tags](#elementor-dynamic-tags)
 - [JetEngine Integration](#jetengine-integration)
@@ -39,6 +40,7 @@ A lightweight WordPress Events plugin with native admin UI, Schema.org markup, O
 - Open Graph / X Card meta tags (auto-detects conflicting SEO plugins)
 - Category color system — CSS custom properties output in `wp_head`
 - iCal/ICS feed importer with cron scheduling and admin log viewer
+- ChurchDesk importer (Pull API + Calendar View) with full field mapping
 - 7 Elementor dynamic tag types
 - Backend calendar grid view (monthly, color-coded by category)
 - Backend list view: month grouping, filter bar, sortable "When" column
@@ -244,6 +246,51 @@ Accessible via the **Calendar** tab in the event list.
 - **Run Now** button for manual import
 - Import log viewer with per-run success/error details
 - Cron is automatically scheduled on feed publish and cleared on trash/delete
+
+---
+
+## ChurchDesk Import
+
+**Events → Import Feeds** → set **Source Type** to *ChurchDesk* to import events
+from a [ChurchDesk](https://churchdesk.com/) organization. ChurchDesk feeds reuse
+the same scheduling, update modes, delete-on-removal, default-taxonomy and log
+features as iCal feeds.
+
+Two endpoints are supported (selectable per feed):
+
+| Endpoint | URL | Auth |
+|----------|-----|------|
+| **Pull API** | `https://api.churchdesk.com/v3.0.0/events` | `organizationId` + `partnerToken` |
+| **Calendar View** | `https://api2.churchdesk.com/collaboration/calendar-view` | `organizationId` |
+
+The **Pull API** is the documented, versioned integration API; request a
+`partnerToken` from `support@churchdesk.com`. The **Calendar View** endpoint is
+the public portal/embed source and needs only the organization id. (The
+calendar-view response shape is not part of the published API contract, so its
+fields are mapped defensively.)
+
+### Field mapping
+
+| ChurchDesk field | VE Events target |
+|------------------|------------------|
+| `id` | import key (`_vev_import_uid`) |
+| `title` | post title |
+| `description` | post content |
+| `summary` | excerpt |
+| `startDate` / `endDate` | `_vev_start_utc` / `_vev_end_utc` (UTC) |
+| `allDay` | `_vev_all_day` |
+| `showEndtime` | `_vev_hide_end` (inverted) |
+| `contributor` | `_vev_speaker` |
+| `price` | `_vev_special_info` |
+| `categories[]` (with `color`) | Category taxonomy (+ `ve_category_color`) |
+| `locationName` + `locationObj` | Location taxonomy (+ `ve_location_address`) |
+| `image` | Featured image (optional, via media sideload) |
+| `updatedAt` | change-detection timestamp |
+
+Per-feed options: an optional comma-separated **category id filter**, whether to
+**import the event image** as the featured image, and the **image format**
+(`span3_16-9` … `span12_16-9`). The `resources` and `parishes` fields are not
+imported.
 
 ---
 
