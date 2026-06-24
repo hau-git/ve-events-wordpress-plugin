@@ -100,6 +100,8 @@ class Mapper {
 		self::map_categories( $event, $taxonomies );
 		self::map_location( $event, $taxonomies );
 
+		$image_url = self::image_url( $event, $config );
+
 		return array(
 			'uid'            => $id,
 			'cd_event_id'    => $id,
@@ -108,7 +110,8 @@ class Mapper {
 			'taxonomies'     => $taxonomies,
 			'import_hash'    => self::hash( $event ),
 			'last_modified'  => ! empty( $event['updatedAt'] ) ? (int) strtotime( (string) $event['updatedAt'] ) : 0,
-			'image_url'      => self::image_url( $event, $config ),
+			'image_url'      => $image_url,
+			'image_key'      => self::image_key( $event, $image_url ),
 			'series_term_id' => null,
 			'force_draft'    => false,
 		);
@@ -245,6 +248,34 @@ class Mapper {
 		foreach ( $image as $value ) {
 			if ( is_string( $value ) && filter_var( $value, FILTER_VALIDATE_URL ) ) {
 				return esc_url_raw( $value );
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Builds a stable identity key for the image, used to de-duplicate uploads
+	 * so events sharing one image reuse a single WordPress attachment.
+	 *
+	 * Prefers the ChurchDesk media id (`imageObj.id`, identical across events that
+	 * share the image); falls back to the image filename. Returns null when there
+	 * is no image.
+	 *
+	 * @param  array       $event Canonical ChurchDesk event.
+	 * @param  string|null $url   Resolved image URL (or null).
+	 * @return string|null
+	 */
+	public static function image_key( array $event, ?string $url ): ?string {
+		if ( ! empty( $event['imageId'] ) ) {
+			return 'cd:' . (string) $event['imageId'];
+		}
+
+		if ( $url ) {
+			$path = wp_parse_url( $url, PHP_URL_PATH );
+			$base = is_string( $path ) ? basename( $path ) : '';
+			if ( '' !== $base ) {
+				return 'file:' . $base;
 			}
 		}
 

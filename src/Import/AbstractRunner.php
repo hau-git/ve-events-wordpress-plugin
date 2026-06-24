@@ -46,6 +46,10 @@ abstract class AbstractRunner {
 	const META_SERIES_UID    = '_vev_import_series_uid';
 	const META_IMAGE_SRC     = '_vev_import_image_src';
 
+	// Attachment meta: stable identity of the source image, used to reuse one
+	// attachment across events that share the same image instead of re-uploading.
+	const META_IMAGE_KEY = '_vev_import_image_key';
+
 	// Cross-feed identity: the ChurchDesk event id, written by every feed that
 	// can derive it, so the same event from different feeds is merged not duplicated.
 	const META_CD_EVENT_ID = '_vev_cd_event_id';
@@ -286,7 +290,7 @@ abstract class AbstractRunner {
 
 		// Featured image only when the post has none.
 		if ( ! has_post_thumbnail( $existing_id ) ) {
-			$this->maybe_set_featured_image( $existing_id, $row['image_url'] ?? null );
+			$this->maybe_set_featured_image( $existing_id, $row );
 		}
 
 		// Stamp the cross-feed id so future matches are fast and order-independent.
@@ -330,7 +334,7 @@ abstract class AbstractRunner {
 			wp_set_object_terms( $post_id, (int) $row['series_term_id'], Constants::TAX_SERIES, true );
 		}
 
-		$this->maybe_set_featured_image( $post_id, $row['image_url'] ?? null );
+		$this->maybe_set_featured_image( $post_id, $row );
 
 		++$this->counts['created'];
 	}
@@ -515,34 +519,73 @@ abstract class AbstractRunner {
 	}
 
 	/**
-	 * Downloads and assigns a featured image, skipping unchanged sources.
+	 * Sets the featured image for a post, de-duplicating uploads so events that
+	 * share one image reuse a single attachment, and assigning alt text from the
+	 * event title when the attachment has none.
 	 *
-	 * @param int         $post_id Event post ID.
-	 * @param string|null $url     Source image URL, or null to skip.
+	 * @param int   $post_id Event post ID.
+	 * @param array $row     Normalised event row (image_url, image_key, post_data).
 	 */
-	protected function maybe_set_featured_image( int $post_id, ?string $url ): void {
+	protected function maybe_set_featured_image( int $post_id, array $row ): void {
+		$url = $row['image_url'] ?? null;
 		if ( empty( $url ) || ! function_exists( 'media_sideload_image' ) ) {
 			return;
 		}
 
-		$src_hash  = md5( $url );
-		$stored    = get_post_meta( $post_id, self::META_IMAGE_SRC, true );
-		$has_thumb = (bool) get_post_thumbnail_id( $post_id );
+		// Stable identity for this image (ChurchDesk media id / filename), so the
+		// same image is reused rather than uploaded once per event.
+		$key = ! empty( $row['image_key'] ) ? (string) $row['image_key'] : 'url:' . md5( $url );
 
-		// Same source already imported and thumbnail still present — nothing to do.
-		if ( $stored === $src_hash && $has_thumb ) {
+		// Post-level guard: this post already has the right image.
+		$stored = get_post_meta( $post_id, self::META_IMAGE_SRC, true );
+		if ( $stored === $key && get_post_thumbnail_id( $post_id ) ) {
 			return;
 		}
 
-		$attachment_id = media_sideload_image( $url, $post_id, null, 'id' );
+		// Library-level de-dup: reuse an existing attachment imported with this key.
+		$attachment_id = $this->find_attachment_by_key( $key );
 
-		if ( is_wp_error( $attachment_id ) ) {
-			$this->errors[] = sprintf( 'Image import failed for post %d: %s', $post_id, $attachment_id->get_error_message() );
-			return;
+		if ( ! $attachment_id ) {
+			$sideloaded = media_sideload_image( $url, $post_id, null, 'id' );
+			if ( is_wp_error( $sideloaded ) ) {
+				$this->errors[] = sprintf( 'Image import failed for post %d: %s', $post_id, $sideloaded->get_error_message() );
+				return;
+			}
+			$attachment_id = (int) $sideloaded;
+			update_post_meta( $attachment_id, self::META_IMAGE_KEY, $key );
 		}
 
-		set_post_thumbnail( $post_id, (int) $attachment_id );
-		update_post_meta( $post_id, self::META_IMAGE_SRC, $src_hash );
+		set_post_thumbnail( $post_id, $attachment_id );
+		update_post_meta( $post_id, self::META_IMAGE_SRC, $key );
+
+		// Alt text from the event title when the attachment has none.
+		$alt = sanitize_text_field( (string) ( $row['post_data']['post_title'] ?? '' ) );
+		if ( '' !== $alt && '' === (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) {
+			update_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt );
+		}
+	}
+
+	/**
+	 * Finds an existing attachment previously imported with the given image key.
+	 *
+	 * @param  string $key Stable image identity key.
+	 * @return int|null    Attachment ID, or null.
+	 */
+	protected function find_attachment_by_key( string $key ): ?int {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$attachment_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT pm.post_id FROM {$wpdb->postmeta} pm
+			 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id AND p.post_type = 'attachment'
+			 WHERE pm.meta_key = %s AND pm.meta_value = %s LIMIT 1",
+				self::META_IMAGE_KEY,
+				$key
+			)
+		);
+
+		return $attachment_id ? (int) $attachment_id : null;
 	}
 
 	/**

@@ -151,6 +151,7 @@ class CalendarViewSource extends AbstractSource {
 			'location'     => is_string( $raw['location'] ?? null ) ? $raw['location'] : '',
 			'categories'   => self::extract_categories( $raw ),
 			'image'        => self::extract_image( $raw ),
+			'imageId'      => $raw['imageObj']['id'] ?? null,
 			'updatedAt'    => $raw['updatedAt'] ?? $raw['updated'] ?? '',
 		);
 	}
