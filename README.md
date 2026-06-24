@@ -292,6 +292,11 @@ Per-feed options: an optional comma-separated **category id filter**, whether to
 e.g. `span6_16-9` for Calendar View, `span7_16-9` for the Pull API). The `resources` and
 `parishes` fields are not imported.
 
+Imported images are **de-duplicated**: events that share the same image reuse a single
+attachment (matched on the ChurchDesk media id, with the filename as a fallback) rather than
+uploading a copy each. Each imported image also gets **alt text from the event title** when
+it has none.
+
 ### Cross-feed merge
 
 If you import the same events from more than one feed — for example the **ChurchDesk iCal

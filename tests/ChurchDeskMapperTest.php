@@ -146,6 +146,12 @@ final class ChurchDeskMapperTest extends TestCase {
 		$this->assertSame( 'https://example.com/img/span7.jpg', $row['image_url'] );
 	}
 
+	public function test_image_key_falls_back_to_filename(): void {
+		// The Pull API image object has no media id, so the key uses the filename.
+		$row = Mapper::map( $this->sample_event(), $this->config() );
+		$this->assertSame( 'file:span7.jpg', $row['image_key'] );
+	}
+
 	public function test_image_skipped_when_disabled(): void {
 		$config                    = $this->config();
 		$config['cd_import_image'] = false;

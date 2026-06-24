@@ -25,6 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   title, content or dates) and order-independent.
 - Image format is now a free-text field with suggestions including `span6_16-9` (calendar-view)
   and `span7_16-9` (Pull API); the default follows the selected endpoint.
+- **Featured-image de-duplication.** Events that share the same image now reuse a single
+  WordPress attachment instead of uploading a copy per event. The match keys on the stable
+  ChurchDesk media id (`imageObj.id`), with the image filename as a fallback. (Only prevents
+  new duplicates; images imported before this release are not retroactively merged.)
+- **Automatic image alt text** set from the event title when the attachment has none.
 
 ## [2.1.0] - 2026-06-20
 
