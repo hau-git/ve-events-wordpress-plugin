@@ -2,7 +2,7 @@
 /**
  * Plugin Name: VE Events
  * Description: Adds a lightweight Events post type with WordPress-native admin UI, Schema.org Event markup, and first-class support for Elementor/JetEngine listings.
- * Version: 2.1.0
+ * Version: 2.2.0
  * Requires at least: 6.4
  * Requires PHP: 8.3
  * Author: Marc Probst

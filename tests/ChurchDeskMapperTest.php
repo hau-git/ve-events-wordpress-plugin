@@ -167,15 +167,15 @@ final class ChurchDeskMapperTest extends TestCase {
 		unset( $event['id'] );
 		$this->assertNull( Mapper::map( $event, $this->config() ) );
 
-		$event = $this->sample_event();
+		$event              = $this->sample_event();
 		$event['startDate'] = null;
 		$this->assertNull( Mapper::map( $event, $this->config() ) );
 	}
 
 	public function test_end_falls_back_to_start(): void {
-		$event              = $this->sample_event();
-		$event['endDate']   = null;
-		$row                = Mapper::map( $event, $this->config() );
+		$event            = $this->sample_event();
+		$event['endDate'] = null;
+		$row              = Mapper::map( $event, $this->config() );
 		$this->assertSame( $row['meta']['_vev_start_utc'], $row['meta']['_vev_end_utc'] );
 	}
 }

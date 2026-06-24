@@ -33,6 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *         image_url:      string|null,   // featured-image source URL or null
  *         series_term_id: int|null,      // ve_event_series term id or null
  *         force_draft:    bool,          // force post_status = draft (e.g. cancelled)
+ *         cd_event_id:    string|null,   // ChurchDesk event id for cross-feed merge
  *     }
  */
 abstract class AbstractRunner {
@@ -44,6 +45,10 @@ abstract class AbstractRunner {
 	const META_LAST_MODIFIED = '_vev_import_last_modified';
 	const META_SERIES_UID    = '_vev_import_series_uid';
 	const META_IMAGE_SRC     = '_vev_import_image_src';
+
+	// Cross-feed identity: the ChurchDesk event id, written by every feed that
+	// can derive it, so the same event from different feeds is merged not duplicated.
+	const META_CD_EVENT_ID = '_vev_cd_event_id';
 
 	/**
 	 * Feed configuration for the run.
@@ -169,9 +174,127 @@ abstract class AbstractRunner {
 
 		if ( $existing_id ) {
 			$this->maybe_update( $existing_id, $row );
-		} else {
-			$this->create_event( $row );
+			return;
 		}
+
+		// Not owned by this feed. If cross-feed merge is on, enrich a matching event
+		// from another feed instead of creating a duplicate.
+		if ( ! empty( $this->config['merge_cross_feed'] ) ) {
+			$match_id = $this->find_cross_feed_match( $row );
+			if ( $match_id ) {
+				$this->enrich_event( $match_id, $row );
+				return;
+			}
+		}
+
+		$this->create_event( $row );
+	}
+
+	// -------------------------------------------------------------------------
+	// Cross-feed merge
+	// -------------------------------------------------------------------------
+
+	/**
+	 * Finds an event owned by a different feed that represents the same real event.
+	 *
+	 * Primary key is the ChurchDesk event id (`_vev_cd_event_id`); the fallback is
+	 * an exact start-timestamp plus normalised-title match.
+	 *
+	 * @param  array $row Normalised event row.
+	 * @return int|null   Matching post ID, or null.
+	 */
+	protected function find_cross_feed_match( array $row ): ?int {
+		global $wpdb;
+
+		$cd_id = $row['cd_event_id'] ?? '';
+		if ( '' !== (string) $cd_id ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$post_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT p.ID FROM {$wpdb->posts} p
+				 INNER JOIN {$wpdb->postmeta} m ON p.ID = m.post_id AND m.meta_key = %s AND m.meta_value = %s
+				 WHERE p.post_type = %s AND p.post_status != 'trash' LIMIT 1",
+					self::META_CD_EVENT_ID,
+					(string) $cd_id,
+					Constants::POST_TYPE
+				)
+			);
+			if ( $post_id ) {
+				return (int) $post_id;
+			}
+		}
+
+		// Fallback: same start timestamp + same normalised title.
+		$start = (int) ( $row['meta']['_vev_start_utc'] ?? 0 );
+		$title = \VEV\Import\ChurchDesk\Identity::normalize_title( (string) ( $row['post_data']['post_title'] ?? '' ) );
+		if ( ! $start || '' === $title ) {
+			return null;
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$candidates = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT p.ID, p.post_title FROM {$wpdb->posts} p
+			 INNER JOIN {$wpdb->postmeta} m ON p.ID = m.post_id AND m.meta_key = %s AND m.meta_value = %d
+			 WHERE p.post_type = %s AND p.post_status != 'trash' LIMIT 20",
+				Constants::META_START_UTC,
+				$start,
+				Constants::POST_TYPE
+			)
+		);
+
+		foreach ( (array) $candidates as $candidate ) {
+			if ( \VEV\Import\ChurchDesk\Identity::normalize_title( (string) $candidate->post_title ) === $title ) {
+				return (int) $candidate->ID;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Enriches an event owned by another feed with this feed's data — additive and
+	 * non-destructive. Never changes ownership, title, content or dates; only sets
+	 * the featured image when missing and fills empty meta / missing taxonomy terms.
+	 *
+	 * @param int   $existing_id Existing event post ID.
+	 * @param array $row         Normalised event row.
+	 */
+	protected function enrich_event( int $existing_id, array $row ): void {
+		// Fill only empty/absent meta — never overwrite the owning feed's values.
+		foreach ( (array) $row['meta'] as $key => $value ) {
+			if ( '' === $value || null === $value ) {
+				continue;
+			}
+			$current = get_post_meta( $existing_id, $key, true );
+			if ( '' === $current || false === $current || null === $current ) {
+				update_post_meta( $existing_id, $key, $value );
+			}
+		}
+
+		// Backfill missing taxonomy terms (e.g. category with colour); assign_taxonomies
+		// replaces per-taxonomy, so only touch taxonomies the post has none of.
+		$taxonomies = array();
+		foreach ( (array) $row['taxonomies'] as $taxonomy => $config ) {
+			if ( taxonomy_exists( $taxonomy ) && ! has_term( '', $taxonomy, $existing_id ) ) {
+				$taxonomies[ $taxonomy ] = $config;
+			}
+		}
+		if ( $taxonomies ) {
+			$this->assign_taxonomies( $existing_id, $taxonomies );
+		}
+
+		// Featured image only when the post has none.
+		if ( ! has_post_thumbnail( $existing_id ) ) {
+			$this->maybe_set_featured_image( $existing_id, $row['image_url'] ?? null );
+		}
+
+		// Stamp the cross-feed id so future matches are fast and order-independent.
+		if ( ! empty( $row['cd_event_id'] ) && ! get_post_meta( $existing_id, self::META_CD_EVENT_ID, true ) ) {
+			update_post_meta( $existing_id, self::META_CD_EVENT_ID, (string) $row['cd_event_id'] );
+		}
+
+		++$this->counts['updated'];
 	}
 
 	// -------------------------------------------------------------------------
@@ -319,6 +442,11 @@ abstract class AbstractRunner {
 		$meta[ self::META_FEED_ID ]       = $this->feed_id;
 		$meta[ self::META_HASH ]          = $row['import_hash'];
 		$meta[ self::META_LAST_MODIFIED ] = (int) ( $row['last_modified'] ?? 0 );
+
+		// Cross-feed identity (when derivable).
+		if ( ! empty( $row['cd_event_id'] ) ) {
+			$meta[ self::META_CD_EVENT_ID ] = (string) $row['cd_event_id'];
+		}
 
 		return $meta;
 	}

@@ -102,6 +102,7 @@ class Mapper {
 
 		return array(
 			'uid'            => $id,
+			'cd_event_id'    => $id,
 			'post_data'      => $post_data,
 			'meta'           => $meta,
 			'taxonomies'     => $taxonomies,
@@ -207,6 +208,10 @@ class Mapper {
 	private static function compose_address( array $event ): string {
 		$obj = $event['locationObj'] ?? null;
 		if ( is_array( $obj ) ) {
+			// calendar-view supplies a ready-made address string — prefer it.
+			if ( ! empty( $obj['string'] ) && is_string( $obj['string'] ) ) {
+				return sanitize_text_field( $obj['string'] );
+			}
 			$line  = trim( (string) ( $obj['address'] ?? '' ) );
 			$city  = trim( (string) ( $obj['zipcode'] ?? '' ) . ' ' . (string) ( $obj['city'] ?? '' ) );
 			$parts = array_filter( array( $line, trim( $city ), trim( (string) ( $obj['country'] ?? '' ) ) ) );

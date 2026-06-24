@@ -261,23 +261,24 @@ class AdminPage {
 		$is_new = 0 === $feed_id;
 		$cfg    = $is_new
 			? array(
-				'title'           => '',
-				'type'            => 'ics_url',
-				'url'             => '',
-				'schedule'        => 'daily',
-				'field_map'       => Feed::DEFAULT_FIELD_MAP,
-				'tax_defaults'    => array(),
-				'update_mode'     => 'if_newer',
-				'delete_removed'  => false,
-				'post_status'     => 'publish',
-				'http_timeout'    => 30,
-				'active'          => true,
-				'cd_endpoint'     => 'pull_api',
-				'cd_org_id'       => '',
-				'cd_token'        => '',
-				'cd_categories'   => array(),
-				'cd_image_format' => 'span7_16-9',
-				'cd_import_image' => true,
+				'title'            => '',
+				'type'             => 'ics_url',
+				'url'              => '',
+				'schedule'         => 'daily',
+				'field_map'        => Feed::DEFAULT_FIELD_MAP,
+				'tax_defaults'     => array(),
+				'update_mode'      => 'if_newer',
+				'delete_removed'   => false,
+				'merge_cross_feed' => false,
+				'post_status'      => 'publish',
+				'http_timeout'     => 30,
+				'active'           => true,
+				'cd_endpoint'      => 'pull_api',
+				'cd_org_id'        => '',
+				'cd_token'         => '',
+				'cd_categories'    => array(),
+				'cd_image_format'  => 'span7_16-9',
+				'cd_import_image'  => true,
 			)
 			: Feed::get_config( $feed_id );
 
@@ -373,15 +374,20 @@ class AdminPage {
 						<p>
 							<label>
 								<?php esc_html_e( 'Image format', 've-events' ); ?>
-								<select name="cd_image_format">
+								<input type="text" name="cd_image_format" id="vev-cd-image-format"
+									value="<?php echo esc_attr( $cfg['cd_image_format'] ); ?>"
+									list="vev-cd-formats" class="regular-text" placeholder="span6_16-9">
+								<datalist id="vev-cd-formats">
 								<?php
-								$formats = array( 'span3_16-9', 'span4_16-9', 'span5_16-9', 'span7_16-9', 'span12_16-9' );
+								$formats = array( 'span3_16-9', 'span4_16-9', 'span5_16-9', 'span6_16-9', 'span7_16-9', 'span12_16-9' );
 								foreach ( $formats as $format ) :
 									?>
-									<option value="<?php echo esc_attr( $format ); ?>" <?php selected( $cfg['cd_image_format'], $format ); ?>><?php echo esc_html( $format ); ?></option>
+									<option value="<?php echo esc_attr( $format ); ?>"></option>
 								<?php endforeach; ?>
-								</select>
+								</datalist>
 							</label>
+							<br>
+							<span class="description"><?php esc_html_e( 'Pull API typically uses span7_16-9; Calendar View uses span6_16-9.', 've-events' ); ?></span>
 						</p>
 					</td>
 				</tr>
@@ -463,6 +469,16 @@ class AdminPage {
 							<input type="checkbox" name="delete_removed" value="1" <?php checked( $cfg['delete_removed'] ); ?>>
 							<?php esc_html_e( 'Move to Trash if removed from source', 've-events' ); ?>
 						</label>
+					</td>
+				</tr>
+				<tr>
+					<th><?php esc_html_e( 'Cross-feed Merge', 've-events' ); ?></th>
+					<td>
+						<label>
+							<input type="checkbox" name="merge_cross_feed" value="1" <?php checked( $cfg['merge_cross_feed'] ); ?>>
+							<?php esc_html_e( 'Match the same event from other feeds and enrich it (e.g. add the image) instead of creating a duplicate', 've-events' ); ?>
+						</label>
+						<p class="description"><?php esc_html_e( 'Matches on the ChurchDesk event id (e.g. iCal export + API of the same organization), with a start-time + title fallback.', 've-events' ); ?></p>
 					</td>
 				</tr>
 			</table>
@@ -701,24 +717,25 @@ class AdminPage {
 		}
 
 		$data = array(
-			'title'           => sanitize_text_field( $_POST['title'] ?? '' ),
-			'type'            => $type,
-			'url'             => $valid_url,
-			'schedule'        => sanitize_key( $_POST['schedule'] ?? 'daily' ),
-			'update_mode'     => sanitize_key( $_POST['update_mode'] ?? 'if_newer' ),
-			'post_status'     => in_array( $_POST['post_status'] ?? '', array( 'publish', 'draft' ), true )
+			'title'            => sanitize_text_field( $_POST['title'] ?? '' ),
+			'type'             => $type,
+			'url'              => $valid_url,
+			'schedule'         => sanitize_key( $_POST['schedule'] ?? 'daily' ),
+			'update_mode'      => sanitize_key( $_POST['update_mode'] ?? 'if_newer' ),
+			'post_status'      => in_array( $_POST['post_status'] ?? '', array( 'publish', 'draft' ), true )
 								? $_POST['post_status'] : 'publish',
-			'http_timeout'    => min( 120, max( 5, (int) ( $_POST['http_timeout'] ?? 30 ) ) ),
-			'delete_removed'  => ! empty( $_POST['delete_removed'] ),
-			'active'          => ! empty( $_POST['active'] ),
-			'field_map'       => $field_map,
-			'tax_defaults'    => $tax_defaults,
-			'cd_endpoint'     => $endpoint,
-			'cd_org_id'       => sanitize_text_field( wp_unslash( $_POST['cd_org_id'] ?? '' ) ),
-			'cd_token'        => sanitize_text_field( wp_unslash( $_POST['cd_token'] ?? '' ) ),
-			'cd_categories'   => $cd_categories,
-			'cd_image_format' => sanitize_text_field( wp_unslash( $_POST['cd_image_format'] ?? 'span7_16-9' ) ),
-			'cd_import_image' => ! empty( $_POST['cd_import_image'] ),
+			'http_timeout'     => min( 120, max( 5, (int) ( $_POST['http_timeout'] ?? 30 ) ) ),
+			'delete_removed'   => ! empty( $_POST['delete_removed'] ),
+			'merge_cross_feed' => ! empty( $_POST['merge_cross_feed'] ),
+			'active'           => ! empty( $_POST['active'] ),
+			'field_map'        => $field_map,
+			'tax_defaults'     => $tax_defaults,
+			'cd_endpoint'      => $endpoint,
+			'cd_org_id'        => sanitize_text_field( wp_unslash( $_POST['cd_org_id'] ?? '' ) ),
+			'cd_token'         => sanitize_text_field( wp_unslash( $_POST['cd_token'] ?? '' ) ),
+			'cd_categories'    => $cd_categories,
+			'cd_image_format'  => sanitize_text_field( wp_unslash( $_POST['cd_image_format'] ?? 'span7_16-9' ) ),
+			'cd_import_image'  => ! empty( $_POST['cd_import_image'] ),
 		);
 
 		if ( $feed_id ) {
@@ -948,10 +965,15 @@ class AdminPage {
 				$('.vev-panel').hide();
 				$('.vev-panel-' + type).show();
 			}
-			// Hide the partner-token row for the calendar-view endpoint.
+			// Hide the partner-token row for the calendar-view endpoint and pick a
+			// sensible default image format per endpoint (without clobbering a custom one).
 			function vevToggleEndpoint(){
 				var ep = $('#vev-cd-endpoint').val();
 				$('.vev-cd-token-row').toggle(ep === 'pull_api');
+				var fmt = $('#vev-cd-image-format');
+				if (fmt.length && (fmt.val() === '' || fmt.val() === 'span6_16-9' || fmt.val() === 'span7_16-9')) {
+					fmt.val(ep === 'calendar_view' ? 'span6_16-9' : 'span7_16-9');
+				}
 			}
 			$('#vev-source-type').on('change', vevToggleSource);
 			$('#vev-cd-endpoint').on('change', vevToggleEndpoint);

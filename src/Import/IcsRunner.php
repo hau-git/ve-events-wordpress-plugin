@@ -89,6 +89,7 @@ class IcsRunner extends AbstractRunner {
 
 		return array(
 			'uid'            => $import_uid,
+			'cd_event_id'    => \VEV\Import\ChurchDesk\Identity::from_ical_uid( (string) ( $event->uid ?? '' ), (string) ( $event->url ?? '' ) ),
 			'post_data'      => $mapped['post_data'],
 			'meta'           => $mapped['meta'],
 			'taxonomies'     => $mapped['taxonomies'],

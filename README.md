@@ -2,7 +2,7 @@
 
 A lightweight WordPress Events plugin with native admin UI, Schema.org markup, Open Graph tags, iCal import, and first-class support for Elementor and JetEngine.
 
-**Version:** 2.1.0 · **Requires:** WordPress 6.4+, PHP 8.3+
+**Version:** 2.2.0 · **Requires:** WordPress 6.4+, PHP 8.3+
 
 ---
 
@@ -288,9 +288,20 @@ fields are mapped defensively.)
 | `updatedAt` | change-detection timestamp |
 
 Per-feed options: an optional comma-separated **category id filter**, whether to
-**import the event image** as the featured image, and the **image format**
-(`span3_16-9` … `span12_16-9`). The `resources` and `parishes` fields are not
-imported.
+**import the event image** as the featured image, and the **image format** (free text;
+e.g. `span6_16-9` for Calendar View, `span7_16-9` for the Pull API). The `resources` and
+`parishes` fields are not imported.
+
+### Cross-feed merge
+
+If you import the same events from more than one feed — for example the **ChurchDesk iCal
+export** *and* the **ChurchDesk API** of the same organization — enable **Cross-feed merge**
+on a feed (under *Import Behaviour*). Instead of creating a duplicate, the importer matches
+the existing event on the **ChurchDesk event id** (embedded in the iCal `UID`/`URL`, with a
+start-time + title fallback) and **enriches** it with the other feed's data — above all the
+**featured image**. Enrichment is additive: it only fills empty fields and a missing image,
+never overwriting the title, content, dates, or values another feed already set. Matching is
+order-independent (whichever feed imports first owns the event; the other enriches it).
 
 ---
 
