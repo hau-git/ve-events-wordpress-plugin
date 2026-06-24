@@ -40,6 +40,9 @@ class Feed {
 	const META_CD_IMAGE_FORMAT = '_vev_if_cd_image_format';
 	const META_CD_IMPORT_IMAGE = '_vev_if_cd_import_image';
 
+	// Cross-feed merge (available to all feed types).
+	const META_MERGE_CROSS_FEED = '_vev_if_merge_cross_feed';
+
 	// Default field mapping.
 	const DEFAULT_FIELD_MAP = array(
 		'summary'     => array(
@@ -267,6 +270,10 @@ class Feed {
 			update_post_meta( $post_id, self::META_CD_IMPORT_IMAGE, (int) (bool) $data['cd_import_image'] );
 		}
 
+		if ( isset( $data['merge_cross_feed'] ) ) {
+			update_post_meta( $post_id, self::META_MERGE_CROSS_FEED, (int) (bool) $data['merge_cross_feed'] );
+		}
+
 		if ( isset( $data['cd_categories'] ) && is_array( $data['cd_categories'] ) ) {
 			update_post_meta( $post_id, self::META_CD_CATEGORIES, array_map( 'absint', $data['cd_categories'] ) );
 		}
@@ -304,27 +311,28 @@ class Feed {
 		$cd_categories    = get_post_meta( $feed_id, self::META_CD_CATEGORIES, true );
 
 		return array(
-			'id'              => $feed_id,
-			'title'           => get_the_title( $feed_id ),
-			'active'          => get_post_status( $feed_id ) === 'publish',
-			'type'            => $type_meta ? $type_meta : 'ics_url',
-			'url'             => get_post_meta( $feed_id, self::META_URL, true ),
-			'schedule'        => $schedule_meta ? $schedule_meta : 'daily',
-			'field_map'       => $field_map,
-			'tax_defaults'    => $tax_default,
-			'update_mode'     => $update_mode_meta ? $update_mode_meta : 'if_newer',
-			'delete_removed'  => (bool) get_post_meta( $feed_id, self::META_DELETE_REMOVED, true ),
-			'post_status'     => $post_status_meta ? $post_status_meta : 'publish',
-			'http_timeout'    => (int) ( $http_timeout_meta ? $http_timeout_meta : 30 ),
-			'last_run'        => (int) get_post_meta( $feed_id, self::META_LAST_RUN, true ),
-			'last_status'     => get_post_meta( $feed_id, self::META_LAST_STATUS, true ),
-			'last_counts'     => json_decode( $last_counts_meta ? $last_counts_meta : '{}', true ),
-			'cd_endpoint'     => $cd_endpoint_meta ? $cd_endpoint_meta : 'pull_api',
-			'cd_org_id'       => get_post_meta( $feed_id, self::META_CD_ORG_ID, true ),
-			'cd_token'        => get_post_meta( $feed_id, self::META_CD_TOKEN, true ),
-			'cd_categories'   => is_array( $cd_categories ) ? $cd_categories : array(),
-			'cd_image_format' => $cd_format_meta ? $cd_format_meta : 'span7_16-9',
-			'cd_import_image' => (bool) get_post_meta( $feed_id, self::META_CD_IMPORT_IMAGE, true ),
+			'id'               => $feed_id,
+			'title'            => get_the_title( $feed_id ),
+			'active'           => get_post_status( $feed_id ) === 'publish',
+			'type'             => $type_meta ? $type_meta : 'ics_url',
+			'url'              => get_post_meta( $feed_id, self::META_URL, true ),
+			'schedule'         => $schedule_meta ? $schedule_meta : 'daily',
+			'field_map'        => $field_map,
+			'tax_defaults'     => $tax_default,
+			'update_mode'      => $update_mode_meta ? $update_mode_meta : 'if_newer',
+			'delete_removed'   => (bool) get_post_meta( $feed_id, self::META_DELETE_REMOVED, true ),
+			'post_status'      => $post_status_meta ? $post_status_meta : 'publish',
+			'http_timeout'     => (int) ( $http_timeout_meta ? $http_timeout_meta : 30 ),
+			'last_run'         => (int) get_post_meta( $feed_id, self::META_LAST_RUN, true ),
+			'last_status'      => get_post_meta( $feed_id, self::META_LAST_STATUS, true ),
+			'last_counts'      => json_decode( $last_counts_meta ? $last_counts_meta : '{}', true ),
+			'cd_endpoint'      => $cd_endpoint_meta ? $cd_endpoint_meta : 'pull_api',
+			'cd_org_id'        => get_post_meta( $feed_id, self::META_CD_ORG_ID, true ),
+			'cd_token'         => get_post_meta( $feed_id, self::META_CD_TOKEN, true ),
+			'cd_categories'    => is_array( $cd_categories ) ? $cd_categories : array(),
+			'cd_image_format'  => $cd_format_meta ? $cd_format_meta : 'span7_16-9',
+			'cd_import_image'  => (bool) get_post_meta( $feed_id, self::META_CD_IMPORT_IMAGE, true ),
+			'merge_cross_feed' => (bool) get_post_meta( $feed_id, self::META_MERGE_CROSS_FEED, true ),
 		);
 	}
 

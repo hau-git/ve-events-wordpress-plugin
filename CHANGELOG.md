@@ -5,6 +5,27 @@ All notable changes to the VE Events plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.2.0] - 2026-06-24
+
+### Fixed
+- **Backend calendar view** rendered unstyled because `admin-calendar.css` was gated on a
+  hook suffix that doesn't fire on `edit.php?post_type=ve_event&page=vev-calendar`. It is now
+  enqueued based on the `page` request parameter.
+- **ChurchDesk calendar-view import returned only one event.** The endpoint wraps results in
+  `{ count, items, totalCount }`; the parser now reads `items` and remaps the calendar-view
+  field names (`eventCategories`, `imageObj.styles`, `locationObj.string`) onto the canonical
+  shape, so categories (with colour), the composed address, and the event image import correctly.
+
+### Added
+- **Cross-feed merge** (per-feed opt-in, both feed types): when the same event arrives from
+  more than one feed (e.g. the ChurchDesk iCal export *and* the ChurchDesk API of the same
+  organization), it is matched on the ChurchDesk event id (with a start-time + title fallback)
+  and the existing event is **enriched** — above all the featured image — instead of being
+  duplicated. Enrichment is additive and non-destructive (never overwrites existing values,
+  title, content or dates) and order-independent.
+- Image format is now a free-text field with suggestions including `span6_16-9` (calendar-view)
+  and `span7_16-9` (Pull API); the default follows the selected endpoint.
+
 ## [2.1.0] - 2026-06-20
 
 ### Added

@@ -66,8 +66,12 @@ final class Assets {
 			);
 		}
 
-		// Calendar page.
-		if ( 'admin_page_vev-calendar' === $hook ) {
+		// Calendar page. The page is registered with a null parent and reached via
+		// edit.php?post_type=ve_event&page=vev-calendar, so the hook suffix WordPress
+		// fires is not reliably "admin_page_vev-calendar". Gate on the page request var.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only asset gate.
+		$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+		if ( 'vev-calendar' === $page ) {
 			wp_enqueue_style( 'vev-admin-calendar', $base . 'css/admin-calendar.css', array(), $ver );
 		}
 
