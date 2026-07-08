@@ -71,5 +71,50 @@ if ( ! function_exists( 'wp_date' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	/**
+	 * @param string $string Raw string.
+	 */
+	function wp_strip_all_tags( $string ): string {
+		return trim( wp_strip_tags( (string) $string ) );
+	}
+}
+
+if ( ! function_exists( 'wp_strip_tags' ) ) {
+	/**
+	 * @param string $string Raw string.
+	 */
+	function wp_strip_tags( string $string ): string {
+		return strip_tags( $string );
+	}
+}
+
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+	/**
+	 * @param string $str Raw string.
+	 */
+	function sanitize_text_field( $str ): string {
+		return trim( preg_replace( '/\s+/', ' ', wp_strip_all_tags( (string) $str ) ) );
+	}
+}
+
+if ( ! function_exists( 'wp_kses_post' ) ) {
+	/**
+	 * @param string $string Raw HTML.
+	 */
+	function wp_kses_post( $string ): string {
+		return (string) $string;
+	}
+}
+
+if ( ! function_exists( 'esc_url_raw' ) ) {
+	/**
+	 * @param string $url Raw URL.
+	 */
+	function esc_url_raw( $url ): string {
+		return trim( (string) $url );
+	}
+}
+
 require_once dirname( __DIR__ ) . '/src/Autoloader.php';
 \VEV\Autoloader::register();

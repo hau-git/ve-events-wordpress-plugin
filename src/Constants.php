@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Constants {
 
-	public const VERSION = '2.1.0';
+	public const VERSION = '2.3.0';
 
 	public const TEXTDOMAIN = 've-events';
 	public const POST_TYPE  = 've_event';

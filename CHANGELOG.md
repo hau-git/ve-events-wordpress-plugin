@@ -5,7 +5,7 @@ All notable changes to the VE Events plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [2.1.0] - 2026-07-08
+## [2.3.0] - 2026-07-08
 
 ### Added
 - **Interactive admin calendar.** Month navigation is now AJAX (no full page
@@ -47,6 +47,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - New DST-safe `Support\Reschedule` and `Support\AttendanceMode` single sources
   of truth, each with PHPUnit coverage; new `DateParser` and `IcsBuilder` tests.
 - `CLAUDE.md` rewritten to match the current `src/` architecture.
+
+## [2.2.0] - 2026-06-24
+
+### Fixed
+- **Backend calendar view** rendered unstyled because `admin-calendar.css` was gated on a
+  hook suffix that doesn't fire on `edit.php?post_type=ve_event&page=vev-calendar`. It is now
+  enqueued based on the `page` request parameter.
+- **ChurchDesk calendar-view import returned only one event.** The endpoint wraps results in
+  `{ count, items, totalCount }`; the parser now reads `items` and remaps the calendar-view
+  field names (`eventCategories`, `imageObj.styles`, `locationObj.string`) onto the canonical
+  shape, so categories (with colour), the composed address, and the event image import correctly.
+
+### Added
+- **Cross-feed merge** (per-feed opt-in, both feed types): when the same event arrives from
+  more than one feed (e.g. the ChurchDesk iCal export *and* the ChurchDesk API of the same
+  organization), it is matched on the ChurchDesk event id (with a start-time + title fallback)
+  and the existing event is **enriched** — above all the featured image — instead of being
+  duplicated. Enrichment is additive and non-destructive (never overwrites existing values,
+  title, content or dates) and order-independent.
+- Image format is now a free-text field with suggestions including `span6_16-9` (calendar-view)
+  and `span7_16-9` (Pull API); the default follows the selected endpoint.
+
+## [2.1.0] - 2026-06-20
+
+### Added
+- **ChurchDesk import** as a second feed source alongside iCal/ICS. A feed's
+  **Source Type** can now be *iCal / ICS URL* or *ChurchDesk*. ChurchDesk feeds
+  support two endpoints, selectable per feed:
+  - **Pull API** — the documented, versioned API (`https://api.churchdesk.com/v3.0.0/events`),
+    authenticated with an `organizationId` and a `partnerToken` (obtained from
+    ChurchDesk support).
+  - **Calendar View** — the public portal endpoint
+    (`https://api2.churchdesk.com/collaboration/calendar-view`), authenticated
+    with an `organizationId` only.
+- ChurchDesk events are matched to `ve_event` fields: title, description,
+  summary → excerpt, start/end (UTC), all-day, `showEndtime` → hide-end,
+  contributor → speaker, price → special info, categories (with colour) →
+  Category taxonomy, location (name + address) → Location taxonomy, and the
+  event image → featured image (optional, via media sideload).
+- Optional category-id filter and image-format selection per ChurchDesk feed.
+- `ChurchDeskMapperTest` unit tests covering the field mapping (ISO→UTC,
+  show-end inversion, category colour, address composition, change hash, …).
+
+### Changed
+- Refactored the import engine: the source-agnostic create/update/delete/match/
+  log logic now lives in `VEV\Import\AbstractRunner`; `VEV\Import\IcsRunner`
+  (iCal) and `VEV\Import\ChurchDeskRunner` extend it. `VEV\Import\Runner` is
+  retained as a backward-compatible alias of `IcsRunner`. The iCal import is
+  behaviourally unchanged.
 
 ## [2.0.0] - 2026-06-13
 
