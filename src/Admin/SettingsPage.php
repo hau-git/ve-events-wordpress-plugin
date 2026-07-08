@@ -9,6 +9,7 @@
 namespace VEV\Admin;
 
 use VEV\Constants;
+use VEV\Export\Endpoint;
 use VEV\Settings;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -211,16 +212,16 @@ final class SettingsPage {
 							<th scope="row"><?php esc_html_e( 'Grace Period After Event End', 've-events' ); ?></th>
 							<td>
 								<select name="<?php echo esc_attr( $opt ); ?>[grace_period]">
-									<option value="0" <?php selected( $settings['grace_period'], 0 ); ?>><?php esc_html_e( 'Sofort ausblenden', 've-events' ); ?></option>
-									<option value="1" <?php selected( $settings['grace_period'], 1 ); ?>><?php esc_html_e( '1 Stunde', 've-events' ); ?></option>
-									<option value="2" <?php selected( $settings['grace_period'], 2 ); ?>><?php esc_html_e( '2 Stunden', 've-events' ); ?></option>
-									<option value="4" <?php selected( $settings['grace_period'], 4 ); ?>><?php esc_html_e( '4 Stunden', 've-events' ); ?></option>
-									<option value="6" <?php selected( $settings['grace_period'], 6 ); ?>><?php esc_html_e( '6 Stunden', 've-events' ); ?></option>
-									<option value="12" <?php selected( $settings['grace_period'], 12 ); ?>><?php esc_html_e( '12 Stunden', 've-events' ); ?></option>
-									<option value="24" <?php selected( $settings['grace_period'], 24 ); ?>><?php esc_html_e( '1 Tag (empfohlen)', 've-events' ); ?></option>
-									<option value="72" <?php selected( $settings['grace_period'], 72 ); ?>><?php esc_html_e( '3 Tage', 've-events' ); ?></option>
-									<option value="168" <?php selected( $settings['grace_period'], 168 ); ?>><?php esc_html_e( '7 Tage', 've-events' ); ?></option>
-									<option value="999999" <?php selected( $settings['grace_period'], 999999 ); ?>><?php esc_html_e( 'Immer anzeigen', 've-events' ); ?></option>
+									<option value="0" <?php selected( $settings['grace_period'], 0 ); ?>><?php esc_html_e( 'Hide immediately', 've-events' ); ?></option>
+									<option value="1" <?php selected( $settings['grace_period'], 1 ); ?>><?php esc_html_e( '1 hour', 've-events' ); ?></option>
+									<option value="2" <?php selected( $settings['grace_period'], 2 ); ?>><?php esc_html_e( '2 hours', 've-events' ); ?></option>
+									<option value="4" <?php selected( $settings['grace_period'], 4 ); ?>><?php esc_html_e( '4 hours', 've-events' ); ?></option>
+									<option value="6" <?php selected( $settings['grace_period'], 6 ); ?>><?php esc_html_e( '6 hours', 've-events' ); ?></option>
+									<option value="12" <?php selected( $settings['grace_period'], 12 ); ?>><?php esc_html_e( '12 hours', 've-events' ); ?></option>
+									<option value="24" <?php selected( $settings['grace_period'], 24 ); ?>><?php esc_html_e( '1 day (recommended)', 've-events' ); ?></option>
+									<option value="72" <?php selected( $settings['grace_period'], 72 ); ?>><?php esc_html_e( '3 days', 've-events' ); ?></option>
+									<option value="168" <?php selected( $settings['grace_period'], 168 ); ?>><?php esc_html_e( '7 days', 've-events' ); ?></option>
+									<option value="999999" <?php selected( $settings['grace_period'], 999999 ); ?>><?php esc_html_e( 'Always show', 've-events' ); ?></option>
 								</select>
 								<p class="description"><?php esc_html_e( 'How long events stay visible on the frontend after ending. Backend is never affected.', 've-events' ); ?></p>
 							</td>
@@ -293,6 +294,39 @@ final class SettingsPage {
 							</td>
 						</tr>
 					</table>
+
+					<h2><?php esc_html_e( 'iCal Export', 've-events' ); ?></h2>
+					<p class="description"><?php esc_html_e( 'Every published event has an "Add to Calendar" .ics download (virtual field ve_ical_url). Optionally expose a subscribable feed of all upcoming events.', 've-events' ); ?></p>
+					<table class="form-table" role="presentation">
+						<tr>
+							<th scope="row"><?php esc_html_e( 'Subscribable Feed', 've-events' ); ?></th>
+							<td>
+								<label>
+									<input type="checkbox" name="<?php echo esc_attr( $opt ); ?>[ical_feed]" value="1" <?php checked( ! empty( $settings['ical_feed'] ) ); ?> />
+									<?php esc_html_e( 'Enable the subscribable iCal feed of upcoming events', 've-events' ); ?>
+								</label>
+								<?php if ( ! empty( $settings['ical_feed'] ) ) : ?>
+									<?php
+									$feed_https  = Endpoint::feed_url();
+									$feed_webcal = (string) preg_replace( '#^https?#', 'webcal', $feed_https );
+									?>
+									<p class="description" style="margin-top:8px;">
+										<?php esc_html_e( 'Feed URL:', 've-events' ); ?>
+										<code><?php echo esc_html( $feed_https ); ?></code><br>
+										<?php esc_html_e( 'Subscribe URL:', 've-events' ); ?>
+										<code><?php echo esc_html( $feed_webcal ); ?></code><br>
+										<?php
+										printf(
+											/* translators: %s: query parameter example, already escaped */
+											esc_html__( 'Append %s to filter the feed by an event category slug.', 've-events' ),
+											'<code>&amp;' . esc_html( Constants::QV_ICS_CAT ) . '=your-category</code>' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pre-escaped.
+										);
+										?>
+									</p>
+								<?php endif; ?>
+							</td>
+						</tr>
+					</table>
 				</div>
 
 				<!-- TAB: Series -->
@@ -328,6 +362,12 @@ final class SettingsPage {
 							<tr><td><code>_vev_special_info</code></td><td><?php esc_html_e( 'Special information', 've-events' ); ?></td></tr>
 							<tr><td><code>_vev_info_url</code></td><td><?php esc_html_e( 'Info / Ticket URL', 've-events' ); ?></td></tr>
 							<tr><td><code>_vev_event_status</code></td><td><?php esc_html_e( 'Status override: cancelled | postponed | rescheduled | movedOnline | (empty = scheduled)', 've-events' ); ?></td></tr>
+							<tr><td><code>_vev_organizer</code></td><td><?php esc_html_e( 'Organizer name (Schema.org organizer)', 've-events' ); ?></td></tr>
+							<tr><td><code>_vev_organizer_url</code></td><td><?php esc_html_e( 'Organizer URL', 've-events' ); ?></td></tr>
+							<tr><td><code>_vev_price</code></td><td><?php esc_html_e( 'Ticket price (numeric string; 0 = free)', 've-events' ); ?></td></tr>
+							<tr><td><code>_vev_price_currency</code></td><td><?php esc_html_e( 'ISO 4217 currency code, e.g. EUR', 've-events' ); ?></td></tr>
+							<tr><td><code>_vev_availability</code></td><td><?php esc_html_e( 'Offer availability: InStock | SoldOut | PreOrder | (empty)', 've-events' ); ?></td></tr>
+							<tr><td><code>_vev_attendance_mode</code></td><td><?php esc_html_e( 'Attendance mode: online | mixed | (empty = offline)', 've-events' ); ?></td></tr>
 							<tr><td><code>_vev_start_hour</code></td><td><?php esc_html_e( 'Start hour in site timezone (0–23) — auto-computed, use for time-of-day filtering', 've-events' ); ?></td></tr>
 							<tr><td><code>_vev_weekday</code></td><td><?php esc_html_e( 'ISO weekday in site timezone (1=Mon … 7=Sun) — auto-computed, use for weekday filtering', 've-events' ); ?></td></tr>
 						</tbody>
@@ -359,6 +399,8 @@ final class SettingsPage {
 							<tr><td><code>ve_event_status_label</code></td><td><?php esc_html_e( 'Human-readable status: Cancelled / Postponed / Rescheduled / Moved Online', 've-events' ); ?></td></tr>
 							<tr><td><code>ve_event_status_color</code></td><td><?php esc_html_e( 'Hex color for status badge (red / amber / blue)', 've-events' ); ?></td></tr>
 							<tr><td><code>ve_is_cancelled</code></td><td><?php esc_html_e( '1 if event is cancelled', 've-events' ); ?></td></tr>
+							<tr><td><code>ve_price_formatted</code></td><td><?php esc_html_e( 'Formatted price with currency ("Free" when 0)', 've-events' ); ?></td></tr>
+							<tr><td><code>ve_ical_url</code></td><td><?php esc_html_e( 'Per-event .ics download URL (Add to Calendar)', 've-events' ); ?></td></tr>
 						</tbody>
 					</table>
 

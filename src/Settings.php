@@ -40,6 +40,7 @@ final class Settings {
 			'series_suggestions'     => false,
 			'output_category_colors' => true,
 			'og_tags'                => 'auto', // One of: auto, always, disabled.
+			'ical_feed'              => true,
 		);
 	}
 
@@ -103,6 +104,8 @@ final class Settings {
 
 		$og_tags_raw          = $input['og_tags'] ?? 'auto';
 		$sanitized['og_tags'] = in_array( $og_tags_raw, array( 'auto', 'always', 'disabled' ), true ) ? $og_tags_raw : 'auto';
+
+		$sanitized['ical_feed'] = ! empty( $input['ical_feed'] );
 
 		return $sanitized;
 	}

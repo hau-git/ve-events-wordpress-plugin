@@ -9,6 +9,8 @@ namespace VEV\Admin;
 
 use VEV\Constants;
 use VEV\Plugin;
+use VEV\PostType;
+use VEV\Support\DateParser;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -150,8 +152,8 @@ final class EventForm {
 		$special  = isset( $_POST['vev_special_info'] ) ? wp_kses_post( wp_unslash( $_POST['vev_special_info'] ) ) : '';
 		$info_url = isset( $_POST['vev_info_url'] ) ? esc_url_raw( wp_unslash( $_POST['vev_info_url'] ) ) : '';
 
-		$start_ts = self::parse_to_utc_timestamp( $start_date, $start_time, (bool) $all_day, true, $tz );
-		$end_ts   = self::parse_to_utc_timestamp( $end_date ? $end_date : $start_date, $end_time ? $end_time : $start_time, (bool) $all_day, false, $tz );
+		$start_ts = DateParser::to_utc( $start_date, $start_time, (bool) $all_day, true, $tz );
+		$end_ts   = DateParser::to_utc( $end_date ? $end_date : $start_date, $end_time ? $end_time : $start_time, (bool) $all_day, false, $tz );
 
 		if ( ! $end_ts ) {
 			$end_ts = $start_ts;
@@ -203,6 +205,18 @@ final class EventForm {
 			delete_post_meta( $post_id, Constants::META_EVENT_STATUS );
 		}
 
+		self::save_optional_meta(
+			$post_id,
+			array(
+				Constants::META_ORGANIZER       => sanitize_text_field( wp_unslash( $_POST['vev_organizer'] ?? '' ) ),
+				Constants::META_ORGANIZER_URL   => esc_url_raw( wp_unslash( $_POST['vev_organizer_url'] ?? '' ) ),
+				Constants::META_PRICE           => PostType::sanitize_price( wp_unslash( $_POST['vev_price'] ?? '' ) ),
+				Constants::META_PRICE_CURRENCY  => PostType::sanitize_currency( wp_unslash( $_POST['vev_currency'] ?? '' ) ),
+				Constants::META_AVAILABILITY    => PostType::sanitize_availability( wp_unslash( $_POST['vev_availability'] ?? '' ) ),
+				Constants::META_ATTENDANCE_MODE => PostType::sanitize_attendance_mode( wp_unslash( $_POST['vev_attendance_mode'] ?? '' ) ),
+			)
+		);
+
 		Plugin::log(
 			sprintf(
 				'Event %d saved. start_utc=%s end_utc=%s all_day=%s hide_end=%s',
@@ -216,32 +230,18 @@ final class EventForm {
 	}
 
 	/**
-	 * Convert a date/time pair in the site timezone to a UTC timestamp.
+	 * Persist a set of already-sanitized meta values, deleting the empties.
 	 *
-	 * @param string        $date     Date string (Y-m-d).
-	 * @param string        $time     Time string (H:i).
-	 * @param bool          $all_day  Whether this is an all-day event.
-	 * @param bool          $is_start Whether this is the start (vs. end) value.
-	 * @param \DateTimeZone $tz       Site timezone.
+	 * @param int                  $post_id Post ID.
+	 * @param array<string,string> $values  Meta key => sanitized value.
 	 */
-	private static function parse_to_utc_timestamp( string $date, string $time, bool $all_day, bool $is_start, \DateTimeZone $tz ): int {
-		if ( '' === $date ) {
-			return 0;
-		}
-
-		try {
-			if ( $all_day ) {
-				$clock = $is_start ? '00:00:00' : '23:59:59';
-				$dt    = new \DateTimeImmutable( $date . ' ' . $clock, $tz );
+	private static function save_optional_meta( int $post_id, array $values ): void {
+		foreach ( $values as $key => $value ) {
+			if ( '' !== $value ) {
+				update_post_meta( $post_id, $key, $value );
 			} else {
-				$clean_time = $time ? $time : '00:00';
-				$dt         = new \DateTimeImmutable( $date . ' ' . $clean_time, $tz );
+				delete_post_meta( $post_id, $key );
 			}
-
-			return (int) $dt->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'U' );
-		} catch ( \Exception $e ) {
-			Plugin::log( 'Date parse error: ' . $e->getMessage() );
-			return 0;
 		}
 	}
 }

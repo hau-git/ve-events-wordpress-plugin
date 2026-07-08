@@ -69,6 +69,36 @@ final class Assets {
 		// Calendar page.
 		if ( 'admin_page_vev-calendar' === $hook ) {
 			wp_enqueue_style( 'vev-admin-calendar', $base . 'css/admin-calendar.css', array(), $ver );
+			wp_enqueue_script( 'vev-admin-calendar', $base . 'js/admin-calendar.js', array(), $ver, true );
+			wp_localize_script(
+				'vev-admin-calendar',
+				'vevCalendar',
+				array(
+					'nonce'      => wp_create_nonce( 'vev_calendar' ),
+					'canPublish' => current_user_can( 'publish_posts' ),
+					'i18n'       => array(
+						'loadError'   => __( 'Could not load the calendar. Reloading…', 've-events' ),
+						'moveError'   => __( 'Could not move the event.', 've-events' ),
+						'saveError'   => __( 'Could not save the event.', 've-events' ),
+						'newEvent'    => __( 'New event', 've-events' ),
+						'titleLabel'  => __( 'Title', 've-events' ),
+						'titlePlace'  => __( 'Event title', 've-events' ),
+						'startLabel'  => __( 'Start', 've-events' ),
+						'endLabel'    => __( 'End', 've-events' ),
+						'allDayLabel' => __( 'All day', 've-events' ),
+						'createDraft' => __( 'Save draft', 've-events' ),
+						'publish'     => __( 'Publish', 've-events' ),
+						'cancel'      => __( 'Cancel', 've-events' ),
+						'edit'        => __( 'Edit', 've-events' ),
+						'view'        => __( 'View', 've-events' ),
+						'when'        => __( 'When', 've-events' ),
+						'where'       => __( 'Where', 've-events' ),
+						'category'    => __( 'Category', 've-events' ),
+						'status'      => __( 'Status', 've-events' ),
+						'close'       => __( 'Close', 've-events' ),
+					),
+				)
+			);
 		}
 
 		// Event list screen (edit-ve_event): list styles + month-separator footer JS.

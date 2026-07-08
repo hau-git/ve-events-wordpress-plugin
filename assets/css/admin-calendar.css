@@ -9,5 +9,37 @@
 .vev-cal-day--today  { background:#f0f6fc; }
 .vev-cal-day-num     { font-weight:700; font-size:12px; color:#1d2327; margin-bottom:3px; }
 .vev-cal-day--today .vev-cal-day-num { color:#2271b1; }
-.vev-cal-event       { display:block; padding:2px 5px; margin:2px 0; border-radius:3px; font-size:11px; line-height:1.4; color:#fff; text-decoration:none; background:#2271b1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vev-cal-event       { display:block; padding:2px 5px; margin:2px 0; border-radius:3px; font-size:11px; line-height:1.4; color:#fff; text-decoration:none; background:#2271b1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:grab; }
 .vev-cal-event:hover { opacity:.82; color:#fff; }
+.vev-cal-event--cancelled { text-decoration:line-through; opacity:.7; }
+.vev-cal-event--draft     { opacity:.6; font-style:italic; }
+.vev-cal-event--dragging  { opacity:.4; }
+
+/* Day cells become drop targets and quick-create surfaces. */
+.vev-cal-day             { position:relative; cursor:pointer; }
+.vev-cal-day--empty      { cursor:default; }
+.vev-cal-day--dropover   { outline:2px dashed #2271b1; outline-offset:-2px; background:#f0f6fc; }
+
+/* Loading state during AJAX swaps. */
+#vev-cal-app { position:relative; }
+#vev-cal-app.vev-cal-loading .vev-cal-grid { opacity:.5; pointer-events:none; transition:opacity .1s ease; }
+#vev-cal-app.vev-cal-loading::after { content:""; position:absolute; top:8px; right:8px; width:18px; height:18px; border:2px solid #c3c4c7; border-top-color:#2271b1; border-radius:50%; animation:vev-cal-spin .7s linear infinite; }
+@keyframes vev-cal-spin { to { transform:rotate(360deg); } }
+
+/* Popover (event details + quick create). */
+.vev-cal-popover { position:absolute; z-index:9999; min-width:240px; max-width:320px; background:#fff; border:1px solid #c3c4c7; border-radius:6px; box-shadow:0 6px 24px rgba(0,0,0,.18); padding:12px 14px; font-size:13px; }
+.vev-pop-head    { font-size:14px; margin-bottom:8px; word-break:break-word; }
+.vev-pop-title   { display:block; }
+.vev-pop-row     { display:flex; gap:8px; margin:3px 0; line-height:1.4; }
+.vev-pop-label   { flex:0 0 64px; color:#646970; }
+.vev-pop-value   { flex:1; word-break:break-word; }
+.vev-pop-badge   { display:inline-block; margin:6px 0 2px; padding:1px 8px; border-radius:10px; font-size:11px; font-weight:600; color:#fff; background:#646970; }
+.vev-pop-actions { display:flex; align-items:center; gap:8px; margin-top:12px; }
+.vev-pop-field   { display:block; margin:8px 0; }
+.vev-pop-field span { display:block; font-size:12px; color:#646970; margin-bottom:2px; }
+.vev-pop-field input { width:100%; }
+.vev-pop-times   { display:flex; gap:10px; }
+.vev-pop-times .vev-pop-field { flex:1; }
+.vev-pop-allday  { display:block; margin:6px 0; font-size:12px; }
+.vev-pop-msg     { color:#d63638; font-size:12px; min-height:16px; margin-top:4px; }
+.vev-pop-cancel  { margin-left:auto; }
