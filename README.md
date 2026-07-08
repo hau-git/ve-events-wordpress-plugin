@@ -1,8 +1,8 @@
 # VE Events
 
-A lightweight WordPress Events plugin with native admin UI, Schema.org markup, Open Graph tags, iCal import, and first-class support for Elementor and JetEngine.
+A lightweight WordPress Events plugin with an interactive admin calendar, native admin UI, Schema.org markup, Open Graph tags, iCal import **and export**, and first-class support for Elementor and JetEngine.
 
-**Version:** 2.2.0 · **Requires:** WordPress 6.4+, PHP 8.3+
+**Version:** 2.3.0 · **Requires:** WordPress 6.4+, PHP 8.3+
 
 ---
 
@@ -17,6 +17,7 @@ A lightweight WordPress Events plugin with native admin UI, Schema.org markup, O
 - [Admin Interface](#admin-interface)
 - [iCal Import](#ical-import)
 - [ChurchDesk Import](#churchdesk-import)
+- [iCal Export](#ical-export)
 - [Schema.org & SEO](#schemaorg--seo)
 - [Elementor Dynamic Tags](#elementor-dynamic-tags)
 - [JetEngine Integration](#jetengine-integration)
@@ -33,16 +34,18 @@ A lightweight WordPress Events plugin with native admin UI, Schema.org markup, O
 - Date & Time form rendered directly below the post title (above the content editor)
 - Live date/time preview while editing
 - All-day events, hide-end-time flag, event status (Cancelled, Postponed, …)
+- Organizer, ticket price/currency/availability, and attendance mode (offline/online/mixed) fields
 - 20+ virtual meta keys for formatted output — usable in JetEngine, Elementor, PHP, REST
 - Frontend scope filtering: upcoming / ongoing / past / archived
 - Advanced query filters: date range, month, time-of-day, weekday
-- Schema.org `Event` JSON-LD with full `eventStatus`, location, performer, offers, EventSeries
+- Schema.org `Event` JSON-LD with `eventStatus`, `eventAttendanceMode`, location/VirtualLocation, organizer, performer, priced offers, EventSeries
 - Open Graph / X Card meta tags (auto-detects conflicting SEO plugins)
 - Category color system — CSS custom properties output in `wp_head`
 - iCal/ICS feed importer with cron scheduling and admin log viewer
 - ChurchDesk importer (Pull API + Calendar View) with full field mapping
+- **iCal export** — per-event "Add to Calendar" `.ics` download and a subscribable feed
+- **Interactive backend calendar** — AJAX month navigation, event popover, click-to-create, drag-and-drop rescheduling
 - 7 Elementor dynamic tag types
-- Backend calendar grid view (monthly, color-coded by category)
 - Backend list view: month grouping, filter bar, sortable "When" column
 - German translation included (`.po` / `.mo`)
 - Auto-updates from GitHub releases
@@ -80,10 +83,16 @@ All timestamps are UTC Unix integers. Private keys (underscore prefix) are store
 | `_vev_special_info` | string | Additional notes (admission, dress code, …) |
 | `_vev_info_url` | string | Info or ticket URL |
 | `_vev_event_status` | string | Status override: `cancelled` · `postponed` · `rescheduled` · `movedOnline` · `""` |
+| `_vev_organizer` | string | Organizer name |
+| `_vev_organizer_url` | string | Organizer URL |
+| `_vev_price` | string | Ticket price (numeric string; `0` = free; `""` = unknown) |
+| `_vev_price_currency` | string | ISO 4217 currency code, e.g. `EUR` |
+| `_vev_availability` | string | Offer availability: `InStock` · `SoldOut` · `PreOrder` · `""` |
+| `_vev_attendance_mode` | string | Attendance mode: `online` · `mixed` · `""` (offline) |
 | `_vev_start_hour` | int | Auto-synced: start hour in site timezone (0–23) |
 | `_vev_weekday` | int | Auto-synced: ISO weekday (1=Mon … 7=Sun) |
 
-`_vev_start_hour` and `_vev_weekday` are automatically written whenever `_vev_start_utc` changes.
+`_vev_start_hour` and `_vev_weekday` (plus `_vev_start_date`, `_vev_start_month`, `_vev_time_slot`) are automatically written whenever `_vev_start_utc` changes — including via calendar drag-and-drop and quick-create.
 
 ---
 
@@ -126,6 +135,13 @@ Computed at runtime — not stored in the database. Available in JetEngine field
 | `ve_category_class` | CSS class name, e.g. `ve-cat-workshop` |
 | `ve_series_name` | First assigned series term name |
 | `ve_topic_names` | Comma-separated topic names |
+
+### Offer & Export
+
+| Key | Description | Example |
+|-----|-------------|---------|
+| `ve_price_formatted` | Formatted price with currency (`Free` when `0`) | `12,00 EUR` |
+| `ve_ical_url` | Per-event `.ics` download URL ("Add to Calendar") | `https://site.tld/?vev_ics=123` |
 
 ---
 
@@ -185,6 +201,7 @@ $query = new WP_Query( [
 | `include_series_schema` | `true` | Add `EventSeries` superEvent to Schema.org output |
 | `output_category_colors` | `true` | Output category color CSS variables in `wp_head` |
 | `og_tags` | `auto` | Open Graph output: `auto` · `always` · `disabled` |
+| `ical_feed` | `true` | Expose the subscribable iCal feed of upcoming events |
 | `series_suggestions` | `false` | Show series auto-suggestion UI when editing events |
 
 ---
@@ -204,29 +221,32 @@ The event form is rendered **directly below the post title**, before the content
 **Details** (WP metabox — below content editor by default, draggable):
 - Speaker / Host
 - Info / Ticket URL
+- Organizer + Organizer URL
+- **Tickets & Offer:** Price · Currency · Availability
 - Additional Notes
 
 **Event Status** (sidebar metabox — below Publish):
 - Scheduled (default) · Cancelled · Postponed · Rescheduled · Moved Online
-- Updates Schema.org `eventStatus` and shows a badge in the event list
+- **Attendance Mode:** Offline (default) · Online · Mixed
+- Updates Schema.org `eventStatus` / `eventAttendanceMode` and shows a badge in the event list
 
 ### Event List
 
-- **Views:** Upcoming · Past · All · Drafts · Calendar
+- **Views:** Upcoming · Past · All · Drafts · Trash · Calendar
 - **Columns:** Title · When · Category · Location · Topic
 - **Month grouping:** Visual separator rows between months
 - **Filter bar:** Month · Category · Location · Topic dropdowns
 - **Sortable:** "When" column sorts by start date
 
-### Calendar Grid View
+### Interactive Calendar Grid
 
-Accessible via the **Calendar** tab in the event list.
+Accessible via the **Calendar** tab in the event list — a monthly grid (week starts Monday) with color-coded event pills. Fully interactive, with a progressive-enhancement fallback when JavaScript is disabled:
 
-- Monthly grid (week starts Monday)
-- Events shown as colored pills (category color)
-- Click any event to open its edit page
-- Previous / Next month navigation
-- "Add Event" button with pre-filled date
+- **AJAX month navigation** — Previous / Next switch months without a page reload, with browser history support (the back button works); falls back to normal links without JS
+- **Event popover** — click an event to see its time, location, category, and status with Edit / View buttons
+- **Click-to-create** — click an empty day to open a quick-create popover (title, start/end time, all-day) and save as draft or publish
+- **Drag-and-drop rescheduling** — drag an event onto another day to move it; the local wall-clock time and multi-day span are preserved (DST-safe), and the denormalized filter fields stay in sync automatically
+- Draft events appear on the grid (dimmed); cancelled events are struck through
 
 ### Taxonomy Forms
 
@@ -305,6 +325,43 @@ order-independent (whichever feed imports first owns the event; the other enrich
 
 ---
 
+## iCal Export
+
+The plugin serves standards-compliant (RFC 5545) `.ics` output — the outbound counterpart to the importers. No configuration is required for single-event downloads; the subscribable feed is toggled by the `ical_feed` setting (enabled by default).
+
+### Per-event download ("Add to Calendar")
+
+Every published event exposes a `.ics` download at:
+
+```
+https://your-site.tld/?vev_ics=<event_id>
+```
+
+The URL is also available as the virtual field **`ve_ical_url`**, so you can drop an "Add to Calendar" button into an Elementor / JetEngine template or a theme:
+
+```php
+$ics = get_post_meta( get_the_ID(), 've_ical_url', true );
+printf( '<a class="button" href="%s" download>Add to Calendar</a>', esc_url( $ics ) );
+```
+
+### Subscribable feed
+
+A live feed of all upcoming (and ongoing) events:
+
+```
+https://your-site.tld/?vev_ics=feed          # https
+webcal://your-site.tld/?vev_ics=feed         # one-click subscribe in Apple/Google/Outlook
+https://your-site.tld/?vev_ics=feed&vev_ics_cat=<category-slug>   # filtered by category
+```
+
+- Unlike a one-off download, the feed **stays in sync** — calendar apps re-poll it periodically.
+- Responses send `ETag` / `Last-Modified` and answer conditional requests with `304 Not Modified`, so repeated polling is cheap.
+- The exact feed and subscribe URLs are shown under **Events → Settings → Schema & SEO** when the feed is enabled.
+
+VEVENT output includes UTC times (or `VALUE=DATE` for all-day events, with the RFC-correct exclusive end date), `SUMMARY`, `DESCRIPTION`, `LOCATION` (name + address), `URL`, a `UID` stable per post, `STATUS` (mapped from the event-status override), and `ORGANIZER` when an organizer URL is set.
+
+---
+
 ## Schema.org & SEO
 
 ### Schema.org JSON-LD
@@ -319,16 +376,27 @@ Output on single event pages (`<script type="application/ld+json">`):
   "startDate": "2025-06-14T19:00:00+02:00",
   "endDate": "2025-06-14T22:00:00+02:00",
   "eventStatus": "https://schema.org/EventScheduled",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
   "location": {
     "@type": "Place",
     "name": "Location Name",
     "address": { "@type": "PostalAddress", "streetAddress": "…" }
   },
+  "organizer": { "@type": "Organization", "name": "My Church", "url": "https://…" },
   "performer": { "@type": "Person", "name": "Speaker Name" },
-  "offers": { "@type": "Offer", "url": "https://tickets.example.com" },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://tickets.example.com",
+    "price": "12.00",
+    "priceCurrency": "EUR",
+    "availability": "https://schema.org/InStock",
+    "validFrom": "2025-05-01T10:00:00+00:00"
+  },
   "superEvent": { "@type": "EventSeries", "name": "Series Name", "url": "…" }
 }
 ```
+
+`eventAttendanceMode` is derived from the attendance-mode field (`OfflineEventAttendanceMode` by default; `Online`/`Mixed` when set). A `movedOnline` event status always forces the online mode. For online/mixed events with an info URL, a `VirtualLocation` is added to `location`. The `organizer` and priced `offers` fields appear only when the corresponding event fields are filled.
 
 `eventStatus` values map automatically from `_vev_event_status`:
 
