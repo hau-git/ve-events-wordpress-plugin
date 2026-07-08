@@ -26,6 +26,7 @@ final class Bootstrap {
 		ListFilters::init();
 		SettingsPage::init();
 		CalendarPage::init();
+		CalendarAjax::init();
 		Tools::init();
 		SeriesSuggestions::init();
 		Assets::init();

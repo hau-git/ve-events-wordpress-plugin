@@ -1,7 +1,10 @@
 <?php
 /**
- * Admin calendar grid view: a month-at-a-glance page for events, plus the
- * shared sub-views navigation.
+ * Admin calendar grid view: an interactive month-at-a-glance page for events.
+ *
+ * The month grid is rendered server-side and re-used verbatim by CalendarAjax
+ * for month navigation, quick-create, and drag-and-drop, so the browser only
+ * ever swaps in authoritative HTML.
  *
  * @package VE_Events
  */
@@ -9,6 +12,10 @@
 namespace VEV\Admin;
 
 use VEV\Constants;
+use VEV\Fields\Registry;
+use VEV\Support\DateFormatter;
+use VEV\Support\EventData;
+use VEV\Support\EventStatus;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -41,144 +48,94 @@ final class CalendarPage {
 	}
 
 	/**
-	 * Output the sub-views navigation (Upcoming / Past / All / Drafts / Calendar).
+	 * Normalize a YYYY-MM string, falling back to the current month.
 	 *
-	 * Used both by ListTable::admin_views() (list page, WP renders the UL) and
-	 * render_calendar_view() (calendar page, we render the UL directly).
-	 *
-	 * @param string $current The active view key.
+	 * @param string $month_qv Raw month value.
 	 */
-	private static function render_views_nav( string $current ): void {
-		global $wpdb;
-
-		$pt       = Constants::POST_TYPE;
-		$now      = time();
-		$base_url = admin_url( 'edit.php?post_type=' . $pt );
-		$cal_url  = admin_url( 'edit.php?post_type=' . $pt . '&page=vev-calendar' );
-
-		$count_upcoming = (int) $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(DISTINCT p.ID) FROM {$wpdb->posts} p
-			 LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
-			 WHERE p.post_type = %s AND p.post_status = 'publish'
-			   AND (CAST(pm.meta_value AS SIGNED) >= %d OR pm.meta_value IS NULL)",
-				Constants::META_END_UTC,
-				$pt,
-				$now
-			)
-		);
-
-		$count_past = (int) $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(DISTINCT p.ID) FROM {$wpdb->posts} p
-			 INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
-			 WHERE p.post_type = %s AND p.post_status = 'publish'
-			   AND CAST(pm.meta_value AS SIGNED) < %d",
-				Constants::META_END_UTC,
-				$pt,
-				$now
-			)
-		);
-
-		$counts      = wp_count_posts( $pt );
-		$count_all   = (int) ( $counts->publish ?? 0 );
-		$count_draft = (int) ( $counts->draft ?? 0 );
-
-		$items = array();
-
-		$items['upcoming'] = sprintf(
-			'<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
-			esc_url( add_query_arg( 'vev_view', 'upcoming', $base_url ) ),
-			'upcoming' === $current ? 'current' : '',
-			__( 'Upcoming', 've-events' ),
-			number_format_i18n( $count_upcoming )
-		);
-		$items['past']     = sprintf(
-			'<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
-			esc_url( add_query_arg( 'vev_view', 'past', $base_url ) ),
-			'past' === $current ? 'current' : '',
-			__( 'Past', 've-events' ),
-			number_format_i18n( $count_past )
-		);
-		$items['all']      = sprintf(
-			'<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
-			esc_url( add_query_arg( 'vev_view', 'all', $base_url ) ),
-			'all' === $current ? 'current' : '',
-			__( 'All', 've-events' ),
-			number_format_i18n( $count_all )
-		);
-		if ( $count_draft > 0 ) {
-			$items['draft'] = sprintf(
-				'<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
-				esc_url( add_query_arg( 'post_status', 'draft', $base_url ) ),
-				'draft' === $current ? 'current' : '',
-				__( 'Drafts', 've-events' ),
-				number_format_i18n( $count_draft )
-			);
+	public static function normalize_month( string $month_qv ): string {
+		if ( ! preg_match( '/^\d{4}-\d{2}$/', $month_qv ) ) {
+			return current_time( 'Y-m' );
 		}
-		$items['calendar'] = sprintf(
-			'<a href="%s" class="%s">%s</a>',
-			esc_url( $cal_url ),
-			'calendar' === $current ? 'current' : '',
-			esc_html__( 'Calendar', 've-events' )
-		);
-
-		echo '<ul class="subsubsub">';
-		$last = array_key_last( $items );
-		foreach ( $items as $key => $html ) {
-			printf(
-				'<li class="%s">%s%s</li>',
-				esc_attr( $key ),
-				$html, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML built with escaping above.
-				$key !== $last ? ' |' : ''
-			);
+		[ , $m ] = array_map( 'intval', explode( '-', $month_qv ) );
+		if ( $m < 1 || $m > 12 ) {
+			return current_time( 'Y-m' );
 		}
-		echo '</ul>';
+		return $month_qv;
 	}
 
 	/**
-	 * Render the month calendar grid page.
+	 * Build the month context (label + prev/next month keys) for a YYYY-MM value.
+	 *
+	 * @param string $month_qv Normalized YYYY-MM value.
+	 * @return array{month:string,label:string,prev:string,next:string,start:\DateTimeImmutable,end:\DateTimeImmutable,tz:\DateTimeZone}
 	 */
-	public static function render_calendar_view(): void {
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_die( esc_html__( 'You do not have permission to view this page.', 've-events' ) );
-		}
-
-		// Read-only month navigation; no state change, so no nonce is required.
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-		$month_qv = isset( $_GET['vev_cal_month'] )
-			? sanitize_text_field( wp_unslash( $_GET['vev_cal_month'] ) )
-			: '';
-		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-
-		if ( ! preg_match( '/^\d{4}-\d{2}$/', $month_qv ) ) {
-			$month_qv = current_time( 'Y-m' );
-		}
-
+	public static function month_context( string $month_qv ): array {
 		[ $year, $month ] = array_map( 'intval', explode( '-', $month_qv ) );
 		$tz               = wp_timezone();
-		$month_start      = new \DateTimeImmutable( sprintf( '%04d-%02d-01 00:00:00', $year, $month ), $tz );
-		$month_end        = $month_start->modify( 'last day of this month' )->setTime( 23, 59, 59 );
+		$start            = new \DateTimeImmutable( sprintf( '%04d-%02d-01 00:00:00', $year, $month ), $tz );
+		$end              = $start->modify( 'last day of this month' )->setTime( 23, 59, 59 );
 
-		$prev_month = $month_start->modify( '-1 month' )->format( 'Y-m' );
-		$next_month = $month_start->modify( '+1 month' )->format( 'Y-m' );
-		$base_url   = admin_url( 'edit.php?post_type=' . Constants::POST_TYPE . '&page=vev-calendar' );
+		return array(
+			'month' => $month_qv,
+			'label' => (string) wp_date( 'F Y', $start->getTimestamp(), $tz ),
+			'prev'  => $start->modify( '-1 month' )->format( 'Y-m' ),
+			'next'  => $start->modify( '+1 month' )->format( 'Y-m' ),
+			'start' => $start,
+			'end'   => $end,
+			'tz'    => $tz,
+		);
+	}
 
-		// Query events this month.
+	/**
+	 * Render the interactive month app (header nav + grid) as an HTML string.
+	 *
+	 * This is the single fragment swapped by the client on every state change.
+	 *
+	 * @param string $month_qv Raw or normalized YYYY-MM value.
+	 */
+	public static function render_app_html( string $month_qv ): string {
+		$month_qv = self::normalize_month( $month_qv );
+		$ctx      = self::month_context( $month_qv );
+		$base_url = admin_url( 'edit.php?post_type=' . Constants::POST_TYPE . '&page=vev-calendar' );
+
+		ob_start();
+		?>
+		<div class="vev-cal-header">
+			<a href="<?php echo esc_url( add_query_arg( 'vev_cal_month', $ctx['prev'], $base_url ) ); ?>" class="button vev-cal-nav" data-month="<?php echo esc_attr( $ctx['prev'] ); ?>" aria-label="<?php esc_attr_e( 'Previous month', 've-events' ); ?>">&#8592;</a>
+			<h2 class="vev-cal-title"><?php echo esc_html( $ctx['label'] ); ?></h2>
+			<a href="<?php echo esc_url( add_query_arg( 'vev_cal_month', $ctx['next'], $base_url ) ); ?>" class="button vev-cal-nav" data-month="<?php echo esc_attr( $ctx['next'] ); ?>" aria-label="<?php esc_attr_e( 'Next month', 've-events' ); ?>">&#8594;</a>
+		</div>
+		<?php
+		echo self::render_grid_html( $month_qv ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- grid HTML escaped internally.
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Render just the month grid (day-of-week header + day cells) as HTML.
+	 *
+	 * @param string $month_qv Raw or normalized YYYY-MM value.
+	 */
+	public static function render_grid_html( string $month_qv ): string {
+		$month_qv = self::normalize_month( $month_qv );
+		$ctx      = self::month_context( $month_qv );
+		$tz       = $ctx['tz'];
+
+		[ $year, $month ] = array_map( 'intval', explode( '-', $month_qv ) );
+
 		$events_query = new \WP_Query(
 			array(
 				'post_type'                    => Constants::POST_TYPE,
-				'post_status'                  => 'publish',
+				'post_status'                  => array( 'publish', 'draft', 'future' ),
 				'posts_per_page'               => 300, // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Bounded month view.
-				'meta_query'                   => array(
+				'meta_query'                   => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- bounded month range.
 					array(
 						'key'     => Constants::META_START_UTC,
-						'value'   => array( $month_start->getTimestamp(), $month_end->getTimestamp() ),
+						'value'   => array( $ctx['start']->getTimestamp(), $ctx['end']->getTimestamp() ),
 						'compare' => 'BETWEEN',
 						'type'    => 'NUMERIC',
 					),
 				),
-				'meta_key'                     => Constants::META_START_UTC,
+				'meta_key'                     => Constants::META_START_UTC, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- ordering by start.
 				'orderby'                      => 'meta_value_num',
 				'order'                        => 'ASC',
 				Constants::QV_INCLUDE_ARCHIVED => 1,
@@ -190,39 +147,150 @@ final class CalendarPage {
 		if ( $events_query->have_posts() ) {
 			while ( $events_query->have_posts() ) {
 				$events_query->the_post();
-				$p         = get_post();
-				$start_utc = (int) get_post_meta( $p->ID, Constants::META_START_UTC, true );
-				$day       = (int) wp_date( 'j', $start_utc, $tz );
-
+				$p              = get_post();
+				$start_utc      = (int) get_post_meta( $p->ID, Constants::META_START_UTC, true );
+				$day            = (int) wp_date( 'j', $start_utc, $tz );
 				$days[ $day ][] = $p;
 			}
 			wp_reset_postdata();
 		}
 
-		// Build category → color map.
-		$cat_colors = array();
-		$all_cats   = get_terms(
-			array(
-				'taxonomy'   => Constants::TAX_CATEGORY,
-				'hide_empty' => false,
-			)
-		);
-		if ( is_array( $all_cats ) ) {
-			foreach ( $all_cats as $cat ) {
-				$color = (string) get_term_meta( $cat->term_id, Constants::TERM_META_CATEGORY_COLOR, true );
-				if ( $color ) {
-					$cat_colors[ $cat->term_id ] = $color;
-				}
-			}
-		}
-
-		$first_dow     = (int) $month_start->format( 'N' ); // 1 = Mon.
-		$days_in_month = (int) $month_start->format( 't' );
-		$month_label   = wp_date( 'F Y', $month_start->getTimestamp(), $tz );
+		$first_dow     = (int) $ctx['start']->format( 'N' ); // 1 = Mon.
+		$days_in_month = (int) $ctx['start']->format( 't' );
 
 		$today_d = (int) current_time( 'j' );
 		$today_m = (int) current_time( 'n' );
 		$today_y = (int) current_time( 'Y' );
+
+		$dow_labels = array(
+			__( 'Mon', 've-events' ),
+			__( 'Tue', 've-events' ),
+			__( 'Wed', 've-events' ),
+			__( 'Thu', 've-events' ),
+			__( 'Fri', 've-events' ),
+			__( 'Sat', 've-events' ),
+			__( 'Sun', 've-events' ),
+		);
+
+		ob_start();
+		echo '<div class="vev-cal-grid">';
+
+		foreach ( $dow_labels as $dow_label ) {
+			printf( '<div class="vev-cal-dow">%s</div>', esc_html( $dow_label ) );
+		}
+
+		for ( $i = 1; $i < $first_dow; $i++ ) {
+			echo '<div class="vev-cal-day vev-cal-day--empty"></div>';
+		}
+
+		for ( $d = 1; $d <= $days_in_month; $d++ ) {
+			$is_today  = ( $d === $today_d && $month === $today_m && $year === $today_y );
+			$cls       = 'vev-cal-day' . ( $is_today ? ' vev-cal-day--today' : '' );
+			$date_attr = sprintf( '%04d-%02d-%02d', $year, $month, $d );
+
+			printf(
+				'<div class="%s" data-date="%s">',
+				esc_attr( $cls ),
+				esc_attr( $date_attr )
+			);
+			echo '<div class="vev-cal-day-num">' . esc_html( (string) $d ) . '</div>';
+
+			if ( ! empty( $days[ $d ] ) ) {
+				foreach ( $days[ $d ] as $ev ) {
+					echo self::render_event_chip( $ev ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- chip HTML escaped internally.
+				}
+			}
+			echo '</div>';
+		}
+
+		$total    = $first_dow - 1 + $days_in_month;
+		$trailing = ( 7 - ( $total % 7 ) ) % 7;
+		for ( $i = 0; $i < $trailing; $i++ ) {
+			echo '<div class="vev-cal-day vev-cal-day--empty"></div>';
+		}
+
+		echo '</div><!-- .vev-cal-grid -->';
+		return (string) ob_get_clean();
+	}
+
+	/**
+	 * Build the client-side payload consumed by the calendar popover.
+	 *
+	 * @param \WP_Post $ev Event post.
+	 * @return array<string,mixed>
+	 */
+	public static function event_payload( \WP_Post $ev ): array {
+		$id          = (int) $ev->ID;
+		$data        = EventData::get( $id );
+		$status_key  = (string) get_post_meta( $id, Constants::META_EVENT_STATUS, true );
+		$post_status = (string) get_post_status( $ev );
+
+		return array(
+			'id'            => $id,
+			'title'         => get_the_title( $id ),
+			'date'          => DateFormatter::date_range( $data ),
+			'time'          => DateFormatter::time_range( $data ),
+			'allDay'        => (bool) $data['all_day'],
+			'location'      => Registry::get_location_name( $id ),
+			'category'      => Registry::get_category_name( $id ),
+			'categoryColor' => Registry::get_category_color( $id ),
+			'statusKey'     => $status_key,
+			'statusLabel'   => EventStatus::label( $status_key ),
+			'statusColor'   => EventStatus::color( $status_key ),
+			'postStatus'    => $post_status,
+			'editUrl'       => (string) get_edit_post_link( $id, 'raw' ),
+			'viewUrl'       => (string) get_permalink( $id ),
+		);
+	}
+
+	/**
+	 * Render a single event chip for the grid.
+	 *
+	 * @param \WP_Post $ev Event post.
+	 */
+	private static function render_event_chip( \WP_Post $ev ): string {
+		$payload     = self::event_payload( $ev );
+		$bg          = $payload['categoryColor'] ? $payload['categoryColor'] : '#2271b1';
+		$post_status = $payload['postStatus'];
+
+		$classes = array( 'vev-cal-event' );
+		if ( 'cancelled' === $payload['statusKey'] ) {
+			$classes[] = 'vev-cal-event--cancelled';
+		}
+		if ( 'publish' !== $post_status ) {
+			$classes[] = 'vev-cal-event--draft';
+		}
+
+		$label = $payload['title'];
+		if ( 'draft' === $post_status ) {
+			/* translators: %s: event title */
+			$label = sprintf( __( '%s (draft)', 've-events' ), $payload['title'] );
+		}
+
+		return sprintf(
+			'<a href="%s" class="%s" style="background:%s;" draggable="true" data-id="%d" data-event="%s" title="%s">%s</a>',
+			esc_url( $payload['editUrl'] ),
+			esc_attr( implode( ' ', $classes ) ),
+			esc_attr( $bg ),
+			(int) $payload['id'],
+			esc_attr( (string) wp_json_encode( $payload ) ),
+			esc_attr( $label ),
+			esc_html( $label )
+		);
+	}
+
+	/**
+	 * Render the month calendar grid page.
+	 */
+	public static function render_calendar_view(): void {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_die( esc_html__( 'You do not have permission to view this page.', 've-events' ) );
+		}
+
+		// Read-only month navigation; no state change, so no nonce is required.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$month_qv = isset( $_GET['vev_cal_month'] ) ? sanitize_text_field( wp_unslash( $_GET['vev_cal_month'] ) ) : '';
+		$month_qv = self::normalize_month( $month_qv );
 		?>
 		<div class="wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'Events', 've-events' ); ?></h1>
@@ -230,72 +298,11 @@ final class CalendarPage {
 				<?php esc_html_e( 'Add New Event', 've-events' ); ?>
 			</a>
 			<hr class="wp-header-end">
-			<?php self::render_views_nav( 'calendar' ); ?>
+			<?php ViewsNav::render( 'calendar' ); ?>
 
-			<div class="vev-cal-header">
-				<a href="<?php echo esc_url( add_query_arg( 'vev_cal_month', $prev_month, $base_url ) ); ?>" class="button">&#8592;</a>
-				<h2 class="vev-cal-title"><?php echo esc_html( (string) $month_label ); ?></h2>
-				<a href="<?php echo esc_url( add_query_arg( 'vev_cal_month', $next_month, $base_url ) ); ?>" class="button">&#8594;</a>
+			<div id="vev-cal-app" data-month="<?php echo esc_attr( $month_qv ); ?>">
+				<?php echo self::render_app_html( $month_qv ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- app HTML escaped internally. ?>
 			</div>
-
-			<div class="vev-cal-grid">
-				<?php
-				// Day-of-week headers (Mon–Sun).
-				$dow_labels = array(
-					__( 'Mon', 've-events' ),
-					__( 'Tue', 've-events' ),
-					__( 'Wed', 've-events' ),
-					__( 'Thu', 've-events' ),
-					__( 'Fri', 've-events' ),
-					__( 'Sat', 've-events' ),
-					__( 'Sun', 've-events' ),
-				);
-				foreach ( $dow_labels as $dow_label ) {
-					printf( '<div class="vev-cal-dow">%s</div>', esc_html( $dow_label ) );
-				}
-
-				// Empty leading cells.
-				for ( $i = 1; $i < $first_dow; $i++ ) {
-					echo '<div class="vev-cal-day vev-cal-day--empty"></div>';
-				}
-
-				// Day cells.
-				for ( $d = 1; $d <= $days_in_month; $d++ ) {
-					$is_today = ( $d === $today_d && $month === $today_m && $year === $today_y );
-					$cls      = 'vev-cal-day' . ( $is_today ? ' vev-cal-day--today' : '' );
-					echo '<div class="' . esc_attr( $cls ) . '">';
-					echo '<div class="vev-cal-day-num">' . esc_html( (string) $d ) . '</div>';
-
-					if ( ! empty( $days[ $d ] ) ) {
-						foreach ( $days[ $d ] as $ev ) {
-							$bg   = '#2271b1';
-							$cats = get_the_terms( $ev->ID, Constants::TAX_CATEGORY );
-							if ( is_array( $cats ) && ! empty( $cats ) ) {
-								$cid = (int) $cats[0]->term_id;
-								if ( isset( $cat_colors[ $cid ] ) ) {
-									$bg = $cat_colors[ $cid ];
-								}
-							}
-							printf(
-								'<a href="%s" class="vev-cal-event" style="background:%s;" title="%s">%s</a>',
-								esc_url( (string) get_edit_post_link( $ev->ID ) ),
-								esc_attr( $bg ),
-								esc_attr( $ev->post_title ),
-								esc_html( $ev->post_title )
-							);
-						}
-					}
-					echo '</div>';
-				}
-
-				// Trailing empty cells to fill last row.
-				$total    = $first_dow - 1 + $days_in_month;
-				$trailing = ( 7 - ( $total % 7 ) ) % 7;
-				for ( $i = 0; $i < $trailing; $i++ ) {
-					echo '<div class="vev-cal-day vev-cal-day--empty"></div>';
-				}
-				?>
-			</div><!-- .vev-cal-grid -->
 		</div><!-- .wrap -->
 		<?php
 	}

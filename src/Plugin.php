@@ -60,6 +60,7 @@ final class Plugin {
 		Query\Bootstrap::init();
 		Frontend\Bootstrap::init();
 		Integrations\Bootstrap::init();
+		Export\Endpoint::init();
 
 		if ( is_admin() ) {
 			Admin\Bootstrap::init();

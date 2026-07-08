@@ -1,158 +1,1365 @@
+# Copyright (C) 2026 Marc Probst
+# This file is distributed under the same license as the VE Events package.
 msgid ""
 msgstr ""
-"Project-Id-Version: VE Events 1.2.0\\n"
-"Report-Msgid-Bugs-To: \\n"
-"POT-Creation-Date: 2025-12-27 00:00+0000\\n"
-"MIME-Version: 1.0\\n"
-"Content-Type: text/plain; charset=UTF-8\\n"
-"Content-Transfer-Encoding: 8bit\\n"
-"X-Domain: ve-events\\n"
+"Project-Id-Version: VE Events 2.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-08 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: ve-events\n"
 
-msgid "%1$s %2$s – %3$s %4$s"
+msgid "Running…"
 msgstr ""
 
-msgid "%1$s – %2$s (all day)"
+msgid "events synced."
 msgstr ""
 
-msgid "%1$s, %2$s"
+msgid "Error."
 msgstr ""
 
-msgid "%1$s, %2$s–%3$s"
+msgid "Could not load the calendar. Reloading…"
 msgstr ""
 
-msgid "%s (all day)"
+msgid "Could not move the event."
 msgstr ""
 
-msgid "Add New"
+msgid "Could not save the event."
 msgstr ""
 
-msgid "Add New Event"
+msgid "New event"
 msgstr ""
 
-msgid "Add New Event Category"
+msgid "Title"
 msgstr ""
 
-msgid "Add New Location"
+msgid "Event title"
 msgstr ""
 
-msgid "Add New Series"
-msgstr ""
-
-msgid "Add New Topic"
-msgstr ""
-
-msgid "All Event Categories"
-msgstr ""
-
-msgid "All Events"
-msgstr ""
-
-msgid "All Locations"
-msgstr ""
-
-msgid "All Series"
-msgstr ""
-
-msgid "All Topics"
-msgstr ""
-
-msgid "All day"
-msgstr ""
-
-msgid "All-day events are stored as full-day ranges in your site time zone. Times will not be displayed in the virtual fields."
-msgstr ""
-
-msgid "Archived"
-msgstr ""
-
-msgid "Categories"
-msgstr ""
-
-msgid "Category"
-msgstr ""
-
-msgid "E.g. registration, ticket costs, access notes, etc."
-msgstr ""
-
-msgid "Edit Event"
-msgstr ""
-
-msgid "Edit Event Category"
-msgstr ""
-
-msgid "Edit Location"
-msgstr ""
-
-msgid "Edit Series"
-msgstr ""
-
-msgid "Edit Topic"
+msgid "Start"
 msgstr ""
 
 msgid "End"
 msgstr ""
 
-msgid "Event"
+msgid "All day"
 msgstr ""
 
-msgid "Event Categories"
+msgid "Save draft"
 msgstr ""
 
-msgid "Event Category"
+msgid "Publish"
 msgstr ""
 
-msgid "Event Details"
+msgid "Cancel"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "Where"
+msgstr ""
+
+msgid "Category"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Error. Please try again."
+msgstr ""
+
+msgid "Please select a series first."
+msgstr ""
+
+msgid "You are not allowed to do that."
+msgstr ""
+
+msgid "Please enter an event title."
+msgstr ""
+
+msgid "Invalid date."
+msgstr ""
+
+msgid "Could not create the event."
+msgstr ""
+
+msgid "Event published."
+msgstr ""
+
+msgid "Draft event created."
+msgstr ""
+
+msgid "Event not found."
+msgstr ""
+
+msgid "You are not allowed to edit this event."
+msgstr ""
+
+msgid "This event has no start date and cannot be moved."
+msgstr ""
+
+msgid "Event Calendar"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Previous month"
+msgstr ""
+
+msgid "Next month"
+msgstr ""
+
+msgid "Mon"
+msgstr ""
+
+msgid "Tue"
+msgstr ""
+
+msgid "Wed"
+msgstr ""
+
+msgid "Thu"
+msgstr ""
+
+msgid "Fri"
+msgstr ""
+
+msgid "Sat"
+msgstr ""
+
+msgid "Sun"
+msgstr ""
+
+#, php-format
+msgid "%s (draft)"
+msgstr ""
+
+msgid "You do not have permission to view this page."
 msgstr ""
 
 msgid "Events"
 msgstr ""
 
-msgid "Featured image"
+msgid "Add New Event"
 msgstr ""
 
-msgid "For correct Berlin/Germany date output, set the WordPress time zone to Europe/Berlin (Settings → General)."
+msgid "Date &amp; Time"
+msgstr ""
+
+msgid "Start *"
+msgstr ""
+
+msgid "End (optional)"
 msgstr ""
 
 msgid "Hide end time in listings"
 msgstr ""
 
-msgid "If empty, the end will default to the start."
+msgid ""
+"All-day events are stored as full-day ranges in your site time zone. Times "
+"will not be displayed."
 msgstr ""
 
-msgid "Info/Ticket URL"
+msgid ""
+"For correct date output, set WordPress timezone to Europe/Berlin (Settings → "
+"General)."
 msgstr ""
 
-msgid "JetEngine/Elementor: Use these meta keys in listings (no shortcodes required):"
+msgid "Enter a date above"
+msgstr ""
+
+msgid "All months"
+msgstr ""
+
+msgid "All categories"
+msgstr ""
+
+msgid "All locations"
+msgstr ""
+
+msgid "All topics"
 msgstr ""
 
 msgid "Location"
 msgstr ""
 
-msgid "Locations"
+msgid "Topic"
+msgstr ""
+
+msgid "Series"
+msgstr ""
+
+msgid "Ongoing"
+msgstr ""
+
+msgid "Past"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Postponed"
+msgstr ""
+
+msgid "Rescheduled"
+msgstr ""
+
+msgid "Moved Online"
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "Event Status"
+msgstr ""
+
+msgid "In stock"
+msgstr ""
+
+msgid "Sold out"
+msgstr ""
+
+msgid "Pre-order"
+msgstr ""
+
+msgid "Speaker / Host"
+msgstr ""
+
+msgid "Info / Ticket URL"
+msgstr ""
+
+msgid "Organizer"
+msgstr ""
+
+msgid "Organizer URL"
+msgstr ""
+
+msgid "Additional Notes"
+msgstr ""
+
+msgid ""
+"Short notes for listings: admission, dress code, registration info, etc."
+msgstr ""
+
+msgid "Tickets &amp; Offer"
+msgstr ""
+
+msgid "Price"
+msgstr ""
+
+msgid "Leave empty if unknown. Use 0 for free events."
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Availability"
+msgstr ""
+
+msgid "— Not specified —"
+msgstr ""
+
+msgid "Developer: JetEngine / Elementor field keys"
+msgstr ""
+
+msgid "Scheduled (default)"
+msgstr ""
+
+msgid "Updates Schema.org eventStatus and shows a badge in the event list."
+msgstr ""
+
+msgid "Attendance Mode"
+msgstr ""
+
+msgid "Offline (default)"
+msgstr ""
+
+msgid ""
+"Sets Schema.org eventAttendanceMode. \"Moved Online\" status always outputs "
+"Online."
+msgstr ""
+
+msgid "Series Suggestion"
+msgstr ""
+
+#, php-format
+msgid ""
+"Found %1$d other event with the same title \"%2$s\". Would you like to add "
+"these events to a series?"
+msgid_plural ""
+"Found %1$d other events with the same title \"%2$s\". Would you like to add "
+"these events to a series?"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Create new series & assign"
+msgstr ""
+
+msgid "— or assign to existing series —"
+msgstr ""
+
+msgid "Assign"
+msgstr ""
+
+msgid "Dismiss"
+msgstr ""
+
+msgid "Security check failed."
+msgstr ""
+
+msgid "Permission denied."
+msgstr ""
+
+msgid "No suggestion found."
+msgstr ""
+
+msgid "Post not found."
+msgstr ""
+
+msgid "Invalid series term."
+msgstr ""
+
+msgid "Unknown action."
+msgstr ""
+
+msgid "VE Events Settings"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "VE Events"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Display"
+msgstr ""
+
+msgid "Schema &amp; SEO"
+msgstr ""
+
+msgid "Field Reference"
+msgstr ""
+
+msgid "URL Settings"
+msgstr ""
+
+msgid "Event Slug (Single)"
+msgstr ""
+
+msgid "URL slug for single events, e.g. \"event\" or \"veranstaltung\"."
+msgstr ""
+
+msgid "Archive Slug"
+msgstr ""
+
+msgid "URL slug for the event archive, e.g. \"events\" or \"veranstaltungen\"."
+msgstr ""
+
+msgid ""
+"Changing slugs will automatically refresh permalinks. Existing event URLs "
+"will change."
+msgstr ""
+
+msgid "Editor"
+msgstr ""
+
+msgid "Block Editor"
+msgstr ""
+
+msgid "Disable Gutenberg for Events (use classic editor)"
+msgstr ""
+
+msgid "Calendar Import"
+msgstr ""
+
+#, php-format
+msgid ""
+"Manage ICS import feeds (Google Calendar, Outlook, etc.) on the <a "
+"href=\"%s\">Import Feeds</a> page."
+msgstr ""
+
+msgid "Manage Import Feeds"
+msgstr ""
+
+msgid "Tools"
+msgstr ""
+
+msgid ""
+"Re-computes _vev_start_date, _vev_start_month and _vev_time_slot for all "
+"existing events. Run this once after updating the plugin."
+msgstr ""
+
+msgid "Sync computed fields (JetEngine filters)"
+msgstr ""
+
+msgid "Date &amp; Time Display"
+msgstr ""
+
+msgid "Hide Same-Day End Date"
+msgstr ""
+
+msgid "Hide the end date when start and end are on the same day"
+msgstr ""
+
+msgid ""
+"Example output: \"12.06.2025 · 10:00 – 12:00\" instead of \"12.06.2025 · "
+"10:00 – 12.06.2025 · 12:00\""
+msgstr ""
+
+msgid "Event Visibility"
+msgstr ""
+
+msgid "Grace Period After Event End"
+msgstr ""
+
+msgid "Hide immediately"
+msgstr ""
+
+msgid "1 hour"
+msgstr ""
+
+msgid "2 hours"
+msgstr ""
+
+msgid "4 hours"
+msgstr ""
+
+msgid "6 hours"
+msgstr ""
+
+msgid "12 hours"
+msgstr ""
+
+msgid "1 day (recommended)"
+msgstr ""
+
+msgid "3 days"
+msgstr ""
+
+msgid "7 days"
+msgstr ""
+
+msgid "Always show"
+msgstr ""
+
+msgid ""
+"How long events stay visible on the frontend after ending. Backend is never "
+"affected."
+msgstr ""
+
+msgid "Search Results"
+msgstr ""
+
+msgid "Exclude archived events from WordPress search results"
+msgstr ""
+
+msgid "Category Colors"
+msgstr ""
+
+msgid "Output Category Colors as CSS"
+msgstr ""
+
+msgid ""
+"Emit CSS custom properties and utility classes for event category colors in "
+"wp_head"
+msgstr ""
+
+msgid ""
+"Outputs :root{--vev-cat-slug:#hex;} and .ve-cat-slug{--vev-cat-color:#hex;} "
+"for use with Elementor/CSS."
+msgstr ""
+
+msgid "Event Status Logic"
+msgstr ""
+
+msgid "Condition"
+msgstr ""
+
+msgid "Event has not started yet"
+msgstr ""
+
+msgid "Currently running"
+msgstr ""
+
+msgid "Ended, within grace period"
+msgstr ""
+
+msgid "Ended, grace period exceeded"
+msgstr ""
+
+msgid "Schema.org Event Markup"
+msgstr ""
+
+msgid ""
+"Structured data is automatically output on single event pages as JSON-LD. "
+"Location address is included when set on the location term."
+msgstr ""
+
+msgid "Include Event Series"
+msgstr ""
+
+msgid "Add series name to Schema.org as superEvent / EventSeries"
+msgstr ""
+
+msgid "Open Graph / Social Meta Tags"
+msgstr ""
+
+msgid ""
+"Outputs og: and twitter: meta tags on single event pages for social sharing "
+"previews."
+msgstr ""
+
+msgid "Open Graph Tags"
+msgstr ""
+
+msgid "Auto (skip if Yoast / Rank Math / AIOSEO active)"
+msgstr ""
+
+msgid "Always output"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
+msgid ""
+"Auto: outputs OG tags only when no dedicated SEO plugin (Yoast, Rank Math, "
+"AIOSEO, SEO Framework) is active. Use \"Always\" to force output even "
+"alongside an SEO plugin. Use \"Disabled\" to turn off completely."
+msgstr ""
+
+msgid "iCal Export"
+msgstr ""
+
+msgid ""
+"Every published event has an \"Add to Calendar\" .ics download (virtual "
+"field ve_ical_url). Optionally expose a subscribable feed of all upcoming "
+"events."
+msgstr ""
+
+msgid "Subscribable Feed"
+msgstr ""
+
+msgid "Enable the subscribable iCal feed of upcoming events"
+msgstr ""
+
+msgid "Feed URL:"
+msgstr ""
+
+msgid "Subscribe URL:"
+msgstr ""
+
+#, php-format
+msgid "Append %s to filter the feed by an event category slug."
+msgstr ""
+
+msgid "Series Detection"
+msgstr ""
+
+msgid ""
+"ICS import automatically groups events by UID into series. The feature below "
+"adds detection for manually created events."
+msgstr ""
+
+msgid "Series Suggestions"
+msgstr ""
+
+msgid "Suggest series assignments for events with matching titles"
+msgstr ""
+
+msgid ""
+"When saving an event without a series, the plugin finds other events with "
+"the same title. A notice in the editor lets you create a new series, assign "
+"to an existing one, or dismiss."
+msgstr ""
+
+msgid "Stored Meta Keys"
+msgstr ""
+
+msgid ""
+"Use these for sorting, filtering, and meta conditions in JetEngine/WP_Query:"
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Start timestamp (UTC integer)"
+msgstr ""
+
+msgid "End timestamp (UTC integer)"
+msgstr ""
+
+msgid "All-day event (1/0)"
+msgstr ""
+
+msgid "Hide end time (1/0)"
+msgstr ""
+
+msgid "Special information"
+msgstr ""
+
+msgid ""
+"Status override: cancelled | postponed | rescheduled | movedOnline | (empty "
+"= scheduled)"
+msgstr ""
+
+msgid "Organizer name (Schema.org organizer)"
+msgstr ""
+
+msgid "Ticket price (numeric string; 0 = free)"
+msgstr ""
+
+msgid "ISO 4217 currency code, e.g. EUR"
+msgstr ""
+
+msgid "Offer availability: InStock | SoldOut | PreOrder | (empty)"
+msgstr ""
+
+msgid "Attendance mode: online | mixed | (empty = offline)"
+msgstr ""
+
+msgid ""
+"Start hour in site timezone (0–23) — auto-computed, use for time-of-day "
+"filtering"
+msgstr ""
+
+msgid ""
+"ISO weekday in site timezone (1=Mon … 7=Sun) — auto-computed, use for "
+"weekday filtering"
+msgstr ""
+
+msgid "Virtual / Computed Fields"
+msgstr ""
+
+msgid ""
+"Available as Elementor Dynamic Tags and JetEngine fields. Computed at "
+"runtime:"
+msgstr ""
+
+msgid "Start date (formatted)"
+msgstr ""
+
+msgid "Start time (formatted)"
+msgstr ""
+
+msgid "End date (formatted)"
+msgstr ""
+
+msgid "End time (formatted)"
+msgstr ""
+
+msgid "Smart date range"
+msgstr ""
+
+msgid "Time range or \"All day\""
+msgstr ""
+
+msgid "Full date &amp; time"
+msgstr ""
+
+msgid "upcoming / ongoing / past / archived"
+msgstr ""
+
+msgid "Location name (taxonomy)"
+msgstr ""
+
+msgid "Location address"
+msgstr ""
+
+msgid "Google Maps URL (auto or custom)"
+msgstr ""
+
+msgid "Category name"
+msgstr ""
+
+msgid "Category color (hex)"
+msgstr ""
+
+msgid "CSS class for primary category, e.g. \"ve-cat-konzert\""
+msgstr ""
+
+msgid "Series name"
+msgstr ""
+
+msgid "Topic names (comma-separated)"
+msgstr ""
+
+msgid "1 if event has not started yet"
+msgstr ""
+
+msgid "1 if event is currently running"
+msgstr ""
+
+msgid ""
+"Human-readable status: Cancelled / Postponed / Rescheduled / Moved Online"
+msgstr ""
+
+msgid "Hex color for status badge (red / amber / blue)"
+msgstr ""
+
+msgid "1 if event is cancelled"
+msgstr ""
+
+msgid "Formatted price with currency (\"Free\" when 0)"
+msgstr ""
+
+msgid "Per-event .ics download URL (Add to Calendar)"
+msgstr ""
+
+msgid "Query Vars (URL / WP_Query)"
+msgstr ""
+
+msgid "Pass these as URL parameters or WP_Query arguments for filtering:"
+msgstr ""
+
+msgid "Var"
+msgstr ""
+
+msgid "Values"
+msgstr ""
+
+msgid "Effect"
+msgstr ""
+
+msgid "Filter by lifecycle status"
+msgstr ""
+
+msgid "Include archived events (default: hidden)"
+msgstr ""
+
+msgid ""
+"Show only events starting in this month (YYYY-MM). Bypasses archived cutoff."
+msgstr ""
+
+msgid ""
+"Events starting on or after this date (Y-m-d or UTC timestamp). Bypasses "
+"archived cutoff."
+msgstr ""
+
+msgid ""
+"Events starting on or before this date (Y-m-d or UTC timestamp). Bypasses "
+"archived cutoff."
+msgstr ""
+
+msgid "Events starting at or after this hour (0–23, site timezone)"
+msgstr ""
+
+msgid "Events starting at or before this hour (0–23, site timezone)"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+msgid "ISO weekday(s): 1=Mon … 7=Sun. Comma-separated list allowed."
+msgstr ""
+
+msgid "JetEngine Query Setup"
+msgstr ""
+
+msgid "Setting"
+msgstr ""
+
+msgid "Upcoming"
+msgstr ""
+
+msgid "Post Type"
+msgstr ""
+
+msgid "Order By"
+msgstr ""
+
+msgid "Meta Value (Number)"
+msgstr ""
+
+msgid "Meta Key"
+msgstr ""
+
+msgid "Order"
+msgstr ""
+
+msgid "Query Var"
+msgstr ""
+
+msgid "Category Color"
+msgstr ""
+
+msgid "Choose a color for this category. Used in listings and calendar views."
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Full address used for automatic Google Maps link generation."
+msgstr ""
+
+msgid "Custom Maps URL (optional)"
+msgstr ""
+
+msgid ""
+"Overrides the auto-generated Google Maps link. Leave empty to use the "
+"address above."
+msgstr ""
+
+msgid "Full address — used to auto-generate a Google Maps link."
+msgstr ""
+
+msgid "Maps URL (auto)"
+msgstr ""
+
+msgid "Auto-generated from the address. Enter a custom URL below to override."
+msgstr ""
+
+msgid "Custom Maps URL"
+msgstr ""
+
+msgid "Optional. Overrides the auto-generated link above."
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Drafts"
+msgstr ""
+
+msgid "Trash"
+msgstr ""
+
+msgid "Start Date/Time"
+msgstr ""
+
+msgid "End Date/Time"
+msgstr ""
+
+msgid "All Day Event"
+msgstr ""
+
+msgid "Hide End Time"
+msgstr ""
+
+msgid "Speaker"
+msgstr ""
+
+msgid "Special Info"
+msgstr ""
+
+msgid "Info URL"
+msgstr ""
+
+msgid "Price (formatted)"
+msgstr ""
+
+msgid "iCal URL (.ics)"
+msgstr ""
+
+msgid "Start Date (formatted)"
+msgstr ""
+
+msgid "Start Time (formatted)"
+msgstr ""
+
+msgid "End Date (formatted)"
+msgstr ""
+
+msgid "End Time (formatted)"
+msgstr ""
+
+msgid "Date Range"
+msgstr ""
+
+msgid "Time Range"
+msgstr ""
+
+msgid "Full Date & Time"
+msgstr ""
+
+msgid "Is Upcoming"
+msgstr ""
+
+msgid "Is Ongoing"
+msgstr ""
+
+msgid "Location Name"
+msgstr ""
+
+msgid "Location Address"
+msgstr ""
+
+msgid "Location Maps URL"
+msgstr ""
+
+msgid "Category Name"
+msgstr ""
+
+msgid "Series Name"
+msgstr ""
+
+msgid "Topic Name(s)"
+msgstr ""
+
+msgid "Category CSS Class"
+msgstr ""
+
+msgid "Event Status Label"
+msgstr ""
+
+msgid "Event Status Color"
+msgstr ""
+
+msgid "Is Cancelled"
+msgstr ""
+
+msgid "Start Hour (0–23)"
+msgstr ""
+
+msgid "Weekday (1=Mon, 7=Sun)"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Free"
+msgstr ""
+
+msgid "Location & Taxonomy"
+msgstr ""
+
+msgid "Formatted Output"
+msgstr ""
+
+msgid "Event Details"
+msgstr ""
+
+msgid "Raw Data"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Calendar Import Feeds"
+msgstr ""
+
+msgid "Add Feed"
+msgstr ""
+
+msgid "No import feeds configured yet. Add one to get started."
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+msgid "Schedule"
+msgstr ""
+
+msgid "Last Run"
+msgstr ""
+
+msgid "Next Run"
+msgstr ""
+
+msgid "Never"
+msgstr ""
+
+msgid "Inactive"
+msgstr ""
+
+msgid "Log"
+msgstr ""
+
+msgid "Run now"
+msgstr ""
+
+msgid "Deactivate"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Delete this feed?"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Partial"
+msgstr ""
+
+msgid "Add Import Feed"
+msgstr ""
+
+msgid "Edit Import Feed"
+msgstr ""
+
+msgid "All Feeds"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Feed Name"
+msgstr ""
+
+msgid "ICS URL"
+msgstr ""
+
+msgid "The .ics subscription URL (e.g. from Outlook, Google Calendar, etc.)"
+msgstr ""
+
+msgid "Test Connection"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Enable automatic import"
+msgstr ""
+
+msgid "HTTP Timeout"
+msgstr ""
+
+msgid "seconds"
+msgstr ""
+
+msgid "Import Behaviour"
+msgstr ""
+
+msgid "Update Mode"
+msgstr ""
+
+msgid "Imported Events Status"
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "Draft"
+msgstr ""
+
+msgid "Removed Events"
+msgstr ""
+
+msgid "Move to Trash if removed from source"
+msgstr ""
+
+msgid "Field Mapping"
+msgstr ""
+
+msgid ""
+"Define how ICS fields are mapped to event fields. Dates are always imported "
+"automatically."
+msgstr ""
+
+msgid "On"
+msgstr ""
+
+msgid "ICS Field"
+msgstr ""
+
+msgid "Maps to"
+msgstr ""
+
+msgid "Create Terms"
+msgstr ""
+
+msgid "Skip"
+msgstr ""
+
+msgid "Auto-create"
+msgstr ""
+
+msgid "Default Taxonomy Assignment"
+msgstr ""
+
+msgid ""
+"These terms will always be assigned to every imported event (in addition to "
+"mapped terms)."
+msgstr ""
+
+msgid "Default Category"
+msgstr ""
+
+msgid "Default Location"
+msgstr ""
+
+msgid "Default Topic"
+msgstr ""
+
+msgid "No terms found."
+msgstr ""
+
+msgid "Hold Ctrl/Cmd to select multiple."
+msgstr ""
+
+msgid "Save Feed"
+msgstr ""
+
+#, php-format
+msgid "Import Log: %s"
+msgstr ""
+
+msgid "Clear Log"
+msgstr ""
+
+msgid "No log entries yet."
+msgstr ""
+
+msgid "Time (UTC)"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Updated"
+msgstr ""
+
+msgid "Deleted"
+msgstr ""
+
+msgid "Skipped"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Errors"
+msgstr ""
+
+#, php-format
+msgid "%d error(s)"
+msgstr ""
+
+msgid "Insufficient permissions."
+msgstr ""
+
+msgid "Feed saved."
+msgstr ""
+
+msgid "Feed deleted."
+msgstr ""
+
+msgid "Feed status updated."
+msgstr ""
+
+msgid "Connecting…"
+msgstr ""
+
+#, php-format
+msgid "OK — found %d event(s)."
+msgstr ""
+
+msgid "Clear all log entries for this feed?"
+msgstr ""
+
+msgid "Import Feeds"
+msgstr ""
+
+msgid "Import Feed"
+msgstr ""
+
+msgid "No import feeds found."
+msgstr ""
+
+msgid "Unnamed Feed"
+msgstr ""
+
+msgid "Every 15 Minutes"
+msgstr ""
+
+msgid "Every 30 Minutes"
+msgstr ""
+
+msgid "Hourly"
+msgstr ""
+
+msgid "Twice Daily"
+msgstr ""
+
+msgid "Daily"
+msgstr ""
+
+msgid "Weekly"
+msgstr ""
+
+msgid "Update if changed"
+msgstr ""
+
+msgid "Always overwrite"
+msgstr ""
+
+msgid "Never update"
+msgstr ""
+
+msgid "Event Title"
+msgstr ""
+
+msgid "Description (Content)"
+msgstr ""
+
+msgid "Excerpt"
+msgstr ""
+
+msgid "Start Date/Time (internal)"
+msgstr ""
+
+msgid "End Date/Time (internal)"
+msgstr ""
+
+msgid "Special Information"
+msgstr ""
+
+msgid "Category (Taxonomy)"
+msgstr ""
+
+msgid "Location (Taxonomy)"
+msgstr ""
+
+msgid "Topic (Taxonomy)"
+msgstr ""
+
+msgid "(Untitled Event)"
+msgstr ""
+
+msgid "No ICS URL configured."
+msgstr ""
+
+msgid "Unnamed Series"
+msgstr ""
+
+msgid "Event Category"
+msgstr ""
+
+msgid "Field"
+msgstr ""
+
+msgid "Event Field"
+msgstr ""
+
+msgid "Event URL / Permalink"
+msgstr ""
+
+msgid "URL Type"
+msgstr ""
+
+msgid "Event Permalink"
+msgstr ""
+
+msgid "Fallback to Permalink"
+msgstr ""
+
+msgid "Event Location"
+msgstr ""
+
+msgid "Event Location Maps URL"
+msgstr ""
+
+msgid "Event Series"
+msgstr ""
+
+msgid "Event Topic(s)"
+msgstr ""
+
+msgid "VE Events: Info URL"
+msgstr ""
+
+msgctxt "post type general name"
+msgid "Events"
+msgstr ""
+
+msgctxt "post type singular name"
+msgid "Event"
+msgstr ""
+
+msgctxt "event"
+msgid "Add New"
+msgstr ""
+
+msgid "Edit Event"
 msgstr ""
 
 msgid "New Event"
 msgstr ""
 
-msgid "New Event Category Name"
+msgid "View Event"
 msgstr ""
 
-msgid "New Location Name"
+msgid "View Events"
 msgstr ""
 
-msgid "New Series Name"
+msgid "Search Events"
 msgstr ""
 
-msgid "New Topic Name"
+msgid "No events found"
 msgstr ""
 
-msgid "No events found in Trash."
+msgid "No events found in Trash"
 msgstr ""
 
-msgid "No events found."
+msgid "All Events"
 msgstr ""
 
-msgid "Ongoing"
+msgid "Event Archives"
+msgstr ""
+
+msgid "Event Attributes"
+msgstr ""
+
+msgid "Insert into event"
+msgstr ""
+
+msgid "Uploaded to this event"
+msgstr ""
+
+msgid "Event Image"
+msgstr ""
+
+msgid "Set event image"
+msgstr ""
+
+msgid "Remove event image"
+msgstr ""
+
+msgid "Use as event image"
+msgstr ""
+
+msgctxt "admin menu"
+msgid "Events"
+msgstr ""
+
+msgid "Event Categories"
+msgstr ""
+
+msgid "Search Event Categories"
+msgstr ""
+
+msgid "All Event Categories"
 msgstr ""
 
 msgid "Parent Event Category"
@@ -161,7 +1368,67 @@ msgstr ""
 msgid "Parent Event Category:"
 msgstr ""
 
-msgid "Parent Events:"
+msgid "Edit Event Category"
+msgstr ""
+
+msgid "Update Event Category"
+msgstr ""
+
+msgid "Add New Event Category"
+msgstr ""
+
+msgid "New Event Category Name"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Locations"
+msgstr ""
+
+msgid "Search Locations"
+msgstr ""
+
+msgid "All Locations"
+msgstr ""
+
+msgid "Edit Location"
+msgstr ""
+
+msgid "Update Location"
+msgstr ""
+
+msgid "Add New Location"
+msgstr ""
+
+msgid "New Location Name"
+msgstr ""
+
+msgid "Topics"
+msgstr ""
+
+msgid "Search Topics"
+msgstr ""
+
+msgid "All Topics"
+msgstr ""
+
+msgid "Edit Topic"
+msgstr ""
+
+msgid "Update Topic"
+msgstr ""
+
+msgid "Add New Topic"
+msgstr ""
+
+msgid "New Topic Name"
+msgstr ""
+
+msgid "Search Series"
+msgstr ""
+
+msgid "All Series"
 msgstr ""
 
 msgid "Parent Series"
@@ -170,71 +1437,43 @@ msgstr ""
 msgid "Parent Series:"
 msgstr ""
 
-msgid "Past"
-msgstr ""
-
-msgid "Remove featured image"
-msgstr ""
-
-msgid "Search Event Categories"
-msgstr ""
-
-msgid "Search Events"
-msgstr ""
-
-msgid "Search Locations"
-msgstr ""
-
-msgid "Search Series"
-msgstr ""
-
-msgid "Search Topics"
-msgstr ""
-
-msgid "Series"
-msgstr ""
-
-msgid "Set featured image"
-msgstr ""
-
-msgid "Speaker / Host"
-msgstr ""
-
-msgid "Special information"
-msgstr ""
-
-msgid "Start"
-msgstr ""
-
-msgid "Status"
-msgstr ""
-
-msgid "Title"
-msgstr ""
-
-msgid "Topic"
-msgstr ""
-
-msgid "Topics"
-msgstr ""
-
-msgid "Upcoming"
-msgstr ""
-
-msgid "Update Event Category"
-msgstr ""
-
-msgid "Update Location"
+msgid "Edit Series"
 msgstr ""
 
 msgid "Update Series"
 msgstr ""
 
-msgid "Update Topic"
+msgid "Add New Series"
 msgstr ""
 
-msgid "Use as featured image"
+msgid "New Series Name"
 msgstr ""
 
-msgid "View Event"
+msgid "Online"
+msgstr ""
+
+msgid "Mixed (offline + online)"
+msgstr ""
+
+#, php-format
+msgid "%s (all day)"
+msgstr ""
+
+#, php-format
+msgid "%1$s – %2$s (all day)"
+msgstr ""
+
+#, php-format
+msgid "%1$s, %2$s"
+msgstr ""
+
+#, php-format
+msgid "%1$s, %2$s – %3$s"
+msgstr ""
+
+#, php-format
+msgid "%1$s %2$s – %3$s %4$s"
+msgstr ""
+
+msgid "Archived"
 msgstr ""

@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Constants {
 
-	public const VERSION = '2.0.0';
+	public const VERSION = '2.1.0';
 
 	public const TEXTDOMAIN = 've-events';
 	public const POST_TYPE  = 've_event';
@@ -46,6 +46,14 @@ final class Constants {
 	// Override values: cancelled, postponed, rescheduled, movedOnline, or empty.
 	public const META_EVENT_STATUS = '_vev_event_status';
 
+	// Organizer & offer/ticket meta.
+	public const META_ORGANIZER       = '_vev_organizer';
+	public const META_ORGANIZER_URL   = '_vev_organizer_url';
+	public const META_PRICE           = '_vev_price';          // Numeric string, or '' when unknown.
+	public const META_PRICE_CURRENCY  = '_vev_price_currency'; // ISO 4217, e.g. EUR.
+	public const META_AVAILABILITY    = '_vev_availability';   // InStock | SoldOut | PreOrder | ''.
+	public const META_ATTENDANCE_MODE = '_vev_attendance_mode'; // online | mixed | '' (offline).
+
 	// Computed/stored date meta (auto-synced from META_START_UTC).
 	public const META_START_HOUR    = '_vev_start_hour';    // 0–23, local timezone.
 	public const META_START_WEEKDAY = '_vev_weekday';       // 1=Mon … 7=Sun (ISO).
@@ -54,19 +62,21 @@ final class Constants {
 	public const META_TIME_SLOT     = '_vev_time_slot';     // morning|afternoon|evening|night (JetEngine time-of-day filter).
 
 	// Virtual meta keys (ve_ prefix) - computed at runtime.
-	public const VIRTUAL_START_DATE   = 've_start_date';
-	public const VIRTUAL_START_TIME   = 've_start_time';
-	public const VIRTUAL_END_DATE     = 've_end_date';
-	public const VIRTUAL_END_TIME     = 've_end_time';
-	public const VIRTUAL_DATE_RANGE   = 've_date_range';
-	public const VIRTUAL_TIME_RANGE   = 've_time_range';
-	public const VIRTUAL_DATETIME     = 've_datetime_formatted';
-	public const VIRTUAL_STATUS       = 've_status';
-	public const VIRTUAL_IS_UPCOMING  = 've_is_upcoming';
-	public const VIRTUAL_IS_ONGOING   = 've_is_ongoing';
-	public const VIRTUAL_STATUS_LABEL = 've_event_status_label';
-	public const VIRTUAL_STATUS_COLOR = 've_event_status_color';
-	public const VIRTUAL_IS_CANCELLED = 've_is_cancelled';
+	public const VIRTUAL_START_DATE      = 've_start_date';
+	public const VIRTUAL_START_TIME      = 've_start_time';
+	public const VIRTUAL_END_DATE        = 've_end_date';
+	public const VIRTUAL_END_TIME        = 've_end_time';
+	public const VIRTUAL_DATE_RANGE      = 've_date_range';
+	public const VIRTUAL_TIME_RANGE      = 've_time_range';
+	public const VIRTUAL_DATETIME        = 've_datetime_formatted';
+	public const VIRTUAL_STATUS          = 've_status';
+	public const VIRTUAL_IS_UPCOMING     = 've_is_upcoming';
+	public const VIRTUAL_IS_ONGOING      = 've_is_ongoing';
+	public const VIRTUAL_STATUS_LABEL    = 've_event_status_label';
+	public const VIRTUAL_STATUS_COLOR    = 've_event_status_color';
+	public const VIRTUAL_IS_CANCELLED    = 've_is_cancelled';
+	public const VIRTUAL_PRICE_FORMATTED = 've_price_formatted';
+	public const VIRTUAL_ICAL_URL        = 've_ical_url';
 
 	public const QV_SCOPE            = 'vev_event_scope';
 	public const QV_INCLUDE_ARCHIVED = 'vev_include_archived';
@@ -76,6 +86,10 @@ final class Constants {
 	public const QV_TIME_FROM        = 'vev_time_from';  // 0–23.
 	public const QV_TIME_TO          = 'vev_time_to';    // 0–23.
 	public const QV_WEEKDAY          = 'vev_weekday';    // 1–7 or comma-separated "1,3,5".
+
+	// iCal export endpoint query vars.
+	public const QV_ICS     = 'vev_ics';     // Post ID (single event) or "feed".
+	public const QV_ICS_CAT = 'vev_ics_cat'; // Optional category slug filter for the feed.
 
 	public const OPTION_SETTINGS = 'vev_settings';
 }

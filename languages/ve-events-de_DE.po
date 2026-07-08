@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VE Events 1.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-21 00:00+0000\n"
+"POT-Creation-Date: 2026-07-08 00:00+0000\n"
 "PO-Revision-Date: 2026-03-21 00:00+0000\n"
 "Last-Translator: VE Events Team\n"
 "Language-Team: German\n"
@@ -16,47 +16,464 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "Running…"
+msgstr "Läuft…"
+
+msgid "events synced."
+msgstr "Ereignisse synchronisiert."
+
+msgid "Error."
+msgstr "Fehler."
+
+msgid "Could not load the calendar. Reloading…"
+msgstr "Kalender konnte nicht geladen werden. Wird neu geladen…"
+
+msgid "Could not move the event."
+msgstr "Termin konnte nicht verschoben werden."
+
+msgid "Could not save the event."
+msgstr "Termin konnte nicht gespeichert werden."
+
+msgid "New event"
+msgstr "Neuer Termin"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Event title"
+msgstr "Titel des Termins"
+
+msgid "Start"
+msgstr "Start"
+
+msgid "End"
+msgstr "Ende"
+
+msgid "All day"
+msgstr "Ganztägig"
+
+msgid "Save draft"
+msgstr "Entwurf speichern"
+
+msgid "Publish"
+msgstr "Veröffentlichen"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "View"
+msgstr "Ansehen"
+
+# v1.9.0 – Listen-Ansicht
+msgid "When"
+msgstr "Wann"
+
+msgid "Where"
+msgstr "Ort"
+
+msgid "Category"
+msgstr "Kategorie"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Close"
+msgstr "Schließen"
+
+msgid "Error. Please try again."
+msgstr "Fehler. Bitte erneut versuchen."
+
+msgid "Please select a series first."
+msgstr "Bitte zuerst eine Serie auswählen."
+
+msgid "You are not allowed to do that."
+msgstr "Dazu bist du nicht berechtigt."
+
+msgid "Please enter an event title."
+msgstr "Bitte gib einen Titel ein."
+
+msgid "Invalid date."
+msgstr "Ungültiges Datum."
+
+msgid "Could not create the event."
+msgstr "Termin konnte nicht erstellt werden."
+
+msgid "Event published."
+msgstr "Termin veröffentlicht."
+
+msgid "Draft event created."
+msgstr "Entwurf erstellt."
+
+msgid "Event not found."
+msgstr "Termin nicht gefunden."
+
+msgid "You are not allowed to edit this event."
+msgstr "Du darfst diesen Termin nicht bearbeiten."
+
+msgid "This event has no start date and cannot be moved."
+msgstr "Dieser Termin hat kein Startdatum und kann nicht verschoben werden."
+
+msgid "Event Calendar"
+msgstr "Veranstaltungskalender"
+
+# v1.9.0 – Kalender-Grid
+msgid "Calendar"
+msgstr "Kalender"
+
+msgid "Previous month"
+msgstr "Vorheriger Monat"
+
+msgid "Next month"
+msgstr "Nächster Monat"
+
+msgid "Mon"
+msgstr "Mo"
+
+msgid "Tue"
+msgstr "Di"
+
+msgid "Wed"
+msgstr "Mi"
+
+msgid "Thu"
+msgstr "Do"
+
+msgid "Fri"
+msgstr "Fr"
+
+msgid "Sat"
+msgstr "Sa"
+
+msgid "Sun"
+msgstr "So"
+
+#, php-format
+msgid "%s (draft)"
+msgstr "%s (Entwurf)"
+
+# Sicherheits- & Systemmeldungen
+msgid "You do not have permission to view this page."
+msgstr "Sie haben keine Berechtigung, diese Seite anzuzeigen."
+
+msgid "Events"
+msgstr "Events"
+
+msgid "Add New Event"
+msgstr "Neues Event hinzufügen"
+
+# v1.9.0 – Event-Formular (3 Sektionen)
+msgid "Date &amp; Time"
+msgstr "Datum &amp; Uhrzeit"
+
+msgid "Start *"
+msgstr "Beginn *"
+
+msgid "End (optional)"
+msgstr "Ende (optional)"
+
+msgid "Hide end time in listings"
+msgstr "Endzeit in Listings ausblenden"
+
+msgid ""
+"All-day events are stored as full-day ranges in your site time zone. Times "
+"will not be displayed."
+msgstr ""
+"Ganztägige Events werden als ganztägige Zeitspannen in der Website-Zeitzone "
+"gespeichert. Uhrzeiten werden nicht angezeigt."
+
+msgid ""
+"For correct date output, set WordPress timezone to Europe/Berlin (Settings → "
+"General)."
+msgstr ""
+"Für korrekte Datumsausgabe bitte WordPress-Zeitzone auf Europe/Berlin setzen "
+"(Einstellungen → Allgemein)."
+
+msgid "Enter a date above"
+msgstr "Datum oben eingeben"
+
+msgid "All months"
+msgstr "Alle Monate"
+
+msgid "All categories"
+msgstr "Alle Kategorien"
+
+msgid "All locations"
+msgstr "Alle Orte"
+
+msgid "All topics"
+msgstr "Alle Themen"
+
+msgid "Location"
+msgstr "Ort"
+
+msgid "Topic"
+msgstr "Thema"
+
+msgid "Series"
+msgstr "Serien"
+
+msgid "Ongoing"
+msgstr "Laufend"
+
+msgid "Past"
+msgstr "Vergangene"
+
+# v1.8.0 – Event-Status-Überschreibung
+msgid "Cancelled"
+msgstr "Abgesagt"
+
+msgid "Postponed"
+msgstr "Verschoben"
+
+msgid "Rescheduled"
+msgstr "Neu terminiert"
+
+msgid "Moved Online"
+msgstr "Online verlegt"
+
+msgid "Details"
+msgstr "Details"
+
+msgid "Event Status"
+msgstr "Event-Status"
+
+msgid "In stock"
+msgstr "Verfügbar"
+
+msgid "Sold out"
+msgstr "Ausverkauft"
+
+msgid "Pre-order"
+msgstr "Vorbestellung"
+
+msgid "Speaker / Host"
+msgstr "Referent / Moderator"
+
+msgid "Info / Ticket URL"
+msgstr "Info- / Ticket-URL"
+
+msgid "Organizer"
+msgstr "Veranstalter"
+
+msgid "Organizer URL"
+msgstr "Veranstalter-URL"
+
+msgid "Additional Notes"
+msgstr "Zusätzliche Hinweise"
+
+msgid ""
+"Short notes for listings: admission, dress code, registration info, etc."
+msgstr ""
+
+msgid "Tickets &amp; Offer"
+msgstr "Tickets &amp; Angebot"
+
+msgid "Price"
+msgstr "Preis"
+
+msgid "Leave empty if unknown. Use 0 for free events."
+msgstr "Leer lassen, wenn unbekannt. 0 für kostenlose Veranstaltungen."
+
+msgid "Currency"
+msgstr "Währung"
+
+msgid "Availability"
+msgstr "Verfügbarkeit"
+
+msgid "— Not specified —"
+msgstr "— Nicht angegeben —"
+
+msgid "Developer: JetEngine / Elementor field keys"
+msgstr "Entwickler: JetEngine / Elementor-Feldschlüssel"
+
+msgid "Scheduled (default)"
+msgstr "Geplant (Standard)"
+
+msgid "Updates Schema.org eventStatus and shows a badge in the event list."
+msgstr ""
+"Aktualisiert Schema.org eventStatus und zeigt ein Badge in der Eventliste."
+
+msgid "Attendance Mode"
+msgstr "Teilnahmeart"
+
+msgid "Offline (default)"
+msgstr "Offline (Standard)"
+
+msgid ""
+"Sets Schema.org eventAttendanceMode. \"Moved Online\" status always outputs "
+"Online."
+msgstr ""
+
+# v1.9.0 – Serien-Vorschlag-Benachrichtigung
+msgid "Series Suggestion"
+msgstr "Serien-Vorschlag"
+
+#, php-format
+msgid ""
+"Found %1$d other event with the same title \"%2$s\". Would you like to add "
+"these events to a series?"
+msgid_plural ""
+"Found %1$d other events with the same title \"%2$s\". Would you like to add "
+"these events to a series?"
+msgstr[0] ""
+"Ein weiteres Event mit dem Titel \"%2$s\" gefunden. Sollen diese Events "
+"einer Serie zugeordnet werden?"
+msgstr[1] ""
+"%1$d weitere Events mit dem Titel \"%2$s\" gefunden. Sollen diese Events "
+"einer Serie zugeordnet werden?"
+
+msgid "Create new series & assign"
+msgstr "Neue Serie erstellen & zuweisen"
+
+msgid "— or assign to existing series —"
+msgstr "— oder zu bestehender Serie zuweisen —"
+
+msgid "Assign"
+msgstr "Zuweisen"
+
+msgid "Dismiss"
+msgstr "Verwerfen"
+
+msgid "Security check failed."
+msgstr "Sicherheitsprüfung fehlgeschlagen."
+
+msgid "Permission denied."
+msgstr "Berechtigung verweigert."
+
+msgid "No suggestion found."
+msgstr "Kein Vorschlag gefunden."
+
+msgid "Post not found."
+msgstr "Beitrag nicht gefunden."
+
+msgid "Invalid series term."
+msgstr "Ungültiger Serien-Begriff."
+
+msgid "Unknown action."
+msgstr "Unbekannte Aktion."
+
 msgid "VE Events Settings"
 msgstr "VE Events Einstellungen"
-
-msgid "These settings are only visible to administrators and control the global behavior of the VE Events plugin."
-msgstr "Diese Einstellungen sind nur für Administratoren sichtbar und steuern das Verhalten des VE-Events-Plugins global."
 
 msgid "Settings"
 msgstr "Einstellungen"
 
-msgid "Editor Settings"
-msgstr "Editor-Einstellungen"
+msgid "VE Events"
+msgstr "VE Events"
 
-msgid "Gutenberg Editor"
-msgstr "Gutenberg-Editor"
+# v1.9.0 – Einstellungen überarbeitet
+msgid "General"
+msgstr "Allgemein"
 
-msgid "Disable Gutenberg block editor for Events"
-msgstr "Gutenberg Block-Editor für Events deaktivieren"
+msgid "Display"
+msgstr "Anzeige"
 
-msgid "When enabled, events will use the classic WordPress editor instead of the block editor."
-msgstr "Wenn aktiviert, verwenden Events den klassischen WordPress-Editor anstelle des Block-Editors."
+msgid "Schema &amp; SEO"
+msgstr "Schema &amp; SEO"
 
-msgid "Display Settings"
-msgstr "Anzeige-Einstellungen"
+msgid "Field Reference"
+msgstr "Feld-Referenz"
 
-msgid "Hide End Date if Same Day"
-msgstr "Enddatum ausblenden wenn gleicher Tag"
+# URL Settings translations (v1.3.1)
+msgid "URL Settings"
+msgstr "URL-Einstellungen"
 
-msgid "Automatically hide the end date if start and end are on the same day"
-msgstr "Enddatum automatisch ausblenden, wenn Start und Ende am selben Tag sind"
+msgid "Event Slug (Single)"
+msgstr "Event-Slug (Einzelansicht)"
 
-msgid "Example: \"12.06.2025 · 10:00 – 12:00\" instead of \"12.06.2025 · 10:00 – 12.06.2025 · 12:00\""
-msgstr "Beispiel: \"12.06.2025 · 10:00 – 12:00\" statt \"12.06.2025 · 10:00 – 12.06.2025 · 12:00\""
+msgid "URL slug for single events, e.g. \"event\" or \"veranstaltung\"."
+msgstr "URL-Slug für einzelne Events, z.B. \"event\" oder \"veranstaltung\"."
 
-msgid "Event Visibility & Status"
-msgstr "Event-Sichtbarkeit & Status"
+msgid "Archive Slug"
+msgstr "Archiv-Slug"
+
+msgid "URL slug for the event archive, e.g. \"events\" or \"veranstaltungen\"."
+msgstr ""
+"URL-Slug für das Event-Archiv, z.B. \"events\" oder \"veranstaltungen\"."
+
+msgid ""
+"Changing slugs will automatically refresh permalinks. Existing event URLs "
+"will change."
+msgstr ""
+"Slug-Änderungen aktualisieren die Permalinks automatisch. Bestehende Event-"
+"URLs ändern sich entsprechend."
+
+msgid "Editor"
+msgstr "Editor"
+
+msgid "Block Editor"
+msgstr "Block-Editor"
+
+msgid "Disable Gutenberg for Events (use classic editor)"
+msgstr "Gutenberg für Events deaktivieren (klassischen Editor verwenden)"
+
+msgid "Calendar Import"
+msgstr "Kalender-Import"
+
+#, php-format
+msgid ""
+"Manage ICS import feeds (Google Calendar, Outlook, etc.) on the <a "
+"href=\"%s\">Import Feeds</a> page."
+msgstr ""
+"ICS-Import-Feeds (Google Kalender, Outlook etc.) auf der Seite <a "
+"href=\"%s\">Import-Feeds</a> verwalten."
+
+msgid "Manage Import Feeds"
+msgstr "Import-Feeds verwalten"
+
+msgid "Tools"
+msgstr "Werkzeuge"
+
+msgid ""
+"Re-computes _vev_start_date, _vev_start_month and _vev_time_slot for all "
+"existing events. Run this once after updating the plugin."
+msgstr ""
+
+msgid "Sync computed fields (JetEngine filters)"
+msgstr "Berechnete Felder synchronisieren (JetEngine-Filter)"
+
+msgid "Date &amp; Time Display"
+msgstr "Datum &amp; Uhrzeit-Anzeige"
+
+msgid "Hide Same-Day End Date"
+msgstr "Enddatum bei gleichem Tag ausblenden"
+
+msgid "Hide the end date when start and end are on the same day"
+msgstr "Enddatum ausblenden, wenn Start und Ende am gleichen Tag sind"
+
+msgid ""
+"Example output: \"12.06.2025 · 10:00 – 12:00\" instead of \"12.06.2025 · "
+"10:00 – 12.06.2025 · 12:00\""
+msgstr ""
+"Beispielausgabe: \"12.06.2025 · 10:00 – 12:00\" statt \"12.06.2025 · 10:00 – "
+"12.06.2025 · 12:00\""
+
+msgid "Event Visibility"
+msgstr "Event-Sichtbarkeit"
 
 msgid "Grace Period After Event End"
 msgstr "Karenzzeit nach Event-Ende"
 
-msgid "0 days (immediately hidden)"
-msgstr "0 Tage (sofort ausblenden)"
+msgid "Hide immediately"
+msgstr "Sofort ausblenden"
+
+msgid "1 hour"
+msgstr "1 Stunde"
+
+msgid "2 hours"
+msgstr "2 Stunden"
+
+msgid "4 hours"
+msgstr "4 Stunden"
+
+msgid "6 hours"
+msgstr "6 Stunden"
+
+msgid "12 hours"
+msgstr "12 Stunden"
 
 msgid "1 day (recommended)"
 msgstr "1 Tag (empfohlen)"
@@ -67,308 +484,963 @@ msgstr "3 Tage"
 msgid "7 days"
 msgstr "7 Tage"
 
-msgid "Choose how long events remain visible on the frontend after ending. Backend visibility is never affected."
-msgstr "Wählen Sie, wie lange Events nach dem Ende im Frontend sichtbar bleiben. Die Backend-Sichtbarkeit ist davon nicht betroffen."
+msgid "Always show"
+msgstr "Immer anzeigen"
 
-msgid "Hide Archived Events from Search"
-msgstr "Archivierte Events von Suche ausschließen"
+msgid ""
+"How long events stay visible on the frontend after ending. Backend is never "
+"affected."
+msgstr ""
+"Wie lange Events nach dem Ende im Frontend sichtbar bleiben. Das Backend ist "
+"davon nie betroffen."
+
+msgid "Search Results"
+msgstr "Suchergebnisse"
 
 msgid "Exclude archived events from WordPress search results"
 msgstr "Archivierte Events aus WordPress-Suchergebnissen ausschließen"
 
-msgid "Schema.org Settings"
-msgstr "Schema.org-Einstellungen"
+# v1.8.0 – Kategoriefarben
+msgid "Category Colors"
+msgstr "Kategoriefarben"
 
-msgid "Include Event Series in Schema"
-msgstr "Event-Serien in Schema einschließen"
+msgid "Output Category Colors as CSS"
+msgstr "Kategoriefarben als CSS ausgeben"
 
-msgid "Add series name to Schema as eventSeries or superEvent"
-msgstr "Serienname als eventSeries oder superEvent zum Schema hinzufügen"
+msgid ""
+"Emit CSS custom properties and utility classes for event category colors in "
+"wp_head"
+msgstr ""
+"Gibt CSS-Custom-Properties und Utility-Klassen für Kategoriefarben im "
+"wp_head aus"
+
+msgid ""
+"Outputs :root{--vev-cat-slug:#hex;} and .ve-cat-slug{--vev-cat-color:#hex;} "
+"for use with Elementor/CSS."
+msgstr ""
+"Gibt :root{--vev-cat-slug:#hex;} und .ve-cat-slug{--vev-cat-color:#hex;} für "
+"Elementor/CSS aus."
 
 msgid "Event Status Logic"
 msgstr "Event-Status-Logik"
 
-msgid "Event status is calculated dynamically based on the current time:"
-msgstr "Der Event-Status wird dynamisch basierend auf der aktuellen Zeit berechnet:"
-
-msgid "Status"
-msgstr "Status"
-
-msgid "Description"
-msgstr "Beschreibung"
+msgid "Condition"
+msgstr "Bedingung"
 
 msgid "Event has not started yet"
 msgstr "Event hat noch nicht begonnen"
 
-msgid "Event is currently running"
-msgstr "Event läuft gerade"
+msgid "Currently running"
+msgstr "Läuft gerade"
 
-msgid "Event has ended"
-msgstr "Event ist beendet"
+msgid "Ended, within grace period"
+msgstr "Beendet, innerhalb der Karenzzeit"
 
-msgid "Event ended more than the grace period ago"
-msgstr "Event ist seit mehr als der Karenzzeit beendet"
+msgid "Ended, grace period exceeded"
+msgstr "Beendet, Karenzzeit überschritten"
 
-msgid "Documentation"
-msgstr "Dokumentation"
+msgid "Schema.org Event Markup"
+msgstr "Schema.org-Event-Markup"
 
-msgid "About VE Events"
-msgstr "Über VE Events"
+msgid ""
+"Structured data is automatically output on single event pages as JSON-LD. "
+"Location address is included when set on the location term."
+msgstr ""
+"Strukturierte Daten werden automatisch als JSON-LD auf einzelnen Event-"
+"Seiten ausgegeben. Die Ortsadresse wird einbezogen, wenn sie am Ort-Term "
+"gesetzt ist."
 
-msgid "VE Events adds a lightweight Events custom post type with WordPress-native admin UI, Schema.org Event markup, and first-class support for Elementor/JetEngine listings."
-msgstr "VE Events fügt einen leichtgewichtigen Events Custom Post Type mit WordPress-nativer Admin-Oberfläche, Schema.org Event-Markup und erstklassiger Unterstützung für Elementor/JetEngine-Listings hinzu."
+msgid "Include Event Series"
+msgstr "Event-Serien einschließen"
 
-msgid "Core Principle"
-msgstr "Kernprinzip"
+msgid "Add series name to Schema.org as superEvent / EventSeries"
+msgstr "Seriennamen als superEvent / EventSeries zu Schema.org hinzufügen"
 
-msgid "VE Events does not rely on shortcodes. All data is exposed via standard WordPress Meta Keys, Virtual (computed) Meta Keys, and Taxonomies. This ensures full compatibility with JetEngine Listings, sortable and filterable queries, and clean Elementor templates."
-msgstr "VE Events verwendet keine Shortcodes. Alle Daten werden über Standard-WordPress-Meta-Keys, virtuelle (berechnete) Meta-Keys und Taxonomien bereitgestellt. Dies gewährleistet volle Kompatibilität mit JetEngine-Listings, sortier- und filterbare Abfragen sowie saubere Elementor-Templates."
+# v1.8.0 – OG-Tags
+msgid "Open Graph / Social Meta Tags"
+msgstr "Open Graph / Social-Meta-Tags"
 
-msgid "Features"
-msgstr "Funktionen"
+msgid ""
+"Outputs og: and twitter: meta tags on single event pages for social sharing "
+"previews."
+msgstr ""
+"Gibt og:- und twitter:-Meta-Tags auf einzelnen Event-Seiten für Social-"
+"Sharing-Vorschauen aus."
 
-msgid "Custom post type \"Events\" with date/time management"
-msgstr "Custom Post Type \"Events\" mit Datum/Zeit-Verwaltung"
+msgid "Open Graph Tags"
+msgstr "Open Graph Tags"
 
-msgid "Event Categories, Locations, Topics, and Series taxonomies"
-msgstr "Event-Kategorien, Orte, Themen und Serien-Taxonomien"
+msgid "Auto (skip if Yoast / Rank Math / AIOSEO active)"
+msgstr "Auto (überspringen wenn Yoast / Rank Math / AIOSEO aktiv)"
 
-msgid "Speaker/Host and special information fields"
-msgstr "Referent/Moderator und Zusatzinformations-Felder"
+msgid "Always output"
+msgstr "Immer ausgeben"
 
-msgid "Schema.org structured data output for SEO"
-msgstr "Schema.org strukturierte Daten für SEO"
+msgid "Disabled"
+msgstr "Deaktiviert"
 
-msgid "Compatible with JetEngine/Elementor listings"
-msgstr "Kompatibel mit JetEngine/Elementor-Listings"
+msgid ""
+"Auto: outputs OG tags only when no dedicated SEO plugin (Yoast, Rank Math, "
+"AIOSEO, SEO Framework) is active. Use \"Always\" to force output even "
+"alongside an SEO plugin. Use \"Disabled\" to turn off completely."
+msgstr ""
+"Auto: Gibt OG-Tags nur aus, wenn kein dediziertes SEO-Plugin (Yoast, Rank "
+"Math, AIOSEO, SEO Framework) aktiv ist. \"Immer\" erzwingt die Ausgabe auch "
+"neben SEO-Plugins. \"Deaktiviert\" schaltet die Ausgabe komplett ab."
 
-msgid "Multilingual support (WPML & Polylang compatible)"
-msgstr "Mehrsprachig (WPML & Polylang kompatibel)"
+msgid "iCal Export"
+msgstr "iCal-Export"
 
-msgid "Automatic event status calculation"
-msgstr "Automatische Event-Status-Berechnung"
+msgid ""
+"Every published event has an \"Add to Calendar\" .ics download (virtual "
+"field ve_ical_url). Optionally expose a subscribable feed of all upcoming "
+"events."
+msgstr ""
 
-msgid "Automatic hiding of past events from frontend"
-msgstr "Automatisches Ausblenden vergangener Events im Frontend"
+msgid "Subscribable Feed"
+msgstr "Abonnierbarer Feed"
 
-msgid "Stored Meta Keys (Database)"
-msgstr "Gespeicherte Meta-Keys (Datenbank)"
+msgid "Enable the subscribable iCal feed of upcoming events"
+msgstr "Abonnierbaren iCal-Feed kommender Termine aktivieren"
 
-msgid "Use these meta keys for sorting, filtering, and conditions:"
-msgstr "Verwenden Sie diese Meta-Keys für Sortierung, Filterung und Bedingungen:"
+msgid "Feed URL:"
+msgstr "Feed-URL:"
 
-msgid "Meta Key"
-msgstr "Meta-Key"
+msgid "Subscribe URL:"
+msgstr "Abonnement-URL:"
 
-msgid "Event start timestamp (UTC)"
-msgstr "Event-Startzeitpunkt (UTC)"
+#, php-format
+msgid "Append %s to filter the feed by an event category slug."
+msgstr "Hänge %s an, um den Feed nach einer Kategorie zu filtern."
 
-msgid "Event end timestamp (UTC)"
-msgstr "Event-Endzeitpunkt (UTC)"
+msgid "Series Detection"
+msgstr "Serienerkennung"
 
-msgid "All-day event (boolean)"
-msgstr "Ganztägiges Event (Boolean)"
+msgid ""
+"ICS import automatically groups events by UID into series. The feature below "
+"adds detection for manually created events."
+msgstr ""
+"Der ICS-Import gruppiert Events automatisch nach UID zu Serien. Die folgende "
+"Funktion ergänzt die Erkennung für manuell erstellte Events."
 
-msgid "Hide end time"
-msgstr "Endzeit ausblenden"
+msgid "Series Suggestions"
+msgstr "Serien-Vorschläge"
 
-msgid "Speaker / Host"
-msgstr "Referent / Moderator"
+msgid "Suggest series assignments for events with matching titles"
+msgstr "Serien-Zuweisungen für Events mit gleichem Titel vorschlagen"
+
+msgid ""
+"When saving an event without a series, the plugin finds other events with "
+"the same title. A notice in the editor lets you create a new series, assign "
+"to an existing one, or dismiss."
+msgstr ""
+"Beim Speichern eines Events ohne Serie sucht das Plugin nach anderen Events "
+"mit gleichem Titel. Ein Hinweis im Editor ermöglicht das Erstellen einer "
+"neuen Serie, die Zuweisung zu einer bestehenden oder das Verwerfen."
+
+msgid "Stored Meta Keys"
+msgstr "Gespeicherte Meta-Keys"
+
+msgid ""
+"Use these for sorting, filtering, and meta conditions in JetEngine/WP_Query:"
+msgstr ""
+"Für Sortierung, Filterung und Meta-Bedingungen in JetEngine/WP_Query "
+"verwenden:"
+
+msgid "Key"
+msgstr "Schlüssel"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "Start timestamp (UTC integer)"
+msgstr "Start-Zeitstempel (UTC-Ganzzahl)"
+
+msgid "End timestamp (UTC integer)"
+msgstr "End-Zeitstempel (UTC-Ganzzahl)"
+
+msgid "All-day event (1/0)"
+msgstr "Ganztägiges Event (1/0)"
+
+msgid "Hide end time (1/0)"
+msgstr "Endzeit ausblenden (1/0)"
 
 msgid "Special information"
 msgstr "Zusatzinformationen"
 
-msgid "Info / Ticket URL"
-msgstr "Info- / Ticket-URL"
+msgid ""
+"Status override: cancelled | postponed | rescheduled | movedOnline | (empty "
+"= scheduled)"
+msgstr ""
+"Status-Überschreibung: cancelled | postponed | rescheduled | movedOnline | "
+"(leer = geplant)"
 
-msgid "Virtual / Computed Meta Keys"
-msgstr "Virtuelle / Berechnete Meta-Keys"
+msgid "Organizer name (Schema.org organizer)"
+msgstr "Veranstaltername (Schema.org organizer)"
 
-msgid "Computed at runtime and usable like normal meta fields:"
-msgstr "Zur Laufzeit berechnet und wie normale Meta-Felder verwendbar:"
+msgid "Ticket price (numeric string; 0 = free)"
+msgstr "Ticketpreis (numerisch; 0 = kostenlos)"
+
+msgid "ISO 4217 currency code, e.g. EUR"
+msgstr "ISO-4217-Währungscode, z. B. EUR"
+
+msgid "Offer availability: InStock | SoldOut | PreOrder | (empty)"
+msgstr "Angebotsverfügbarkeit: InStock | SoldOut | PreOrder | (leer)"
+
+msgid "Attendance mode: online | mixed | (empty = offline)"
+msgstr "Teilnahmeart: online | mixed | (leer = offline)"
+
+msgid ""
+"Start hour in site timezone (0–23) — auto-computed, use for time-of-day "
+"filtering"
+msgstr ""
+"Startstunde in Website-Zeitzone (0–23) — automatisch berechnet, für "
+"Tageszeit-Filterung"
+
+msgid ""
+"ISO weekday in site timezone (1=Mon … 7=Sun) — auto-computed, use for "
+"weekday filtering"
+msgstr ""
+"ISO-Wochentag in Website-Zeitzone (1=Mo … 7=So) — automatisch berechnet, für "
+"Wochentag-Filterung"
+
+msgid "Virtual / Computed Fields"
+msgstr "Virtuelle / Berechnete Felder"
+
+msgid ""
+"Available as Elementor Dynamic Tags and JetEngine fields. Computed at "
+"runtime:"
+msgstr ""
+"Als Elementor Dynamic Tags und JetEngine-Felder verfügbar. Zur Laufzeit "
+"berechnet:"
+
+msgid "Start date (formatted)"
+msgstr "Startdatum (formatiert)"
+
+msgid "Start time (formatted)"
+msgstr "Startzeit (formatiert)"
+
+msgid "End date (formatted)"
+msgstr "Enddatum (formatiert)"
+
+msgid "End time (formatted)"
+msgstr "Endzeit (formatiert)"
+
+msgid "Smart date range"
+msgstr "Intelligenter Datumsbereich"
+
+msgid "Time range or \"All day\""
+msgstr "Zeitbereich oder \"Ganztägig\""
+
+msgid "Full date &amp; time"
+msgstr "Vollständiges Datum &amp; Uhrzeit"
 
 msgid "upcoming / ongoing / past / archived"
 msgstr "bevorstehend / laufend / vergangen / archiviert"
 
-msgid "Translated status label"
-msgstr "Übersetztes Status-Label"
+msgid "Location name (taxonomy)"
+msgstr "Ortsname (Taxonomie)"
 
-msgid "1 if currently running"
-msgstr "1 wenn gerade laufend"
+msgid "Location address"
+msgstr "Ortsadresse"
 
-msgid "1 if past"
-msgstr "1 wenn vergangen"
+msgid "Google Maps URL (auto or custom)"
+msgstr "Google Maps-URL (automatisch oder benutzerdefiniert)"
 
-msgid "Fully formatted date/time range"
-msgstr "Vollständig formatierter Datum/Zeit-Bereich"
+msgid "Category name"
+msgstr "Kategoriename"
 
-msgid "Start date/time (site timezone)"
-msgstr "Startdatum/-zeit (Website-Zeitzone)"
+msgid "Category color (hex)"
+msgstr "Kategoriefarbe (Hex)"
 
-msgid "End date/time (site timezone)"
-msgstr "Enddatum/-zeit (Website-Zeitzone)"
+msgid "CSS class for primary category, e.g. \"ve-cat-konzert\""
+msgstr "CSS-Klasse der Hauptkategorie, z.B. \"ve-cat-konzert\""
 
-msgid "JetEngine Query Setup (Recommended)"
-msgstr "JetEngine Query-Einrichtung (Empfohlen)"
+msgid "Series name"
+msgstr "Serienname"
 
-msgid "Upcoming Events"
-msgstr "Bevorstehende Events"
+msgid "Topic names (comma-separated)"
+msgstr "Themennamen (kommagetrennt)"
 
-msgid "Post Type: ve_event"
-msgstr "Post Type: ve_event"
+msgid "1 if event has not started yet"
+msgstr "1 wenn Event noch nicht begonnen hat"
 
-msgid "Order By: Meta Value (Number)"
-msgstr "Sortieren nach: Meta Value (Number)"
+msgid "1 if event is currently running"
+msgstr "1, wenn der Termin gerade läuft"
 
-msgid "Meta Key: _vev_start_utc"
-msgstr "Meta Key: _vev_start_utc"
+msgid ""
+"Human-readable status: Cancelled / Postponed / Rescheduled / Moved Online"
+msgstr ""
+"Lesbarer Status: Abgesagt / Verschoben / Neu terminiert / Online verlegt"
 
-msgid "Order: ASC"
-msgstr "Reihenfolge: ASC"
+msgid "Hex color for status badge (red / amber / blue)"
+msgstr "Hex-Farbe für Status-Badge (rot / orange / blau)"
 
-msgid "Past Events"
-msgstr "Vergangene Events"
+msgid "1 if event is cancelled"
+msgstr "1 wenn Event abgesagt ist"
 
-msgid "Same query as above"
-msgstr "Gleiche Query wie oben"
+msgid "Formatted price with currency (\"Free\" when 0)"
+msgstr "Formatierter Preis mit Währung („Kostenlos“ bei 0)"
 
-msgid "Add Query Var: vev_event_scope = past"
-msgstr "Query Var hinzufügen: vev_event_scope = past"
+msgid "Per-event .ics download URL (Add to Calendar)"
+msgstr "Pro-Termin-.ics-Download-URL (Zum Kalender hinzufügen)"
 
-msgid "Query Scopes"
-msgstr "Query Scopes"
+# v1.8.0 – Query Vars
+msgid "Query Vars (URL / WP_Query)"
+msgstr "Query-Vars (URL / WP_Query)"
 
-msgid "Use these query vars to filter events:"
-msgstr "Verwenden Sie diese Query-Vars zum Filtern von Events:"
+msgid "Pass these as URL parameters or WP_Query arguments for filtering:"
+msgstr "Als URL-Parameter oder WP_Query-Argumente für Filterung übergeben:"
 
-msgid "Filter by scope (upcoming, past, live, all)"
-msgstr "Nach Scope filtern (upcoming, past, live, all)"
+msgid "Var"
+msgstr "Var"
 
-msgid "Include archived/past events"
-msgstr "Archivierte/vergangene Events einschließen"
+msgid "Values"
+msgstr "Werte"
 
-msgid "Taxonomies"
-msgstr "Taxonomien"
+msgid "Effect"
+msgstr "Wirkung"
 
-msgid "Taxonomy"
-msgstr "Taxonomie"
+msgid "Filter by lifecycle status"
+msgstr "Nach Lebenszyklus-Status filtern"
 
-msgid "Slug"
-msgstr "Slug"
+msgid "Include archived events (default: hidden)"
+msgstr "Archivierte Events einschließen (Standard: ausgeblendet)"
 
-msgid "Type"
-msgstr "Typ"
+msgid ""
+"Show only events starting in this month (YYYY-MM). Bypasses archived cutoff."
+msgstr ""
+"Nur Events dieses Monats anzeigen (JJJJ-MM). Umgeht den "
+"Archivierungsabschnitt."
 
-msgid "Event Categories"
-msgstr "Event-Kategorien"
+msgid ""
+"Events starting on or after this date (Y-m-d or UTC timestamp). Bypasses "
+"archived cutoff."
+msgstr ""
+"Events ab diesem Datum (J-M-T oder UTC-Zeitstempel). Umgeht den "
+"Archivierungsabschnitt."
 
-msgid "Hierarchical"
-msgstr "Hierarchisch"
+msgid ""
+"Events starting on or before this date (Y-m-d or UTC timestamp). Bypasses "
+"archived cutoff."
+msgstr ""
+"Events bis zu diesem Datum (J-M-T oder UTC-Zeitstempel). Umgeht den "
+"Archivierungsabschnitt."
 
-msgid "Locations"
-msgstr "Orte"
+msgid "Events starting at or after this hour (0–23, site timezone)"
+msgstr "Events ab dieser Uhrzeit (0–23, Website-Zeitzone)"
 
-msgid "Non-hierarchical"
-msgstr "Nicht-hierarchisch"
+msgid "Events starting at or before this hour (0–23, site timezone)"
+msgstr "Events bis zu dieser Uhrzeit (0–23, Website-Zeitzone)"
 
-msgid "Topics"
-msgstr "Themen"
+msgid "or"
+msgstr "oder"
 
-msgid "Series"
-msgstr "Serien"
+msgid "ISO weekday(s): 1=Mon … 7=Sun. Comma-separated list allowed."
+msgstr "ISO-Wochentag(e): 1=Mo … 7=So. Kommagetrennte Liste erlaubt."
 
-msgid "Multilingual Support"
-msgstr "Mehrsprachigkeit"
+msgid "JetEngine Query Setup"
+msgstr "JetEngine Query-Einrichtung"
 
-msgid "VE Events is fully compatible with WPML and Polylang. Included:"
-msgstr "VE Events ist voll kompatibel mit WPML und Polylang. Enthalten:"
+msgid "Setting"
+msgstr "Einstellung"
 
-msgid "English default strings"
-msgstr "Englische Standardtexte"
+msgid "Upcoming"
+msgstr "Kommende"
 
-msgid "German translation (de_DE)"
-msgstr "Deutsche Übersetzung (de_DE)"
+msgid "Post Type"
+msgstr "Beitragstyp"
 
-msgid "wpml-config.xml"
-msgstr "wpml-config.xml"
+msgid "Order By"
+msgstr "Sortieren nach"
 
-msgid "Translation behavior: Dates/times are copied, Speaker/Info fields are translatable, Taxonomies are translatable."
-msgstr "Übersetzungsverhalten: Datum/Zeit werden kopiert, Referent/Info-Felder sind übersetzbar, Taxonomien sind übersetzbar."
+msgid "Meta Value (Number)"
+msgstr "Meta-Wert (Zahl)"
 
-msgid "Debugging"
-msgstr "Debugging"
+msgid "Meta Key"
+msgstr "Meta-Key"
 
-msgid "Enable debugging by adding to wp-config.php:"
-msgstr "Debugging aktivieren durch Hinzufügen zu wp-config.php:"
+msgid "Order"
+msgstr "Reihenfolge"
 
-msgid "Log file: %s"
-msgstr "Log-Datei: %s"
+msgid "Query Var"
+msgstr "Query-Var"
 
-msgid "Logs include: Status calculations, Query modifications, Schema generation"
-msgstr "Logs enthalten: Status-Berechnungen, Query-Modifikationen, Schema-Generierung"
+msgid "Category Color"
+msgstr "Kategoriefarbe"
 
-msgid "Version Information"
-msgstr "Versionsinformationen"
+msgid "Choose a color for this category. Used in listings and calendar views."
+msgstr ""
+"Farbe für diese Kategorie wählen. Wird in Listings und Kalenderansichten "
+"verwendet."
 
-msgid "VE Events Version: %s"
-msgstr "VE Events Version: %s"
+# Locations & Kategorien – Felder
+msgid "Address"
+msgstr "Adresse"
 
-msgid "Author: Marc Probst"
-msgstr "Autor: Marc Probst"
+msgid "Full address used for automatic Google Maps link generation."
+msgstr "Vollständige Adresse für automatische Google Maps-Link-Generierung."
 
-msgid "License: GPL-2.0+"
-msgstr "Lizenz: GPL-2.0+"
+msgid "Custom Maps URL (optional)"
+msgstr "Benutzerdefinierte Maps-URL (optional)"
 
+msgid ""
+"Overrides the auto-generated Google Maps link. Leave empty to use the "
+"address above."
+msgstr ""
+"Überschreibt den automatisch generierten Google Maps-Link. Leer lassen, um "
+"die obige Adresse zu verwenden."
+
+msgid "Full address — used to auto-generate a Google Maps link."
+msgstr ""
+"Vollständige Adresse — zum automatischen Generieren eines Google Maps-Links."
+
+msgid "Maps URL (auto)"
+msgstr "Maps-URL (automatisch)"
+
+msgid "Auto-generated from the address. Enter a custom URL below to override."
+msgstr ""
+"Automatisch aus der Adresse generiert. Benutzerdefinierte URL unten "
+"eingeben, um zu überschreiben."
+
+msgid "Custom Maps URL"
+msgstr "Benutzerdefinierte Maps-URL"
+
+msgid "Optional. Overrides the auto-generated link above."
+msgstr "Optional. Überschreibt den automatisch generierten Link oben."
+
+msgid "All"
+msgstr "Alle"
+
+msgid "Drafts"
+msgstr "Entwürfe"
+
+msgid "Trash"
+msgstr "Papierkorb"
+
+# VE Fields class translations (v1.4.0 - JetEngine/Elementor integration)
+msgid "Start Date/Time"
+msgstr "Startdatum/-zeit"
+
+msgid "End Date/Time"
+msgstr "Enddatum/-zeit"
+
+msgid "All Day Event"
+msgstr "Ganztägiges Event"
+
+msgid "Hide End Time"
+msgstr "Endzeit ausblenden"
+
+msgid "Speaker"
+msgstr "Referent"
+
+msgid "Special Info"
+msgstr "Zusatzinfo"
+
+msgid "Info URL"
+msgstr "Info-URL"
+
+msgid "Price (formatted)"
+msgstr "Preis (formatiert)"
+
+msgid "iCal URL (.ics)"
+msgstr "iCal-URL (.ics)"
+
+msgid "Start Date (formatted)"
+msgstr "Startdatum (formatiert)"
+
+msgid "Start Time (formatted)"
+msgstr "Startzeit (formatiert)"
+
+msgid "End Date (formatted)"
+msgstr "Enddatum (formatiert)"
+
+msgid "End Time (formatted)"
+msgstr "Endzeit (formatiert)"
+
+msgid "Date Range"
+msgstr "Datumsbereich"
+
+msgid "Time Range"
+msgstr "Zeitbereich"
+
+msgid "Full Date & Time"
+msgstr "Vollständiges Datum & Zeit"
+
+msgid "Is Upcoming"
+msgstr "Ist bevorstehend"
+
+msgid "Is Ongoing"
+msgstr "Läuft gerade"
+
+msgid "Location Name"
+msgstr "Ortsname"
+
+msgid "Location Address"
+msgstr "Ortsadresse"
+
+msgid "Location Maps URL"
+msgstr "Ort Maps-URL"
+
+msgid "Category Name"
+msgstr "Kategoriename"
+
+msgid "Series Name"
+msgstr "Serienname"
+
+msgid "Topic Name(s)"
+msgstr "Themenname(n)"
+
+msgid "Category CSS Class"
+msgstr "Kategorie-CSS-Klasse"
+
+msgid "Event Status Label"
+msgstr "Event-Status-Label"
+
+msgid "Event Status Color"
+msgstr "Event-Status-Farbe"
+
+msgid "Is Cancelled"
+msgstr "Ist abgesagt"
+
+msgid "Start Hour (0–23)"
+msgstr "Startstunde (0–23)"
+
+msgid "Weekday (1=Mon, 7=Sun)"
+msgstr "Wochentag (1=Mo, 7=So)"
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "No"
+msgstr "Nein"
+
+msgid "Free"
+msgstr "Kostenlos"
+
+msgid "Location & Taxonomy"
+msgstr "Ort & Taxonomie"
+
+msgid "Formatted Output"
+msgstr "Formatierte Ausgabe"
+
+msgid "Event Details"
+msgstr "Event-Details"
+
+msgid "Raw Data"
+msgstr "Rohdaten"
+
+msgid "Import"
+msgstr "Import"
+
+# Import-Modul (v1.6+)
+msgid "Calendar Import Feeds"
+msgstr "Kalender-Import-Feeds"
+
+msgid "Add Feed"
+msgstr "Feed hinzufügen"
+
+msgid "No import feeds configured yet. Add one to get started."
+msgstr ""
+"Noch keine Import-Feeds konfiguriert. Fügen Sie einen hinzu, um zu beginnen."
+
+msgid "Name"
+msgstr "Name"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Schedule"
+msgstr "Zeitplan"
+
+msgid "Last Run"
+msgstr "Letzter Durchlauf"
+
+msgid "Next Run"
+msgstr "Nächster Durchlauf"
+
+msgid "Never"
+msgstr "Nie"
+
+msgid "Inactive"
+msgstr "Inaktiv"
+
+msgid "Log"
+msgstr "Protokoll"
+
+msgid "Run now"
+msgstr "Jetzt ausführen"
+
+msgid "Deactivate"
+msgstr "Deaktivieren"
+
+msgid "Activate"
+msgstr "Aktivieren"
+
+msgid "Delete this feed?"
+msgstr "Diesen Feed löschen?"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Error"
+msgstr "Fehler"
+
+msgid "Partial"
+msgstr "Teilweise"
+
+msgid "Add Import Feed"
+msgstr "Import-Feed hinzufügen"
+
+msgid "Edit Import Feed"
+msgstr "Import-Feed bearbeiten"
+
+msgid "All Feeds"
+msgstr "Alle Feeds"
+
+msgid "Source"
+msgstr "Quelle"
+
+msgid "Feed Name"
+msgstr "Feed-Name"
+
+msgid "ICS URL"
+msgstr "ICS-URL"
+
+msgid "The .ics subscription URL (e.g. from Outlook, Google Calendar, etc.)"
+msgstr "Die .ics-Abonnement-URL (z.B. von Outlook, Google Kalender, etc.)"
+
+msgid "Test Connection"
+msgstr "Verbindung testen"
+
+msgid "Active"
+msgstr "Aktiv"
+
+msgid "Enable automatic import"
+msgstr "Automatischen Import aktivieren"
+
+msgid "HTTP Timeout"
+msgstr "HTTP-Zeitlimit"
+
+msgid "seconds"
+msgstr "Sekunden"
+
+msgid "Import Behaviour"
+msgstr "Import-Verhalten"
+
+msgid "Update Mode"
+msgstr "Aktualisierungsmodus"
+
+msgid "Imported Events Status"
+msgstr "Status importierter Events"
+
+msgid "Published"
+msgstr "Veröffentlicht"
+
+msgid "Draft"
+msgstr "Entwurf"
+
+msgid "Removed Events"
+msgstr "Entfernte Events"
+
+msgid "Move to Trash if removed from source"
+msgstr "In den Papierkorb verschieben, wenn aus Quelle entfernt"
+
+msgid "Field Mapping"
+msgstr "Feld-Zuordnung"
+
+msgid ""
+"Define how ICS fields are mapped to event fields. Dates are always imported "
+"automatically."
+msgstr ""
+"Festlegen, wie ICS-Felder auf Event-Felder abgebildet werden. Datum/Uhrzeit "
+"wird immer automatisch importiert."
+
+msgid "On"
+msgstr "Ein"
+
+msgid "ICS Field"
+msgstr "ICS-Feld"
+
+msgid "Maps to"
+msgstr "Wird zugeordnet zu"
+
+msgid "Create Terms"
+msgstr "Begriffe erstellen"
+
+msgid "Skip"
+msgstr "Überspringen"
+
+msgid "Auto-create"
+msgstr "Automatisch erstellen"
+
+msgid "Default Taxonomy Assignment"
+msgstr "Standard-Taxonomie-Zuweisung"
+
+msgid ""
+"These terms will always be assigned to every imported event (in addition to "
+"mapped terms)."
+msgstr ""
+"Diese Begriffe werden jedem importierten Event zugewiesen (zusätzlich zu "
+"zugeordneten Begriffen)."
+
+msgid "Default Category"
+msgstr "Standardkategorie"
+
+msgid "Default Location"
+msgstr "Standardort"
+
+msgid "Default Topic"
+msgstr "Standardthema"
+
+msgid "No terms found."
+msgstr "Keine Begriffe gefunden."
+
+msgid "Hold Ctrl/Cmd to select multiple."
+msgstr "Strg/Cmd gedrückt halten, um mehrere auszuwählen."
+
+msgid "Save Feed"
+msgstr "Feed speichern"
+
+#, php-format
+msgid "Import Log: %s"
+msgstr "Import-Protokoll: %s"
+
+msgid "Clear Log"
+msgstr "Protokoll leeren"
+
+msgid "No log entries yet."
+msgstr "Noch keine Protokolleinträge."
+
+msgid "Time (UTC)"
+msgstr "Zeit (UTC)"
+
+msgid "Created"
+msgstr "Erstellt"
+
+msgid "Updated"
+msgstr "Aktualisiert"
+
+msgid "Deleted"
+msgstr "Gelöscht"
+
+msgid "Skipped"
+msgstr "Übersprungen"
+
+msgid "Duration"
+msgstr "Dauer"
+
+msgid "Errors"
+msgstr "Fehler"
+
+#, php-format
+msgid "%d error(s)"
+msgstr "%d Fehler"
+
+msgid "Insufficient permissions."
+msgstr "Unzureichende Berechtigungen."
+
+msgid "Feed saved."
+msgstr "Feed gespeichert."
+
+msgid "Feed deleted."
+msgstr "Feed gelöscht."
+
+msgid "Feed status updated."
+msgstr "Feed-Status aktualisiert."
+
+msgid "Connecting…"
+msgstr "Verbindung wird hergestellt…"
+
+#, php-format
+msgid "OK — found %d event(s)."
+msgstr "OK — %d Veranstaltung(en) gefunden."
+
+msgid "Clear all log entries for this feed?"
+msgstr "Alle Protokolleinträge für diesen Feed löschen?"
+
+msgid "Import Feeds"
+msgstr "Import-Feeds"
+
+msgid "Import Feed"
+msgstr "Import-Feed"
+
+msgid "No import feeds found."
+msgstr "Keine Import-Feeds gefunden."
+
+msgid "Unnamed Feed"
+msgstr "Unbenannter Feed"
+
+msgid "Every 15 Minutes"
+msgstr "Alle 15 Minuten"
+
+msgid "Every 30 Minutes"
+msgstr "Alle 30 Minuten"
+
+msgid "Hourly"
+msgstr "Stündlich"
+
+msgid "Twice Daily"
+msgstr "Zweimal täglich"
+
+msgid "Daily"
+msgstr "Täglich"
+
+msgid "Weekly"
+msgstr "Wöchentlich"
+
+msgid "Update if changed"
+msgstr "Aktualisieren wenn geändert"
+
+msgid "Always overwrite"
+msgstr "Immer überschreiben"
+
+msgid "Never update"
+msgstr "Nie aktualisieren"
+
+msgid "Event Title"
+msgstr "Veranstaltungstitel"
+
+msgid "Description (Content)"
+msgstr "Beschreibung (Inhalt)"
+
+msgid "Excerpt"
+msgstr "Kurzfassung"
+
+msgid "Start Date/Time (internal)"
+msgstr "Startdatum/-zeit (intern)"
+
+msgid "End Date/Time (internal)"
+msgstr "Enddatum/-zeit (intern)"
+
+msgid "Special Information"
+msgstr "Besondere Informationen"
+
+msgid "Category (Taxonomy)"
+msgstr "Kategorie (Taxonomie)"
+
+msgid "Location (Taxonomy)"
+msgstr "Ort (Taxonomie)"
+
+msgid "Topic (Taxonomy)"
+msgstr "Thema (Taxonomie)"
+
+msgid "(Untitled Event)"
+msgstr "(Unbenanntes Event)"
+
+msgid "No ICS URL configured."
+msgstr "Keine ICS-URL konfiguriert."
+
+msgid "Unnamed Series"
+msgstr "Unbenannte Serie"
+
+msgid "Event Category"
+msgstr "Event-Kategorie"
+
+msgid "Field"
+msgstr "Feld"
+
+msgid "Event Field"
+msgstr "Event-Feld"
+
+msgid "Event URL / Permalink"
+msgstr "Termin-URL / Permalink"
+
+msgid "URL Type"
+msgstr "URL-Typ"
+
+msgid "Event Permalink"
+msgstr "Event-Permalink"
+
+msgid "Fallback to Permalink"
+msgstr "Fallback auf Permalink"
+
+msgid "Event Location"
+msgstr "Veranstaltungsort"
+
+msgid "Event Location Maps URL"
+msgstr "Veranstaltungsort Maps-URL"
+
+msgid "Event Series"
+msgstr "Veranstaltungsserie"
+
+msgid "Event Topic(s)"
+msgstr "Veranstaltungsthema/Themen"
+
+msgid "VE Events: Info URL"
+msgstr "VE Events: Info-URL"
+
+# Context-based translations for CPT labels
+msgctxt "post type general name"
 msgid "Events"
-msgstr "Events"
+msgstr "Veranstaltungen"
 
+msgctxt "post type singular name"
 msgid "Event"
-msgstr "Event"
+msgstr "Veranstaltung"
 
+msgctxt "event"
 msgid "Add New"
 msgstr "Neu hinzufügen"
-
-msgid "Add New Event"
-msgstr "Neues Event hinzufügen"
-
-msgid "New Event"
-msgstr "Neues Event"
 
 msgid "Edit Event"
 msgstr "Event bearbeiten"
 
+msgid "New Event"
+msgstr "Neues Event"
+
 msgid "View Event"
 msgstr "Event anzeigen"
 
-msgid "All Events"
-msgstr "Alle Events"
+# Additional CPT labels
+msgid "View Events"
+msgstr "Veranstaltungen anzeigen"
 
 msgid "Search Events"
 msgstr "Events suchen"
 
-msgid "Parent Events:"
-msgstr "Übergeordnete Events:"
+msgid "No events found"
+msgstr "Keine Veranstaltungen gefunden"
 
-msgid "No events found."
-msgstr "Keine Events gefunden."
+msgid "No events found in Trash"
+msgstr "Keine Veranstaltungen im Papierkorb gefunden"
 
-msgid "No events found in Trash."
-msgstr "Keine Events im Papierkorb gefunden."
+msgid "All Events"
+msgstr "Alle Events"
 
-msgid "Featured image"
-msgstr "Beitragsbild"
+msgid "Event Archives"
+msgstr "Veranstaltungsarchiv"
 
-msgid "Set featured image"
-msgstr "Beitragsbild festlegen"
+msgid "Event Attributes"
+msgstr "Veranstaltungseigenschaften"
 
-msgid "Remove featured image"
-msgstr "Beitragsbild entfernen"
+msgid "Insert into event"
+msgstr "In Veranstaltung einfügen"
 
-msgid "Use as featured image"
-msgstr "Als Beitragsbild verwenden"
+msgid "Uploaded to this event"
+msgstr "Zu dieser Veranstaltung hochgeladen"
 
-msgid "Event Category"
-msgstr "Event-Kategorie"
+msgid "Event Image"
+msgstr "Veranstaltungsbild"
+
+msgid "Set event image"
+msgstr "Veranstaltungsbild festlegen"
+
+msgid "Remove event image"
+msgstr "Veranstaltungsbild entfernen"
+
+msgid "Use as event image"
+msgstr "Als Veranstaltungsbild verwenden"
+
+msgctxt "admin menu"
+msgid "Events"
+msgstr "Veranstaltungen"
+
+msgid "Event Categories"
+msgstr "Event-Kategorien"
 
 msgid "Search Event Categories"
 msgstr "Event-Kategorien suchen"
@@ -397,8 +1469,8 @@ msgstr "Neuer Event-Kategorie-Name"
 msgid "Categories"
 msgstr "Kategorien"
 
-msgid "Location"
-msgstr "Ort"
+msgid "Locations"
+msgstr "Orte"
 
 msgid "Search Locations"
 msgstr "Orte suchen"
@@ -418,8 +1490,8 @@ msgstr "Neuen Ort hinzufügen"
 msgid "New Location Name"
 msgstr "Neuer Ort-Name"
 
-msgid "Topic"
-msgstr "Thema"
+msgid "Topics"
+msgstr "Themen"
 
 msgid "Search Topics"
 msgstr "Themen suchen"
@@ -463,1062 +1535,31 @@ msgstr "Neue Serie hinzufügen"
 msgid "New Series Name"
 msgstr "Neuer Serien-Name"
 
-msgid "Event Details"
-msgstr "Event-Details"
+msgid "Online"
+msgstr "Online"
 
-msgid "Start Date"
-msgstr "Startdatum"
+msgid "Mixed (offline + online)"
+msgstr "Gemischt (offline + online)"
 
-msgid "Start Time"
-msgstr "Startzeit"
+#, php-format
+msgid "%s (all day)"
+msgstr "%s (ganztägig)"
 
-msgid "End Date"
-msgstr "Enddatum"
+#, php-format
+msgid "%1$s – %2$s (all day)"
+msgstr "%1$s – %2$s (ganztägig)"
 
-msgid "End Time"
-msgstr "Endzeit"
+#, php-format
+msgid "%1$s, %2$s"
+msgstr "%1$s, %2$s"
 
-msgid "All-day event"
-msgstr "Ganztägiges Event"
+#, php-format
+msgid "%1$s, %2$s – %3$s"
+msgstr "%1$s, %2$s – %3$s"
 
-msgid "Special Info"
-msgstr "Zusatzinfo"
-
-msgid "Info URL"
-msgstr "Info-URL"
-
-msgid "Ticket / Info URL"
-msgstr "Ticket- / Info-URL"
-
-msgid "Date/Time"
-msgstr "Datum/Zeit"
-
-msgid "Upcoming"
-msgstr "Kommende"
-
-msgid "Live"
-msgstr "Live"
-
-msgid "Past"
-msgstr "Vergangene"
+#, php-format
+msgid "%1$s %2$s – %3$s %4$s"
+msgstr "%1$s %2$s – %3$s %4$s"
 
 msgid "Archived"
 msgstr "Archiviert"
-
-msgid "Ongoing"
-msgstr "Laufend"
-
-msgid "Start"
-msgstr "Start"
-
-msgid "End"
-msgstr "Ende"
-
-msgid "All day"
-msgstr "Ganztägig"
-
-msgid "Hide end time in listings"
-msgstr "Endzeit in Listings ausblenden"
-
-msgid "If empty, the end will default to the start."
-msgstr "Wenn leer, entspricht das Ende dem Start."
-
-msgid "All-day events are stored as full-day ranges in your site time zone. Times will not be displayed in the virtual fields."
-msgstr "Ganztägige Events werden als ganztägige Zeitspannen in der Website-Zeitzone gespeichert. Zeiten werden in den virtuellen Feldern nicht angezeigt."
-
-msgid "E.g. registration, ticket costs, access notes, etc."
-msgstr "Z.B. Anmeldung, Ticketkosten, Zugangshinweise, etc."
-
-msgid "Info/Ticket URL"
-msgstr "Info-/Ticket-URL"
-
-msgid "JetEngine/Elementor: Use these meta keys in listings (no shortcodes required):"
-msgstr "JetEngine/Elementor: Verwenden Sie diese Meta-Keys in Listings (keine Shortcodes erforderlich):"
-
-msgid "For correct Berlin/Germany date output, set the WordPress time zone to Europe/Berlin (Settings → General)."
-msgstr "Für korrekte Berlin/Deutschland-Datumsausgabe, stellen Sie die WordPress-Zeitzone auf Europe/Berlin (Einstellungen → Allgemein)."
-
-# URL Settings translations (v1.3.1)
-msgid "URL Settings"
-msgstr "URL-Einstellungen"
-
-msgid "Event Slug (Single)"
-msgstr "Event-Slug (Einzelansicht)"
-
-msgid "URL slug for single events (e.g., \"event\" or \"veranstaltung\"). Default: event"
-msgstr "URL-Slug für einzelne Events (z.B. \"event\" oder \"veranstaltung\"). Standard: event"
-
-msgid "Archive Slug"
-msgstr "Archiv-Slug"
-
-msgid "URL slug for event archive (e.g., \"events\" or \"veranstaltungen\"). Default: events"
-msgstr "URL-Slug für das Event-Archiv (z.B. \"events\" oder \"veranstaltungen\"). Standard: events"
-
-msgid "Note: After changing slugs, permalinks will be automatically refreshed. Existing event URLs will change accordingly."
-msgstr "Hinweis: Nach Änderung der Slugs werden die Permalinks automatisch aktualisiert. Bestehende Event-URLs ändern sich entsprechend."
-
-# Context-based translations for CPT labels
-msgctxt "post type general name"
-msgid "Events"
-msgstr "Veranstaltungen"
-
-msgctxt "post type singular name"
-msgid "Event"
-msgstr "Veranstaltung"
-
-msgctxt "event"
-msgid "Add New"
-msgstr "Neu hinzufügen"
-
-msgctxt "admin menu"
-msgid "Events"
-msgstr "Veranstaltungen"
-
-# Additional CPT labels
-msgid "View Events"
-msgstr "Veranstaltungen anzeigen"
-
-msgid "Event Archives"
-msgstr "Veranstaltungsarchiv"
-
-msgid "Event Attributes"
-msgstr "Veranstaltungseigenschaften"
-
-msgid "Insert into event"
-msgstr "In Veranstaltung einfügen"
-
-msgid "Uploaded to this event"
-msgstr "Zu dieser Veranstaltung hochgeladen"
-
-msgid "Event Image"
-msgstr "Veranstaltungsbild"
-
-msgid "Set event image"
-msgstr "Veranstaltungsbild festlegen"
-
-msgid "Remove event image"
-msgstr "Veranstaltungsbild entfernen"
-
-msgid "Use as event image"
-msgstr "Als Veranstaltungsbild verwenden"
-
-msgid "No events found"
-msgstr "Keine Veranstaltungen gefunden"
-
-msgid "No events found in Trash"
-msgstr "Keine Veranstaltungen im Papierkorb gefunden"
-
-msgid "Category"
-msgstr "Kategorie"
-
-msgid "Title"
-msgstr "Titel"
-
-msgid "Date"
-msgstr "Datum"
-
-# VE Fields class translations (v1.4.0 - JetEngine/Elementor integration)
-msgid "Start Date/Time"
-msgstr "Startdatum/-zeit"
-
-msgid "End Date/Time"
-msgstr "Enddatum/-zeit"
-
-msgid "All Day Event"
-msgstr "Ganztägiges Event"
-
-msgid "Hide End Time"
-msgstr "Endzeit ausblenden"
-
-msgid "Start Date (formatted)"
-msgstr "Startdatum (formatiert)"
-
-msgid "Start Time (formatted)"
-msgstr "Startzeit (formatiert)"
-
-msgid "End Date (formatted)"
-msgstr "Enddatum (formatiert)"
-
-msgid "End Time (formatted)"
-msgstr "Endzeit (formatiert)"
-
-msgid "Date Range"
-msgstr "Datumsbereich"
-
-msgid "Time Range"
-msgstr "Zeitbereich"
-
-msgid "Full Date & Time"
-msgstr "Vollständiges Datum & Zeit"
-
-msgid "Is Upcoming"
-msgstr "Ist bevorstehend"
-
-msgid "Is Ongoing"
-msgstr "Läuft gerade"
-
-msgid "Event Status"
-msgstr "Event-Status"
-
-msgid "Yes"
-msgstr "Ja"
-
-msgid "No"
-msgstr "Nein"
-
-msgid "Date & Time"
-msgstr "Datum & Zeit"
-
-msgid "Formatted Output"
-msgstr "Formatierte Ausgabe"
-
-msgid "VE Events"
-msgstr "VE Events"
-
-msgid "Event Field"
-msgstr "Event-Feld"
-
-msgid "Field"
-msgstr "Feld"
-
-msgid "Event URL"
-msgstr "Event-URL"
-
-msgid "URL Type"
-msgstr "URL-Typ"
-
-msgid "Event Permalink"
-msgstr "Event-Permalink"
-
-msgid "Fallback to Permalink"
-msgstr "Fallback auf Permalink"
-
-msgid "All"
-msgstr "Alle"
-
-msgid "Drafts"
-msgstr "Entwürfe"
-
-msgid "Trash"
-msgstr "Papierkorb"
-
-# v1.8.0 – Event-Status-Überschreibung
-msgid "Cancelled"
-msgstr "Abgesagt"
-
-msgid "Postponed"
-msgstr "Verschoben"
-
-msgid "Rescheduled"
-msgstr "Neu terminiert"
-
-msgid "Moved Online"
-msgstr "Online verlegt"
-
-msgid "Scheduled (default)"
-msgstr "Geplant (Standard)"
-
-msgid "Updates Schema.org eventStatus and shows a badge in the event list."
-msgstr "Aktualisiert Schema.org eventStatus und zeigt ein Badge in der Eventliste."
-
-msgid "Is Cancelled"
-msgstr "Ist abgesagt"
-
-msgid "Event Status Color"
-msgstr "Event-Status-Farbe"
-
-msgid "Event Status Label"
-msgstr "Event-Status-Label"
-
-msgid "Hex color for status badge (red / amber / blue)"
-msgstr "Hex-Farbe für Status-Badge (rot / orange / blau)"
-
-msgid "Human-readable status: Cancelled / Postponed / Rescheduled / Moved Online"
-msgstr "Lesbarer Status: Abgesagt / Verschoben / Neu terminiert / Online verlegt"
-
-msgid "Status override: cancelled | postponed | rescheduled | movedOnline | (empty = scheduled)"
-msgstr "Status-Überschreibung: cancelled | postponed | rescheduled | movedOnline | (leer = geplant)"
-
-msgid "1 if event has not started yet"
-msgstr "1 wenn Event noch nicht begonnen hat"
-
-msgid "1 if event is cancelled"
-msgstr "1 wenn Event abgesagt ist"
-
-# v1.8.0 – Kategoriefarben
-msgid "Category Colors"
-msgstr "Kategoriefarben"
-
-msgid "Output Category Colors as CSS"
-msgstr "Kategoriefarben als CSS ausgeben"
-
-msgid "Emit CSS custom properties and utility classes for event category colors in wp_head"
-msgstr "Gibt CSS-Custom-Properties und Utility-Klassen für Kategoriefarben im wp_head aus"
-
-msgid "Outputs :root{--vev-cat-slug:#hex;} and .ve-cat-slug{--vev-cat-color:#hex;} for use with Elementor/CSS."
-msgstr "Gibt :root{--vev-cat-slug:#hex;} und .ve-cat-slug{--vev-cat-color:#hex;} für Elementor/CSS aus."
-
-msgid "Category Color"
-msgstr "Kategoriefarbe"
-
-msgid "Choose a color for this category. Used in listings and calendar views."
-msgstr "Farbe für diese Kategorie wählen. Wird in Listings und Kalenderansichten verwendet."
-
-msgid "Category (Taxonomy)"
-msgstr "Kategorie (Taxonomie)"
-
-msgid "Category Name"
-msgstr "Kategoriename"
-
-msgid "Category name"
-msgstr "Kategoriename"
-
-msgid "Category color (hex)"
-msgstr "Kategoriefarbe (Hex)"
-
-msgid "CSS class for primary category, e.g. \"ve-cat-konzert\""
-msgstr "CSS-Klasse der Hauptkategorie, z.B. \"ve-cat-konzert\""
-
-msgid "Category CSS Class"
-msgstr "Kategorie-CSS-Klasse"
-
-# v1.8.0 – OG-Tags
-msgid "Open Graph / Social Meta Tags"
-msgstr "Open Graph / Social-Meta-Tags"
-
-msgid "Open Graph Tags"
-msgstr "Open Graph Tags"
-
-msgid "Auto (skip if Yoast / Rank Math / AIOSEO active)"
-msgstr "Auto (überspringen wenn Yoast / Rank Math / AIOSEO aktiv)"
-
-msgid "Always output"
-msgstr "Immer ausgeben"
-
-msgid "Disabled"
-msgstr "Deaktiviert"
-
-msgid "Auto: outputs OG tags only when no dedicated SEO plugin (Yoast, Rank Math, AIOSEO, SEO Framework) is active. Use \"Always\" to force output even alongside an SEO plugin. Use \"Disabled\" to turn off completely."
-msgstr "Auto: Gibt OG-Tags nur aus, wenn kein dediziertes SEO-Plugin (Yoast, Rank Math, AIOSEO, SEO Framework) aktiv ist. \"Immer\" erzwingt die Ausgabe auch neben SEO-Plugins. \"Deaktiviert\" schaltet die Ausgabe komplett ab."
-
-msgid "Outputs og: and twitter: meta tags on single event pages for social sharing previews."
-msgstr "Gibt og:- und twitter:-Meta-Tags auf einzelnen Event-Seiten für Social-Sharing-Vorschauen aus."
-
-# v1.8.0 – Query Vars
-msgid "Query Vars (URL / WP_Query)"
-msgstr "Query-Vars (URL / WP_Query)"
-
-msgid "Pass these as URL parameters or WP_Query arguments for filtering:"
-msgstr "Als URL-Parameter oder WP_Query-Argumente für Filterung übergeben:"
-
-msgid "Filter by lifecycle status"
-msgstr "Nach Lebenszyklus-Status filtern"
-
-msgid "Include archived events (default: hidden)"
-msgstr "Archivierte Events einschließen (Standard: ausgeblendet)"
-
-msgid "Show only events starting in this month (YYYY-MM). Bypasses archived cutoff."
-msgstr "Nur Events dieses Monats anzeigen (JJJJ-MM). Umgeht den Archivierungsabschnitt."
-
-msgid "Events starting on or after this date (Y-m-d or UTC timestamp). Bypasses archived cutoff."
-msgstr "Events ab diesem Datum (J-M-T oder UTC-Zeitstempel). Umgeht den Archivierungsabschnitt."
-
-msgid "Events starting on or before this date (Y-m-d or UTC timestamp). Bypasses archived cutoff."
-msgstr "Events bis zu diesem Datum (J-M-T oder UTC-Zeitstempel). Umgeht den Archivierungsabschnitt."
-
-msgid "Events starting at or after this hour (0–23, site timezone)"
-msgstr "Events ab dieser Uhrzeit (0–23, Website-Zeitzone)"
-
-msgid "Events starting at or before this hour (0–23, site timezone)"
-msgstr "Events bis zu dieser Uhrzeit (0–23, Website-Zeitzone)"
-
-msgid "ISO weekday(s): 1=Mon … 7=Sun. Comma-separated list allowed."
-msgstr "ISO-Wochentag(e): 1=Mo … 7=So. Kommagetrennte Liste erlaubt."
-
-msgid "Start Hour (0–23)"
-msgstr "Startstunde (0–23)"
-
-msgid "Weekday (1=Mon, 7=Sun)"
-msgstr "Wochentag (1=Mo, 7=So)"
-
-msgid "Start date in site timezone (0–23) — auto-computed, use for time-of-day filtering"
-msgstr "Startstunde in Website-Zeitzone (0–23) — automatisch berechnet, für Tageszeit-Filterung"
-
-msgid "Start hour in site timezone (0–23) — auto-computed, use for time-of-day filtering"
-msgstr "Startstunde in Website-Zeitzone (0–23) — automatisch berechnet, für Tageszeit-Filterung"
-
-msgid "ISO weekday in site timezone (1=Mon … 7=Sun) — auto-computed, use for weekday filtering"
-msgstr "ISO-Wochentag in Website-Zeitzone (1=Mo … 7=So) — automatisch berechnet, für Wochentag-Filterung"
-
-msgid "Start Date/Time (internal)"
-msgstr "Startdatum/-zeit (intern)"
-
-msgid "End Date/Time (internal)"
-msgstr "Enddatum/-zeit (intern)"
-
-msgid "Start timestamp (UTC integer)"
-msgstr "Start-Zeitstempel (UTC-Ganzzahl)"
-
-msgid "End timestamp (UTC integer)"
-msgstr "End-Zeitstempel (UTC-Ganzzahl)"
-
-msgid "All-day event (1/0)"
-msgstr "Ganztägiges Event (1/0)"
-
-msgid "Hide end time (1/0)"
-msgstr "Endzeit ausblenden (1/0)"
-
-msgid "Start date (formatted)"
-msgstr "Startdatum (formatiert)"
-
-msgid "Start time (formatted)"
-msgstr "Startzeit (formatiert)"
-
-msgid "End date (formatted)"
-msgstr "Enddatum (formatiert)"
-
-msgid "End time (formatted)"
-msgstr "Endzeit (formatiert)"
-
-msgid "Smart date range"
-msgstr "Intelligenter Datumsbereich"
-
-msgid "Time range or \"All day\""
-msgstr "Zeitbereich oder \"Ganztägig\""
-
-msgid "Full date &amp; time"
-msgstr "Vollständiges Datum &amp; Uhrzeit"
-
-msgid "Currently running"
-msgstr "Läuft gerade"
-
-msgid "1 if currently running"
-msgstr "1 wenn gerade laufend"
-
-msgid "Ended, within grace period"
-msgstr "Beendet, innerhalb der Karenzzeit"
-
-msgid "Ended, grace period exceeded"
-msgstr "Beendet, Karenzzeit überschritten"
-
-# v1.9.0 – Event-Formular (3 Sektionen)
-msgid "Date &amp; Time"
-msgstr "Datum &amp; Uhrzeit"
-
-msgid "Details"
-msgstr "Details"
-
-msgid "Start *"
-msgstr "Beginn *"
-
-msgid "End (optional)"
-msgstr "Ende (optional)"
-
-msgid "All-day events are stored as full-day ranges in your site time zone. Times will not be displayed."
-msgstr "Ganztägige Events werden als ganztägige Zeitspannen in der Website-Zeitzone gespeichert. Uhrzeiten werden nicht angezeigt."
-
-msgid "For correct date output, set WordPress timezone to Europe/Berlin (Settings → General)."
-msgstr "Für korrekte Datumsausgabe bitte WordPress-Zeitzone auf Europe/Berlin setzen (Einstellungen → Allgemein)."
-
-msgid "Enter a date above"
-msgstr "Datum oben eingeben"
-
-msgid "Additional Notes"
-msgstr "Zusätzliche Hinweise"
-
-msgid "Short notes for listings: admission, dress code, registration info, etc. The full event description goes in the editor below."
-msgstr "Kurze Hinweise für Listings: Eintritt, Kleiderordnung, Anmeldung etc. Die vollständige Beschreibung gehört in den Editor unten."
-
-msgid "Info / Ticket URL"
-msgstr "Info- / Ticket-URL"
-
-msgid "Developer: JetEngine / Elementor field keys"
-msgstr "Entwickler: JetEngine / Elementor-Feldschlüssel"
-
-msgid "Available as Elementor Dynamic Tags and JetEngine fields. Computed at runtime:"
-msgstr "Als Elementor Dynamic Tags und JetEngine-Felder verfügbar. Zur Laufzeit berechnet:"
-
-# v1.9.0 – Listen-Ansicht
-msgid "When"
-msgstr "Wann"
-
-msgid "All months"
-msgstr "Alle Monate"
-
-msgid "All categories"
-msgstr "Alle Kategorien"
-
-msgid "All locations"
-msgstr "Alle Orte"
-
-msgid "All topics"
-msgstr "Alle Themen"
-
-# v1.9.0 – Kalender-Grid
-msgid "Calendar"
-msgstr "Kalender"
-
-msgid "Event Calendar"
-msgstr "Veranstaltungskalender"
-
-msgid "Mon"
-msgstr "Mo"
-
-msgid "Tue"
-msgstr "Di"
-
-msgid "Wed"
-msgstr "Mi"
-
-msgid "Thu"
-msgstr "Do"
-
-msgid "Fri"
-msgstr "Fr"
-
-msgid "Sat"
-msgstr "Sa"
-
-msgid "Sun"
-msgstr "So"
-
-# v1.9.0 – Einstellungen überarbeitet
-msgid "General"
-msgstr "Allgemein"
-
-msgid "Display"
-msgstr "Anzeige"
-
-msgid "Schema &amp; SEO"
-msgstr "Schema &amp; SEO"
-
-msgid "Field Reference"
-msgstr "Feld-Referenz"
-
-msgid "Block Editor"
-msgstr "Block-Editor"
-
-msgid "Disable Gutenberg for Events (use classic editor)"
-msgstr "Gutenberg für Events deaktivieren (klassischen Editor verwenden)"
-
-msgid "Calendar Import"
-msgstr "Kalender-Import"
-
-msgid "Manage ICS import feeds (Google Calendar, Outlook, etc.) on the <a href=\"%s\">Import Feeds</a> page."
-msgstr "ICS-Import-Feeds (Google Kalender, Outlook etc.) auf der Seite <a href=\"%s\">Import-Feeds</a> verwalten."
-
-msgid "Manage Import Feeds"
-msgstr "Import-Feeds verwalten"
-
-msgid "Date &amp; Time Display"
-msgstr "Datum &amp; Uhrzeit-Anzeige"
-
-msgid "Hide Same-Day End Date"
-msgstr "Enddatum bei gleichem Tag ausblenden"
-
-msgid "Hide the end date when start and end are on the same day"
-msgstr "Enddatum ausblenden, wenn Start und Ende am gleichen Tag sind"
-
-msgid "Example output: \"12.06.2025 · 10:00 – 12:00\" instead of \"12.06.2025 · 10:00 – 12.06.2025 · 12:00\""
-msgstr "Beispielausgabe: \"12.06.2025 · 10:00 – 12:00\" statt \"12.06.2025 · 10:00 – 12.06.2025 · 12:00\""
-
-msgid "Event Visibility"
-msgstr "Event-Sichtbarkeit"
-
-msgid "How long events stay visible on the frontend after ending. Backend is never affected."
-msgstr "Wie lange Events nach dem Ende im Frontend sichtbar bleiben. Das Backend ist davon nie betroffen."
-
-msgid "Search Results"
-msgstr "Suchergebnisse"
-
-msgid "Include Event Series"
-msgstr "Event-Serien einschließen"
-
-msgid "Add series name to Schema.org as superEvent / EventSeries"
-msgstr "Seriennamen als superEvent / EventSeries zu Schema.org hinzufügen"
-
-msgid "Series Suggestions"
-msgstr "Serien-Vorschläge"
-
-msgid "Suggest series assignments for events with matching titles"
-msgstr "Serien-Zuweisungen für Events mit gleichem Titel vorschlagen"
-
-msgid "ICS import automatically groups events by UID into series. The feature below adds detection for manually created events."
-msgstr "Der ICS-Import gruppiert Events automatisch nach UID zu Serien. Die folgende Funktion ergänzt die Erkennung für manuell erstellte Events."
-
-msgid "When saving an event without a series, the plugin finds other events with the same title. A notice in the editor lets you create a new series, assign to an existing one, or dismiss."
-msgstr "Beim Speichern eines Events ohne Serie sucht das Plugin nach anderen Events mit gleichem Titel. Ein Hinweis im Editor ermöglicht das Erstellen einer neuen Serie, die Zuweisung zu einer bestehenden oder das Verwerfen."
-
-msgid "Stored Meta Keys"
-msgstr "Gespeicherte Meta-Keys"
-
-msgid "Use these for sorting, filtering, and meta conditions in JetEngine/WP_Query:"
-msgstr "Für Sortierung, Filterung und Meta-Bedingungen in JetEngine/WP_Query verwenden:"
-
-msgid "Virtual / Computed Fields"
-msgstr "Virtuelle / Berechnete Felder"
-
-msgid "JetEngine Query Setup"
-msgstr "JetEngine Query-Einrichtung"
-
-msgid "Pass these as URL parameters or WP_Query arguments for filtering:"
-msgstr "Als URL-Parameter oder WP_Query-Argumente zur Filterung übergeben:"
-
-msgid "Post Type"
-msgstr "Beitragstyp"
-
-msgid "Order By"
-msgstr "Sortieren nach"
-
-msgid "Meta Value (Number)"
-msgstr "Meta-Wert (Zahl)"
-
-msgid "Order"
-msgstr "Reihenfolge"
-
-msgid "Condition"
-msgstr "Bedingung"
-
-msgid "Setting"
-msgstr "Einstellung"
-
-msgid "Effect"
-msgstr "Wirkung"
-
-msgid "Key"
-msgstr "Schlüssel"
-
-msgid "Var"
-msgstr "Var"
-
-msgid "Values"
-msgstr "Werte"
-
-msgid "Query Var"
-msgstr "Query-Var"
-
-# v1.9.0 – Serien-Vorschlag-Benachrichtigung
-msgid "Series Suggestion"
-msgstr "Serien-Vorschlag"
-
-msgid "Found %1$d other event with the same title \"%2$s\". Would you like to add these events to a series?"
-msgid_plural "Found %1$d other events with the same title \"%2$s\". Would you like to add these events to a series?"
-msgstr[0] "Ein weiteres Event mit dem Titel \"%2$s\" gefunden. Sollen diese Events einer Serie zugeordnet werden?"
-msgstr[1] "%1$d weitere Events mit dem Titel \"%2$s\" gefunden. Sollen diese Events einer Serie zugeordnet werden?"
-
-msgid "Create new series & assign"
-msgstr "Neue Serie erstellen & zuweisen"
-
-msgid "— or assign to existing series —"
-msgstr "— oder zu bestehender Serie zuweisen —"
-
-msgid "Assign"
-msgstr "Zuweisen"
-
-msgid "Dismiss"
-msgstr "Verwerfen"
-
-msgid "Error. Please try again."
-msgstr "Fehler. Bitte erneut versuchen."
-
-msgid "Please select a series first."
-msgstr "Bitte zuerst eine Serie auswählen."
-
-msgid "Series Name"
-msgstr "Serienname"
-
-msgid "Series name"
-msgstr "Serienname"
-
-msgid "Unnamed Series"
-msgstr "Unbenannte Serie"
-
-# Locations & Kategorien – Felder
-msgid "Address"
-msgstr "Adresse"
-
-msgid "Full address used for automatic Google Maps link generation."
-msgstr "Vollständige Adresse für automatische Google Maps-Link-Generierung."
-
-msgid "Full address — used to auto-generate a Google Maps link."
-msgstr "Vollständige Adresse — zum automatischen Generieren eines Google Maps-Links."
-
-msgid "Custom Maps URL (optional)"
-msgstr "Benutzerdefinierte Maps-URL (optional)"
-
-msgid "Overrides the auto-generated Google Maps link. Leave empty to use the address above."
-msgstr "Überschreibt den automatisch generierten Google Maps-Link. Leer lassen, um die obige Adresse zu verwenden."
-
-msgid "Maps URL (auto)"
-msgstr "Maps-URL (automatisch)"
-
-msgid "Auto-generated from the address. Enter a custom URL below to override."
-msgstr "Automatisch aus der Adresse generiert. Benutzerdefinierte URL unten eingeben, um zu überschreiben."
-
-msgid "Custom Maps URL"
-msgstr "Benutzerdefinierte Maps-URL"
-
-msgid "Optional. Overrides the auto-generated link above."
-msgstr "Optional. Überschreibt den automatisch generierten Link oben."
-
-msgid "Google Maps URL (auto or custom)"
-msgstr "Google Maps-URL (automatisch oder benutzerdefiniert)"
-
-msgid "Location Address"
-msgstr "Ortsadresse"
-
-msgid "Location Maps URL"
-msgstr "Ort Maps-URL"
-
-msgid "Event Location"
-msgstr "Veranstaltungsort"
-
-msgid "Event Location Maps URL"
-msgstr "Veranstaltungsort Maps-URL"
-
-msgid "Event Series"
-msgstr "Veranstaltungsserie"
-
-msgid "Location (Taxonomy)"
-msgstr "Ort (Taxonomie)"
-
-msgid "Location &amp; Taxonomy"
-msgstr "Ort &amp; Taxonomie"
-
-msgid "Location Name"
-msgstr "Ortsname"
-
-msgid "Location name (taxonomy)"
-msgstr "Ortsname (Taxonomie)"
-
-msgid "Location address"
-msgstr "Ortsadresse"
-
-msgid "Topic (Taxonomy)"
-msgstr "Thema (Taxonomie)"
-
-msgid "Topic Name(s)"
-msgstr "Themenname(n)"
-
-msgid "Topic names (comma-separated)"
-msgstr "Themennamen (kommagetrennt)"
-
-msgid "Event Title"
-msgstr "Veranstaltungstitel"
-
-msgid "Event Topic(s)"
-msgstr "Veranstaltungsthema/Themen"
-
-# Sicherheits- & Systemmeldungen
-msgid "You do not have permission to view this page."
-msgstr "Sie haben keine Berechtigung, diese Seite anzuzeigen."
-
-msgid "Security check failed."
-msgstr "Sicherheitsprüfung fehlgeschlagen."
-
-msgid "Permission denied."
-msgstr "Berechtigung verweigert."
-
-msgid "Post not found."
-msgstr "Beitrag nicht gefunden."
-
-msgid "No suggestion found."
-msgstr "Kein Vorschlag gefunden."
-
-msgid "Invalid series term."
-msgstr "Ungültiger Serien-Begriff."
-
-msgid "Unknown action."
-msgstr "Unbekannte Aktion."
-
-msgid "Insufficient permissions."
-msgstr "Unzureichende Berechtigungen."
-
-msgid "No terms found."
-msgstr "Keine Begriffe gefunden."
-
-# Import-Modul (v1.6+)
-msgid "Calendar Import Feeds"
-msgstr "Kalender-Import-Feeds"
-
-msgid "Import Feeds"
-msgstr "Import-Feeds"
-
-msgid "Import Feed"
-msgstr "Import-Feed"
-
-msgid "Add Import Feed"
-msgstr "Import-Feed hinzufügen"
-
-msgid "Edit Import Feed"
-msgstr "Import-Feed bearbeiten"
-
-msgid "Feed Name"
-msgstr "Feed-Name"
-
-msgid "ICS URL"
-msgstr "ICS-URL"
-
-msgid "The .ics subscription URL (e.g. from Outlook, Google Calendar, etc.)"
-msgstr "Die .ics-Abonnement-URL (z.B. von Outlook, Google Kalender, etc.)"
-
-msgid "Schedule"
-msgstr "Zeitplan"
-
-msgid "Hourly"
-msgstr "Stündlich"
-
-msgid "Every 15 Minutes"
-msgstr "Alle 15 Minuten"
-
-msgid "Every 30 Minutes"
-msgstr "Alle 30 Minuten"
-
-msgid "Twice Daily"
-msgstr "Zweimal täglich"
-
-msgid "Daily"
-msgstr "Täglich"
-
-msgid "Weekly"
-msgstr "Wöchentlich"
-
-msgid "Import Behaviour"
-msgstr "Import-Verhalten"
-
-msgid "Update Mode"
-msgstr "Aktualisierungsmodus"
-
-msgid "Always overwrite"
-msgstr "Immer überschreiben"
-
-msgid "Update if changed"
-msgstr "Aktualisieren wenn geändert"
-
-msgid "Never update"
-msgstr "Nie aktualisieren"
-
-msgid "Removed Events"
-msgstr "Entfernte Events"
-
-msgid "Move to Trash if removed from source"
-msgstr "In den Papierkorb verschieben, wenn aus Quelle entfernt"
-
-msgid "Never"
-msgstr "Nie"
-
-msgid "Imported Events Status"
-msgstr "Status importierter Events"
-
-msgid "Draft"
-msgstr "Entwurf"
-
-msgid "Published"
-msgstr "Veröffentlicht"
-
-msgid "Field Mapping"
-msgstr "Feld-Zuordnung"
-
-msgid "Define how ICS fields are mapped to event fields. Dates are always imported automatically."
-msgstr "Festlegen, wie ICS-Felder auf Event-Felder abgebildet werden. Datum/Uhrzeit wird immer automatisch importiert."
-
-msgid "ICS Field"
-msgstr "ICS-Feld"
-
-msgid "Maps to"
-msgstr "Wird zugeordnet zu"
-
-msgid "Source"
-msgstr "Quelle"
-
-msgid "Description (Content)"
-msgstr "Beschreibung (Inhalt)"
-
-msgid "Excerpt"
-msgstr "Kurzfassung"
-
-msgid "Speaker"
-msgstr "Referent"
-
-msgid "Default Taxonomy Assignment"
-msgstr "Standard-Taxonomie-Zuweisung"
-
-msgid "Default Category"
-msgstr "Standardkategorie"
-
-msgid "Default Location"
-msgstr "Standardort"
-
-msgid "Default Topic"
-msgstr "Standardthema"
-
-msgid "These terms will always be assigned to every imported event (in addition to mapped terms)."
-msgstr "Diese Begriffe werden jedem importierten Event zugewiesen (zusätzlich zu zugeordneten Begriffen)."
-
-msgid "Create Terms"
-msgstr "Begriffe erstellen"
-
-msgid "Auto-create"
-msgstr "Automatisch erstellen"
-
-msgid "Skip"
-msgstr "Überspringen"
-
-msgid "Hold Ctrl/Cmd to select multiple."
-msgstr "Strg/Cmd gedrückt halten, um mehrere auszuwählen."
-
-msgid "All Feeds"
-msgstr "Alle Feeds"
-
-msgid "Add Feed"
-msgstr "Feed hinzufügen"
-
-msgid "HTTP Timeout"
-msgstr "HTTP-Zeitlimit"
-
-msgid "seconds"
-msgstr "Sekunden"
-
-msgid "Enable automatic import"
-msgstr "Automatischen Import aktivieren"
-
-msgid "Save Feed"
-msgstr "Feed speichern"
-
-msgid "Last Run"
-msgstr "Letzter Durchlauf"
-
-msgid "Next Run"
-msgstr "Nächster Durchlauf"
-
-msgid "Active"
-msgstr "Aktiv"
-
-msgid "Inactive"
-msgstr "Inaktiv"
-
-msgid "Activate"
-msgstr "Aktivieren"
-
-msgid "Deactivate"
-msgstr "Deaktivieren"
-
-msgid "Run now"
-msgstr "Jetzt ausführen"
-
-msgid "Edit"
-msgstr "Bearbeiten"
-
-msgid "Delete"
-msgstr "Löschen"
-
-msgid "No import feeds configured yet. Add one to get started."
-msgstr "Noch keine Import-Feeds konfiguriert. Fügen Sie einen hinzu, um zu beginnen."
-
-msgid "No import feeds found."
-msgstr "Keine Import-Feeds gefunden."
-
-msgid "Test Connection"
-msgstr "Verbindung testen"
-
-msgid "Connecting…"
-msgstr "Verbindung wird hergestellt…"
-
-msgid "OK — found %d event(s)."
-msgstr "OK — %d Veranstaltung(en) gefunden."
-
-msgid "No ICS URL configured."
-msgstr "Keine ICS-URL konfiguriert."
-
-msgid "Running…"
-msgstr "Läuft…"
-
-msgid "Import Log: %s"
-msgstr "Import-Protokoll: %s"
-
-msgid "Log"
-msgstr "Protokoll"
-
-msgid "Clear Log"
-msgstr "Protokoll leeren"
-
-msgid "Clear all log entries for this feed?"
-msgstr "Alle Protokolleinträge für diesen Feed löschen?"
-
-msgid "No log entries yet."
-msgstr "Noch keine Protokolleinträge."
-
-msgid "Time (UTC)"
-msgstr "Zeit (UTC)"
-
-msgid "Feed saved."
-msgstr "Feed gespeichert."
-
-msgid "Feed deleted."
-msgstr "Feed gelöscht."
-
-msgid "Feed status updated."
-msgstr "Feed-Status aktualisiert."
-
-msgid "Error"
-msgstr "Fehler"
-
-msgid "Errors"
-msgstr "Fehler"
-
-msgid "%d error(s)"
-msgstr "%d Fehler"
-
-msgid "Skipped"
-msgstr "Übersprungen"
-
-msgid "Created"
-msgstr "Erstellt"
-
-msgid "Updated"
-msgstr "Aktualisiert"
-
-msgid "Deleted"
-msgstr "Gelöscht"
-
-msgid "Partial"
-msgstr "Teilweise"
-
-msgid "OK"
-msgstr "OK"
-
-msgid "Raw Data"
-msgstr "Rohdaten"
-
-msgid "Unnamed Feed"
-msgstr "Unbenannter Feed"
-
-msgid "(Untitled Event)"
-msgstr "(Unbenanntes Event)"
-
-msgid "Name"
-msgstr "Name"
-
-msgid "On"
-msgstr "Ein"
-
-msgid "or"
-msgstr "oder"
-
-msgid "Duration"
-msgstr "Dauer"
-
-msgid "Structured data is automatically output on single event pages as JSON-LD. Location address is included when set on the location term."
-msgstr "Strukturierte Daten werden automatisch als JSON-LD auf einzelnen Event-Seiten ausgegeben. Die Ortsadresse wird einbezogen, wenn sie am Ort-Term gesetzt ist."
-
-msgid "Changing slugs will automatically refresh permalinks. Existing event URLs will change."
-msgstr "Slug-Änderungen aktualisieren die Permalinks automatisch. Bestehende Event-URLs ändern sich entsprechend."
-
-msgid "URL slug for single events, e.g. \"event\" or \"veranstaltung\"."
-msgstr "URL-Slug für einzelne Events, z.B. \"event\" oder \"veranstaltung\"."
-
-msgid "URL slug for the event archive, e.g. \"events\" or \"veranstaltungen\"."
-msgstr "URL-Slug für das Event-Archiv, z.B. \"events\" oder \"veranstaltungen\"."
-
-msgid "Schema.org Event Markup"
-msgstr "Schema.org-Event-Markup"

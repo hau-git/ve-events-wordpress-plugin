@@ -255,6 +255,14 @@ final class PostType {
 		register_post_meta( Constants::POST_TYPE, Constants::META_INFO_URL, array_merge( $args, array( 'type' => 'string' ) ) );
 		register_post_meta( Constants::POST_TYPE, Constants::META_EVENT_STATUS, $args );
 
+		// Organizer & offer/ticket meta.
+		register_post_meta( Constants::POST_TYPE, Constants::META_ORGANIZER, array_merge( $args, array( 'sanitize_callback' => 'sanitize_text_field' ) ) );
+		register_post_meta( Constants::POST_TYPE, Constants::META_ORGANIZER_URL, array_merge( $args, array( 'sanitize_callback' => 'esc_url_raw' ) ) );
+		register_post_meta( Constants::POST_TYPE, Constants::META_PRICE, array_merge( $args, array( 'sanitize_callback' => array( __CLASS__, 'sanitize_price' ) ) ) );
+		register_post_meta( Constants::POST_TYPE, Constants::META_PRICE_CURRENCY, array_merge( $args, array( 'sanitize_callback' => array( __CLASS__, 'sanitize_currency' ) ) ) );
+		register_post_meta( Constants::POST_TYPE, Constants::META_AVAILABILITY, array_merge( $args, array( 'sanitize_callback' => array( __CLASS__, 'sanitize_availability' ) ) ) );
+		register_post_meta( Constants::POST_TYPE, Constants::META_ATTENDANCE_MODE, array_merge( $args, array( 'sanitize_callback' => array( __CLASS__, 'sanitize_attendance_mode' ) ) ) );
+
 		// Computed date meta — internal, not exposed via REST.
 		$int_args = array(
 			'type'         => 'integer',
@@ -271,6 +279,53 @@ final class PostType {
 		register_post_meta( Constants::POST_TYPE, Constants::META_START_MONTH, $int_args );
 		register_post_meta( Constants::POST_TYPE, Constants::META_START_DATE, $str_args );
 		register_post_meta( Constants::POST_TYPE, Constants::META_TIME_SLOT, $str_args );
+	}
+
+	/**
+	 * Sanitize a price into a normalized numeric string (or '' when unset/invalid).
+	 *
+	 * Accepts comma or dot decimals; stores as a string so Schema.org offers can
+	 * emit it verbatim without float rounding artefacts.
+	 *
+	 * @param mixed $value Raw price value.
+	 */
+	public static function sanitize_price( $value ): string {
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return '';
+		}
+		$value = str_replace( ',', '.', $value );
+		return preg_match( '/^\d+(\.\d{1,2})?$/', $value ) ? $value : '';
+	}
+
+	/**
+	 * Sanitize an ISO 4217 currency code (uppercase, 3 letters), or ''.
+	 *
+	 * @param mixed $value Raw currency value.
+	 */
+	public static function sanitize_currency( $value ): string {
+		$value = strtoupper( sanitize_text_field( (string) $value ) );
+		return preg_match( '/^[A-Z]{3}$/', $value ) ? $value : '';
+	}
+
+	/**
+	 * Sanitize the Schema.org availability value against a whitelist.
+	 *
+	 * @param mixed $value Raw availability value.
+	 */
+	public static function sanitize_availability( $value ): string {
+		$value = sanitize_text_field( (string) $value );
+		return in_array( $value, array( 'InStock', 'SoldOut', 'PreOrder' ), true ) ? $value : '';
+	}
+
+	/**
+	 * Sanitize the attendance-mode value against a whitelist.
+	 *
+	 * @param mixed $value Raw attendance-mode value.
+	 */
+	public static function sanitize_attendance_mode( $value ): string {
+		$value = sanitize_text_field( (string) $value );
+		return in_array( $value, \VEV\Support\AttendanceMode::OPTIONS, true ) ? $value : '';
 	}
 
 	/**

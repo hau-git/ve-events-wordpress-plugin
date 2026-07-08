@@ -9,6 +9,7 @@ namespace VEV\Frontend;
 
 use VEV\Constants;
 use VEV\Settings;
+use VEV\Support\AttendanceMode;
 use VEV\Support\DateFormatter;
 use VEV\Support\EventData;
 use VEV\Support\EventDescription;
@@ -55,21 +56,27 @@ final class SchemaOutput {
 
 		$event_status_val = (string) get_post_meta( $post_id, Constants::META_EVENT_STATUS, true );
 
+		$attendance_val = (string) get_post_meta( $post_id, Constants::META_ATTENDANCE_MODE, true );
+
 		$event = array(
-			'@context'    => 'https://schema.org',
-			'@type'       => 'Event',
-			'name'        => get_the_title( $post_id ),
-			'description' => EventDescription::get( $post_id ),
-			'url'         => get_permalink( $post_id ),
-			'startDate'   => $start_iso,
-			'endDate'     => $end_iso,
-			'eventStatus' => EventStatus::schema_uri( $event_status_val ),
+			'@context'            => 'https://schema.org',
+			'@type'               => 'Event',
+			'name'                => get_the_title( $post_id ),
+			'description'         => EventDescription::get( $post_id ),
+			'url'                 => get_permalink( $post_id ),
+			'startDate'           => $start_iso,
+			'endDate'             => $end_iso,
+			'eventStatus'         => EventStatus::schema_uri( $event_status_val ),
+			'eventAttendanceMode' => AttendanceMode::schema_uri( $attendance_val, $event_status_val ),
 		);
 
 		$img = get_the_post_thumbnail_url( $post_id, 'full' );
 		if ( $img ) {
 			$event['image'] = array( $img );
 		}
+
+		$place    = null;
+		$info_url = (string) get_post_meta( $post_id, Constants::META_INFO_URL, true );
 
 		$loc_terms = get_the_terms( $post_id, Constants::TAX_LOCATION );
 		if ( is_array( $loc_terms ) && ! empty( $loc_terms ) ) {
@@ -85,7 +92,35 @@ final class SchemaOutput {
 					'streetAddress' => $address,
 				);
 			}
+		}
+
+		// A virtual location is emitted for online / mixed events when a URL exists.
+		$virtual = null;
+		if ( AttendanceMode::is_online( $attendance_val, $event_status_val ) && '' !== $info_url ) {
+			$virtual = array(
+				'@type' => 'VirtualLocation',
+				'url'   => $info_url,
+			);
+		}
+
+		if ( $place && $virtual ) {
+			$event['location'] = array( $place, $virtual );
+		} elseif ( $virtual ) {
+			$event['location'] = $virtual;
+		} elseif ( $place ) {
 			$event['location'] = $place;
+		}
+
+		$organizer     = (string) get_post_meta( $post_id, Constants::META_ORGANIZER, true );
+		$organizer_url = (string) get_post_meta( $post_id, Constants::META_ORGANIZER_URL, true );
+		if ( '' !== $organizer ) {
+			$event['organizer'] = array(
+				'@type' => 'Organization',
+				'name'  => $organizer,
+			);
+			if ( '' !== $organizer_url ) {
+				$event['organizer']['url'] = $organizer_url;
+			}
 		}
 
 		$speaker = (string) get_post_meta( $post_id, Constants::META_SPEAKER, true );
@@ -96,12 +131,23 @@ final class SchemaOutput {
 			);
 		}
 
-		$info_url = (string) get_post_meta( $post_id, Constants::META_INFO_URL, true );
-		if ( '' !== $info_url ) {
-			$event['offers'] = array(
-				'@type' => 'Offer',
-				'url'   => $info_url,
-			);
+		$price        = (string) get_post_meta( $post_id, Constants::META_PRICE, true );
+		$currency     = (string) get_post_meta( $post_id, Constants::META_PRICE_CURRENCY, true );
+		$availability = (string) get_post_meta( $post_id, Constants::META_AVAILABILITY, true );
+		if ( '' !== $info_url || '' !== $price ) {
+			$offer = array( '@type' => 'Offer' );
+			if ( '' !== $info_url ) {
+				$offer['url'] = $info_url;
+			}
+			if ( '' !== $price ) {
+				$offer['price']         = $price;
+				$offer['priceCurrency'] = '' !== $currency ? $currency : 'EUR';
+			}
+			if ( '' !== $availability ) {
+				$offer['availability'] = 'https://schema.org/' . $availability;
+			}
+			$offer['validFrom'] = (string) get_post_time( 'c', true, $post_id );
+			$event['offers']    = $offer;
 		}
 
 		$settings = Settings::get();

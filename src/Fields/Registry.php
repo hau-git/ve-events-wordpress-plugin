@@ -35,10 +35,63 @@ final class Registry {
 	private static array $fields = array();
 
 	/**
+	 * Per-request cache of a post's terms, keyed by "{post_id}:{taxonomy}".
+	 *
+	 * The taxonomy field callbacks are invoked once per field per post while
+	 * rendering listings; caching here collapses the repeated get_the_terms()
+	 * calls for the same post/taxonomy into a single lookup.
+	 *
+	 * @var array<string,array<int,\WP_Term>>
+	 */
+	private static array $term_cache = array();
+
+	/**
 	 * Initialize the registry.
 	 */
 	public static function init(): void {
 		self::register_fields();
+		add_action( 'set_object_terms', array( __CLASS__, 'flush_term_cache' ), 10, 1 );
+	}
+
+	/**
+	 * Drop the cached terms for a post whenever its term relationships change.
+	 *
+	 * @param int $post_id The object (post) ID whose terms were updated.
+	 */
+	public static function flush_term_cache( int $post_id ): void {
+		$prefix = $post_id . ':';
+		foreach ( array_keys( self::$term_cache ) as $key ) {
+			if ( str_starts_with( $key, $prefix ) ) {
+				unset( self::$term_cache[ $key ] );
+			}
+		}
+	}
+
+	/**
+	 * Fetch a post's terms for a taxonomy, memoized for the request.
+	 *
+	 * @param int    $post_id  Post ID.
+	 * @param string $taxonomy Taxonomy name.
+	 * @return array<int,\WP_Term>
+	 */
+	private static function get_post_terms( int $post_id, string $taxonomy ): array {
+		$key = $post_id . ':' . $taxonomy;
+		if ( ! array_key_exists( $key, self::$term_cache ) ) {
+			$terms                    = get_the_terms( $post_id, $taxonomy );
+			self::$term_cache[ $key ] = ( empty( $terms ) || is_wp_error( $terms ) ) ? array() : array_values( $terms );
+		}
+		return self::$term_cache[ $key ];
+	}
+
+	/**
+	 * Fetch a post's primary (first) term for a taxonomy, or null.
+	 *
+	 * @param int    $post_id  Post ID.
+	 * @param string $taxonomy Taxonomy name.
+	 */
+	private static function get_primary_term( int $post_id, string $taxonomy ): ?\WP_Term {
+		$terms = self::get_post_terms( $post_id, $taxonomy );
+		return $terms[0] ?? null;
 	}
 
 	/**
@@ -46,168 +99,212 @@ final class Registry {
 	 */
 	private static function register_fields(): void {
 		self::$fields = array(
-			'_vev_start_utc'              => array(
+			'_vev_start_utc'                   => array(
 				'label'  => __( 'Start Date/Time', 've-events' ),
 				'type'   => 'datetime',
 				'format' => 'datetime',
 				'group'  => 'date',
 			),
-			'_vev_end_utc'                => array(
+			'_vev_end_utc'                     => array(
 				'label'  => __( 'End Date/Time', 've-events' ),
 				'type'   => 'datetime',
 				'format' => 'datetime',
 				'group'  => 'date',
 			),
-			'_vev_all_day'                => array(
+			'_vev_all_day'                     => array(
 				'label'  => __( 'All Day Event', 've-events' ),
 				'type'   => 'boolean',
 				'format' => 'yesno',
 				'group'  => 'date',
 			),
-			'_vev_hide_end'               => array(
+			'_vev_hide_end'                    => array(
 				'label'  => __( 'Hide End Time', 've-events' ),
 				'type'   => 'boolean',
 				'format' => 'yesno',
 				'group'  => 'date',
 			),
-			'_vev_speaker'                => array(
+			'_vev_speaker'                     => array(
 				'label'  => __( 'Speaker', 've-events' ),
 				'type'   => 'text',
 				'format' => 'text',
 				'group'  => 'details',
 			),
-			'_vev_special_info'           => array(
+			'_vev_special_info'                => array(
 				'label'  => __( 'Special Info', 've-events' ),
 				'type'   => 'textarea',
 				'format' => 'text',
 				'group'  => 'details',
 			),
-			'_vev_info_url'               => array(
+			'_vev_info_url'                    => array(
 				'label'  => __( 'Info URL', 've-events' ),
 				'type'   => 'url',
 				'format' => 'url',
 				'group'  => 'details',
 			),
-			've_start_date'               => array(
+			Constants::META_ORGANIZER          => array(
+				'label'  => __( 'Organizer', 've-events' ),
+				'type'   => 'text',
+				'format' => 'text',
+				'group'  => 'details',
+			),
+			Constants::META_ORGANIZER_URL      => array(
+				'label'  => __( 'Organizer URL', 've-events' ),
+				'type'   => 'url',
+				'format' => 'url',
+				'group'  => 'details',
+			),
+			Constants::META_PRICE              => array(
+				'label'  => __( 'Price', 've-events' ),
+				'type'   => 'text',
+				'format' => 'text',
+				'group'  => 'details',
+			),
+			Constants::META_PRICE_CURRENCY     => array(
+				'label'  => __( 'Currency', 've-events' ),
+				'type'   => 'text',
+				'format' => 'text',
+				'group'  => 'details',
+			),
+			Constants::META_AVAILABILITY       => array(
+				'label'  => __( 'Availability', 've-events' ),
+				'type'   => 'text',
+				'format' => 'text',
+				'group'  => 'details',
+			),
+			Constants::VIRTUAL_PRICE_FORMATTED => array(
+				'label'    => __( 'Price (formatted)', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'text',
+				'group'    => 'details',
+				'callback' => array( __CLASS__, 'get_price_formatted' ),
+			),
+			Constants::VIRTUAL_ICAL_URL        => array(
+				'label'    => __( 'iCal URL (.ics)', 've-events' ),
+				'type'     => 'virtual',
+				'format'   => 'url',
+				'group'    => 'details',
+				'callback' => array( __CLASS__, 'get_ical_url' ),
+			),
+			've_start_date'                    => array(
 				'label'    => __( 'Start Date (formatted)', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'date',
 				'group'    => 'formatted',
 				'callback' => array( __CLASS__, 'get_start_date' ),
 			),
-			've_start_time'               => array(
+			've_start_time'                    => array(
 				'label'    => __( 'Start Time (formatted)', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'time',
 				'group'    => 'formatted',
 				'callback' => array( __CLASS__, 'get_start_time' ),
 			),
-			've_end_date'                 => array(
+			've_end_date'                      => array(
 				'label'    => __( 'End Date (formatted)', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'date',
 				'group'    => 'formatted',
 				'callback' => array( __CLASS__, 'get_end_date' ),
 			),
-			've_end_time'                 => array(
+			've_end_time'                      => array(
 				'label'    => __( 'End Time (formatted)', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'time',
 				'group'    => 'formatted',
 				'callback' => array( __CLASS__, 'get_end_time' ),
 			),
-			've_date_range'               => array(
+			've_date_range'                    => array(
 				'label'    => __( 'Date Range', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'formatted',
 				'callback' => array( __CLASS__, 'get_date_range' ),
 			),
-			've_time_range'               => array(
+			've_time_range'                    => array(
 				'label'    => __( 'Time Range', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'formatted',
 				'callback' => array( __CLASS__, 'get_time_range' ),
 			),
-			've_datetime_formatted'       => array(
+			've_datetime_formatted'            => array(
 				'label'    => __( 'Full Date & Time', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'formatted',
 				'callback' => array( __CLASS__, 'get_datetime_formatted' ),
 			),
-			've_status'                   => array(
+			've_status'                        => array(
 				'label'    => __( 'Event Status', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'status',
 				'callback' => array( __CLASS__, 'get_status' ),
 			),
-			've_is_upcoming'              => array(
+			've_is_upcoming'                   => array(
 				'label'    => __( 'Is Upcoming', 've-events' ),
 				'type'     => 'boolean',
 				'format'   => 'yesno',
 				'group'    => 'status',
 				'callback' => array( __CLASS__, 'get_is_upcoming' ),
 			),
-			've_is_ongoing'               => array(
+			've_is_ongoing'                    => array(
 				'label'    => __( 'Is Ongoing', 've-events' ),
 				'type'     => 'boolean',
 				'format'   => 'yesno',
 				'group'    => 'status',
 				'callback' => array( __CLASS__, 'get_is_ongoing' ),
 			),
-			've_location_name'            => array(
+			've_location_name'                 => array(
 				'label'    => __( 'Location Name', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'taxonomy',
 				'callback' => array( __CLASS__, 'get_location_name' ),
 			),
-			've_location_address'         => array(
+			've_location_address'              => array(
 				'label'    => __( 'Location Address', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'taxonomy',
 				'callback' => array( __CLASS__, 'get_location_address' ),
 			),
-			've_location_maps_url'        => array(
+			've_location_maps_url'             => array(
 				'label'    => __( 'Location Maps URL', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'url',
 				'group'    => 'taxonomy',
 				'callback' => array( __CLASS__, 'get_location_maps_url' ),
 			),
-			've_category_name'            => array(
+			've_category_name'                 => array(
 				'label'    => __( 'Category Name', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'taxonomy',
 				'callback' => array( __CLASS__, 'get_category_name' ),
 			),
-			've_category_color'           => array(
+			've_category_color'                => array(
 				'label'    => __( 'Category Color', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'taxonomy',
 				'callback' => array( __CLASS__, 'get_category_color' ),
 			),
-			've_series_name'              => array(
+			've_series_name'                   => array(
 				'label'    => __( 'Series Name', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'taxonomy',
 				'callback' => array( __CLASS__, 'get_series_name' ),
 			),
-			've_topic_names'              => array(
+			've_topic_names'                   => array(
 				'label'    => __( 'Topic Name(s)', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'taxonomy',
 				'callback' => array( __CLASS__, 'get_topic_names' ),
 			),
-			've_category_class'           => array(
+			've_category_class'                => array(
 				'label'    => __( 'Category CSS Class', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
@@ -216,21 +313,21 @@ final class Registry {
 			),
 
 			// Event status override.
-			've_event_status_label'       => array(
+			've_event_status_label'            => array(
 				'label'    => __( 'Event Status Label', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'status',
 				'callback' => array( __CLASS__, 'get_event_status_label' ),
 			),
-			've_event_status_color'       => array(
+			've_event_status_color'            => array(
 				'label'    => __( 'Event Status Color', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'text',
 				'group'    => 'status',
 				'callback' => array( __CLASS__, 'get_event_status_color' ),
 			),
-			've_is_cancelled'             => array(
+			've_is_cancelled'                  => array(
 				'label'    => __( 'Is Cancelled', 've-events' ),
 				'type'     => 'virtual',
 				'format'   => 'boolean',
@@ -239,13 +336,13 @@ final class Registry {
 			),
 
 			// Computed date meta — stored, directly filterable in JetEngine.
-			Constants::META_START_HOUR    => array(
+			Constants::META_START_HOUR         => array(
 				'label'  => __( 'Start Hour (0–23)', 've-events' ),
 				'type'   => 'stored',
 				'format' => 'text',
 				'group'  => 'date',
 			),
-			Constants::META_START_WEEKDAY => array(
+			Constants::META_START_WEEKDAY      => array(
 				'label'  => __( 'Weekday (1=Mon, 7=Sun)', 've-events' ),
 				'type'   => 'stored',
 				'format' => 'text',
@@ -463,11 +560,8 @@ final class Registry {
 	 * @param int $post_id Post ID.
 	 */
 	public static function get_location_name( int $post_id ): string {
-		$terms = get_the_terms( $post_id, Constants::TAX_LOCATION );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
-			return '';
-		}
-		return $terms[0]->name;
+		$term = self::get_primary_term( $post_id, Constants::TAX_LOCATION );
+		return $term ? $term->name : '';
 	}
 
 	/**
@@ -476,11 +570,11 @@ final class Registry {
 	 * @param int $post_id Post ID.
 	 */
 	public static function get_location_address( int $post_id ): string {
-		$terms = get_the_terms( $post_id, Constants::TAX_LOCATION );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		$term = self::get_primary_term( $post_id, Constants::TAX_LOCATION );
+		if ( ! $term ) {
 			return '';
 		}
-		return (string) get_term_meta( $terms[0]->term_id, Constants::TERM_META_LOCATION_ADDRESS, true );
+		return (string) get_term_meta( $term->term_id, Constants::TERM_META_LOCATION_ADDRESS, true );
 	}
 
 	/**
@@ -489,11 +583,11 @@ final class Registry {
 	 * @param int $post_id Post ID.
 	 */
 	public static function get_location_maps_url( int $post_id ): string {
-		$terms = get_the_terms( $post_id, Constants::TAX_LOCATION );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		$term = self::get_primary_term( $post_id, Constants::TAX_LOCATION );
+		if ( ! $term ) {
 			return '';
 		}
-		$term_id = $terms[0]->term_id;
+		$term_id = $term->term_id;
 		$custom  = (string) get_term_meta( $term_id, Constants::TERM_META_LOCATION_MAPS_URL, true );
 		if ( $custom ) {
 			return $custom;
@@ -511,11 +605,8 @@ final class Registry {
 	 * @param int $post_id Post ID.
 	 */
 	public static function get_category_name( int $post_id ): string {
-		$terms = get_the_terms( $post_id, Constants::TAX_CATEGORY );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
-			return '';
-		}
-		return $terms[0]->name;
+		$term = self::get_primary_term( $post_id, Constants::TAX_CATEGORY );
+		return $term ? $term->name : '';
 	}
 
 	/**
@@ -524,11 +615,11 @@ final class Registry {
 	 * @param int $post_id Post ID.
 	 */
 	public static function get_category_color( int $post_id ): string {
-		$terms = get_the_terms( $post_id, Constants::TAX_CATEGORY );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		$term = self::get_primary_term( $post_id, Constants::TAX_CATEGORY );
+		if ( ! $term ) {
 			return '';
 		}
-		return (string) get_term_meta( $terms[0]->term_id, Constants::TERM_META_CATEGORY_COLOR, true );
+		return (string) get_term_meta( $term->term_id, Constants::TERM_META_CATEGORY_COLOR, true );
 	}
 
 	/**
@@ -537,11 +628,8 @@ final class Registry {
 	 * @param int $post_id Post ID.
 	 */
 	public static function get_series_name( int $post_id ): string {
-		$terms = get_the_terms( $post_id, Constants::TAX_SERIES );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
-			return '';
-		}
-		return $terms[0]->name;
+		$term = self::get_primary_term( $post_id, Constants::TAX_SERIES );
+		return $term ? $term->name : '';
 	}
 
 	/**
@@ -550,8 +638,8 @@ final class Registry {
 	 * @param int $post_id Post ID.
 	 */
 	public static function get_topic_names( int $post_id ): string {
-		$terms = get_the_terms( $post_id, Constants::TAX_TOPIC );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		$terms = self::get_post_terms( $post_id, Constants::TAX_TOPIC );
+		if ( empty( $terms ) ) {
 			return '';
 		}
 		return implode( ', ', wp_list_pluck( $terms, 'name' ) );
@@ -563,11 +651,11 @@ final class Registry {
 	 * @param int $post_id Post ID.
 	 */
 	public static function get_category_class( int $post_id ): string {
-		$terms = get_the_terms( $post_id, Constants::TAX_CATEGORY );
-		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+		$term = self::get_primary_term( $post_id, Constants::TAX_CATEGORY );
+		if ( ! $term ) {
 			return '';
 		}
-		return 've-cat-' . sanitize_html_class( $terms[0]->slug );
+		return 've-cat-' . sanitize_html_class( $term->slug );
 	}
 
 	/**
@@ -595,6 +683,33 @@ final class Registry {
 	 */
 	public static function get_is_cancelled( int $post_id ): bool {
 		return 'cancelled' === EventStatus::for_post( $post_id );
+	}
+
+	/**
+	 * Formatted price with currency ("Free" when zero, empty when unset).
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public static function get_price_formatted( int $post_id ): string {
+		$price = (string) get_post_meta( $post_id, Constants::META_PRICE, true );
+		if ( '' === $price ) {
+			return '';
+		}
+		if ( 0.0 === (float) $price ) {
+			return __( 'Free', 've-events' );
+		}
+		$currency = (string) get_post_meta( $post_id, Constants::META_PRICE_CURRENCY, true );
+		$amount   = number_format_i18n( (float) $price, 2 );
+		return '' !== $currency ? $amount . ' ' . $currency : $amount;
+	}
+
+	/**
+	 * Per-event .ics download URL ("Add to Calendar").
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public static function get_ical_url( int $post_id ): string {
+		return \VEV\Export\Endpoint::single_url( $post_id );
 	}
 
 	/**
