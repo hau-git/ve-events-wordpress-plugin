@@ -252,7 +252,6 @@ class Feed {
 			'http_timeout'    => self::META_HTTP_TIMEOUT,
 			'cd_endpoint'     => self::META_CD_ENDPOINT,
 			'cd_org_id'       => self::META_CD_ORG_ID,
-			'cd_token'        => self::META_CD_TOKEN,
 			'cd_image_format' => self::META_CD_IMAGE_FORMAT,
 		);
 
@@ -260,6 +259,15 @@ class Feed {
 			if ( isset( $data[ $key ] ) ) {
 				update_post_meta( $post_id, $meta_key, sanitize_text_field( $data[ $key ] ) );
 			}
+		}
+
+		// The token field never echoes its stored value back into the form, so
+		// an empty submit means "keep the saved token" — only overwrite when a
+		// new non-empty value was entered. Stored unencrypted on purpose:
+		// WordPress offers no key-management, so encrypting here would not
+		// protect against an attacker who can already read the database.
+		if ( isset( $data['cd_token'] ) && '' !== trim( (string) $data['cd_token'] ) ) {
+			update_post_meta( $post_id, self::META_CD_TOKEN, sanitize_text_field( $data['cd_token'] ) );
 		}
 
 		if ( isset( $data['delete_removed'] ) ) {

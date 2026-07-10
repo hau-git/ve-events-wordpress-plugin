@@ -51,7 +51,9 @@ abstract class AbstractSource implements SourceInterface {
 	 * @throws \RuntimeException On transport error or non-2xx status.
 	 */
 	protected function get_json( string $url ): array {
-		$response = wp_remote_get(
+		// wp_safe_remote_get() adds loopback/private-host rejection; the base
+		// URIs are hardcoded, so this is defense-in-depth (e.g. via redirects).
+		$response = wp_safe_remote_get(
 			$url,
 			array(
 				'timeout' => (int) ( $this->config['http_timeout'] ?? 30 ),

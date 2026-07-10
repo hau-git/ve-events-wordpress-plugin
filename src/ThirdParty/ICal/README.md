@@ -14,7 +14,9 @@ upstream copy without re-applying the changes below:
 - Namespace changed from `ICal` to `VEV_Import` (so it does not collide with other
   plugins bundling the same parser).
 - `initUrl()` fetches remote calendars via the WordPress HTTP API
-  (`wp_remote_get()`) instead of cURL, so it respects WordPress proxy/SSL settings.
+  (`wp_safe_remote_get()`) instead of cURL, so it respects WordPress proxy/SSL
+  settings and rejects loopback/private hosts (SSRF hardening for the
+  admin-supplied feed URL).
 - An `ABSPATH` guard was added to each file.
 
 ## Autoloading
