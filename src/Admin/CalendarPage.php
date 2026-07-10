@@ -187,11 +187,16 @@ final class CalendarPage {
 			$is_today  = ( $d === $today_d && $month === $today_m && $year === $today_y );
 			$cls       = 'vev-cal-day' . ( $is_today ? ' vev-cal-day--today' : '' );
 			$date_attr = sprintf( '%04d-%02d-%02d', $year, $month, $d );
+			$day_ts    = $ctx['start']->setDate( $year, $month, $d )->getTimestamp();
+			/* translators: %s: formatted date of the calendar day */
+			$aria = sprintf( __( '%s — add event', 've-events' ), wp_date( get_option( 'date_format' ), $day_ts, $tz ) );
 
+			// Keyboard-accessible: cells act as "create event on this day" buttons.
 			printf(
-				'<div class="%s" data-date="%s">',
+				'<div class="%s" data-date="%s" role="button" tabindex="0" aria-label="%s">',
 				esc_attr( $cls ),
-				esc_attr( $date_attr )
+				esc_attr( $date_attr ),
+				esc_attr( $aria )
 			);
 			echo '<div class="vev-cal-day-num">' . esc_html( (string) $d ) . '</div>';
 
@@ -222,7 +227,7 @@ final class CalendarPage {
 	public static function event_payload( \WP_Post $ev ): array {
 		$id          = (int) $ev->ID;
 		$data        = EventData::get( $id );
-		$status_key  = (string) get_post_meta( $id, Constants::META_EVENT_STATUS, true );
+		$status_key  = EventStatus::for_post( $id );
 		$post_status = (string) get_post_status( $ev );
 
 		return array(

@@ -416,6 +416,14 @@ abstract class AbstractRunner {
 			)
 		);
 
+		if ( empty( $existing_posts ) ) {
+			return;
+		}
+
+		// Prime the meta cache once so the per-post get_post_meta() reads below
+		// hit the cache instead of issuing one query per post (N+1).
+		update_meta_cache( 'post', $existing_posts );
+
 		foreach ( $existing_posts as $post_id ) {
 			$uid = get_post_meta( $post_id, self::META_UID, true );
 			if ( $uid && ! in_array( $uid, $this->processed_uids, true ) ) {

@@ -654,7 +654,9 @@ class ICal
             );
         }
 
-        $response = wp_remote_get( $url, $args );
+        // wp_safe_remote_get() rejects requests to loopback/private hosts,
+        // hardening the admin-supplied feed URL against SSRF (VE Events local mod).
+        $response = wp_safe_remote_get( $url, $args );
 
         if ( is_wp_error( $response ) ) {
             throw new \Exception( 'VEV Import: Failed to fetch ICS URL: ' . $response->get_error_message() );

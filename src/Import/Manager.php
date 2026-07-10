@@ -22,6 +22,8 @@ class Manager {
 
 	const CRON_HOOK = 'vev_run_import';
 
+	const PRUNE_HOOK = 'vev_prune_import_log';
+
 	/**
 	 * Registers the import module's hooks and ensures the log table exists.
 	 */
@@ -35,8 +37,9 @@ class Manager {
 		// Register custom cron intervals.
 		add_filter( 'cron_schedules', array( __CLASS__, 'add_cron_intervals' ) );
 
-		// Cron callback.
+		// Cron callbacks.
 		add_action( self::CRON_HOOK, array( __CLASS__, 'run_feed' ) );
+		add_action( self::PRUNE_HOOK, array( __CLASS__, 'prune_log' ) );
 
 		// Re-schedule cron when a feed post is saved/trashed/deleted.
 		add_action( 'save_post_' . Feed::POST_TYPE, array( __CLASS__, 'on_feed_save' ), 10, 2 );
@@ -46,6 +49,19 @@ class Manager {
 
 		// DB table.
 		Logger::maybe_create_table();
+
+		// Self-heal the daily prune schedule: sites updated without a fresh
+		// activation never run on_activate(), so ensure it here (idempotent).
+		if ( ! wp_next_scheduled( self::PRUNE_HOOK ) ) {
+			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', self::PRUNE_HOOK );
+		}
+	}
+
+	/**
+	 * Daily cron: prune old import-log rows so the table stays bounded.
+	 */
+	public static function prune_log(): void {
+		Logger::prune();
 	}
 
 	// -------------------------------------------------------------------------
@@ -244,6 +260,9 @@ class Manager {
 		foreach ( Feed::get_active() as $feed ) {
 			self::schedule_feed( $feed->ID );
 		}
+		if ( ! wp_next_scheduled( self::PRUNE_HOOK ) ) {
+			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', self::PRUNE_HOOK );
+		}
 	}
 
 	/**
@@ -253,5 +272,6 @@ class Manager {
 		foreach ( Feed::get_all() as $feed ) {
 			self::unschedule_feed( $feed->ID );
 		}
+		wp_clear_scheduled_hook( self::PRUNE_HOOK );
 	}
 }

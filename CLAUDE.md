@@ -107,7 +107,21 @@ To add a virtual field: add an entry to `Registry::$fields` with a `callback`, i
 
 ### i18n
 
-Text domain is `ve-events`. **Source strings are English**; German lives in `languages/ve-events-de_DE.po/.mo`. All user-visible strings use `__()`/`_e()`/`esc_html__()` etc. JS-facing strings are passed via `wp_localize_script` (there is no `wp-i18n` build step). Regenerate `languages/ve-events.pot` when strings change.
+Text domain is `ve-events`. **Source strings are English**; German lives in `languages/ve-events-de_DE.po/.mo`. All user-visible strings use `__()`/`_e()`/`esc_html__()` etc. JS-facing strings are passed via `wp_localize_script` (there is no `wp-i18n` build step).
+
+When strings change, regenerate the catalog with GNU gettext (`brew install gettext`):
+
+```sh
+find ve-events.php src -name '*.php' -not -path 'src/ThirdParty/*' | sort > /tmp/vev_files.txt
+xgettext --from-code=UTF-8 --no-location --force-po -o languages/ve-events.pot \
+  -k__ -k_e -kesc_html__ -kesc_html_e -kesc_attr__ -kesc_attr_e \
+  -k_x:1,2c -k_ex:1,2c -kesc_attr_x:1,2c -kesc_html_x:1,2c -k_n:1,2 -k_nx:1,2,4c \
+  --files-from=/tmp/vev_files.txt   # then restore the pot header (X-Domain: ve-events)
+msgmerge --no-location --no-fuzzy-matching -o languages/ve-events-de_DE.po \
+  languages/ve-events-de_DE.po languages/ve-events.pot
+# translate the new msgids, then:
+msgfmt --check-format --statistics languages/ve-events-de_DE.po -o languages/ve-events-de_DE.mo
+```
 
 ### Extensibility hooks
 

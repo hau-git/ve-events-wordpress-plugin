@@ -353,8 +353,22 @@ class AdminPage {
 				<tr class="vev-cd-token-row">
 					<th><?php esc_html_e( 'Partner Token', 've-events' ); ?></th>
 					<td>
-						<input type="text" name="cd_token" value="<?php echo esc_attr( $cfg['cd_token'] ); ?>" class="large-text" autocomplete="off">
-						<p class="description"><?php esc_html_e( 'Obtain a partner token from support@churchdesk.com (Pull API only).', 've-events' ); ?></p>
+						<?php
+						// Never echo the stored token back into the page. An empty
+						// submit keeps the saved value (see Feed::save_meta()).
+						$has_token   = '' !== (string) $cfg['cd_token'];
+						$placeholder = $has_token
+							? __( 'Token saved — leave blank to keep', 've-events' )
+							: '';
+						?>
+						<input type="password" name="cd_token" value="" class="large-text" autocomplete="new-password" placeholder="<?php echo esc_attr( $placeholder ); ?>">
+						<p class="description">
+							<?php if ( $has_token ) : ?>
+								<?php esc_html_e( 'A partner token is stored. Enter a new one to replace it, or leave blank to keep it.', 've-events' ); ?>
+							<?php else : ?>
+								<?php esc_html_e( 'Obtain a partner token from support@churchdesk.com (Pull API only).', 've-events' ); ?>
+							<?php endif; ?>
+						</p>
 					</td>
 				</tr>
 				<tr>

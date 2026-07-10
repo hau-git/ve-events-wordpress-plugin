@@ -8,6 +8,7 @@
 namespace VEV\Frontend;
 
 use VEV\Constants;
+use VEV\Fields\Registry;
 use VEV\Settings;
 use VEV\Support\AttendanceMode;
 use VEV\Support\DateFormatter;
@@ -54,7 +55,7 @@ final class SchemaOutput {
 		$start_iso = DateFormatter::schema( $data['start_utc'], $data['all_day'], $tz );
 		$end_iso   = DateFormatter::schema( $data['end_utc'], $data['all_day'], $tz );
 
-		$event_status_val = (string) get_post_meta( $post_id, Constants::META_EVENT_STATUS, true );
+		$event_status_val = EventStatus::for_post( $post_id );
 
 		$attendance_val = (string) get_post_meta( $post_id, Constants::META_ATTENDANCE_MODE, true );
 
@@ -78,15 +79,15 @@ final class SchemaOutput {
 		$place    = null;
 		$info_url = (string) get_post_meta( $post_id, Constants::META_INFO_URL, true );
 
-		$loc_terms = get_the_terms( $post_id, Constants::TAX_LOCATION );
-		if ( is_array( $loc_terms ) && ! empty( $loc_terms ) ) {
-			$loc     = $loc_terms[0];
-			$address = (string) get_term_meta( $loc->term_id, Constants::TERM_META_LOCATION_ADDRESS, true );
+		// Location via the Registry's per-request term cache.
+		$loc_name = Registry::get_location_name( $post_id );
+		if ( '' !== $loc_name ) {
 			$place   = array(
 				'@type' => 'Place',
-				'name'  => $loc->name,
+				'name'  => $loc_name,
 			);
-			if ( $address ) {
+			$address = Registry::get_location_address( $post_id );
+			if ( '' !== $address ) {
 				$place['address'] = array(
 					'@type'         => 'PostalAddress',
 					'streetAddress' => $address,
@@ -152,9 +153,8 @@ final class SchemaOutput {
 
 		$settings = Settings::get();
 		if ( ! empty( $settings['include_series_schema'] ) ) {
-			$series_terms = get_the_terms( $post_id, Constants::TAX_SERIES );
-			if ( is_array( $series_terms ) && ! empty( $series_terms ) ) {
-				$series              = $series_terms[0];
+			$series = Registry::get_primary_term( $post_id, Constants::TAX_SERIES );
+			if ( $series ) {
 				$event['superEvent'] = array(
 					'@type' => 'EventSeries',
 					'name'  => $series->name,
