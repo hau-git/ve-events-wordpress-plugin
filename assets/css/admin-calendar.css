@@ -17,6 +17,7 @@
 
 /* Day cells become drop targets and quick-create surfaces. */
 .vev-cal-day             { position:relative; cursor:pointer; }
+.vev-cal-day:focus-visible { outline:2px solid #2271b1; outline-offset:-2px; }
 .vev-cal-day--empty      { cursor:default; }
 .vev-cal-day--dropover   { outline:2px dashed #2271b1; outline-offset:-2px; background:#f0f6fc; }
 

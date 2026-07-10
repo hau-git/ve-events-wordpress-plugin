@@ -15,9 +15,10 @@
 		return;
 	}
 
-	var ajaxUrl   = window.ajaxurl || '/wp-admin/admin-ajax.php';
-	var popover   = null;
-	var didDrag   = false;
+	var ajaxUrl     = window.ajaxurl || '/wp-admin/admin-ajax.php';
+	var popover     = null;
+	var didDrag     = false;
+	var lastTrigger = null; // Element that opened the popover; focus returns to it on close.
 
 	function t( key ) {
 		return i18n[ key ] || key;
@@ -99,6 +100,44 @@
 		if ( popover ) {
 			popover.parentNode.removeChild( popover );
 			popover = null;
+			// Restore focus to the element that opened the dialog.
+			if ( lastTrigger && document.contains( lastTrigger ) ) {
+				lastTrigger.focus();
+			}
+			lastTrigger = null;
+		}
+	}
+
+	/**
+	 * Dialog plumbing shared by the detail and quick-create popovers:
+	 * aria attributes, focus trap (Tab cycles inside), initial focus.
+	 */
+	function initDialog( titleEl, focusEl ) {
+		popover.setAttribute( 'aria-modal', 'true' );
+		if ( titleEl ) {
+			titleEl.id = 'vev-pop-title-' + Date.now();
+			popover.setAttribute( 'aria-labelledby', titleEl.id );
+		}
+		popover.addEventListener( 'keydown', function ( e ) {
+			if ( 'Tab' !== e.key ) {
+				return;
+			}
+			var focusables = popover.querySelectorAll( 'a[href], button:not([disabled]), input:not([disabled])' );
+			if ( ! focusables.length ) {
+				return;
+			}
+			var first = focusables[0];
+			var last  = focusables[ focusables.length - 1 ];
+			if ( e.shiftKey && document.activeElement === first ) {
+				e.preventDefault();
+				last.focus();
+			} else if ( ! e.shiftKey && document.activeElement === last ) {
+				e.preventDefault();
+				first.focus();
+			}
+		} );
+		if ( focusEl ) {
+			focusEl.focus();
 		}
 	}
 
@@ -153,8 +192,11 @@
 
 		var actions = document.createElement( 'div' );
 		actions.className = 'vev-pop-actions';
+		var edit = null;
 		if ( ev.editUrl ) {
-			var edit = document.createElement( 'a' );
+			// The Edit link is also the accessible (keyboard) reschedule path —
+			// drag-and-drop deliberately has no keyboard equivalent.
+			edit = document.createElement( 'a' );
 			edit.className = 'button button-primary';
 			edit.href = ev.editUrl;
 			edit.textContent = t( 'edit' );
@@ -173,6 +215,8 @@
 
 		document.body.appendChild( popover );
 		positionPopover( anchor );
+		lastTrigger = anchor;
+		initDialog( title, edit );
 	}
 
 	function positionPopover( anchor ) {
@@ -302,7 +346,8 @@
 
 		document.body.appendChild( popover );
 		positionPopover( cell );
-		titleInput.field.focus();
+		lastTrigger = cell;
+		initDialog( head, titleInput.field );
 	}
 
 	function inputField( type, label, placeholder ) {
@@ -415,6 +460,23 @@
 
 		var cell = e.target.closest( '.vev-cal-day' );
 		if ( cell && ! cell.classList.contains( 'vev-cal-day--empty' ) && cell.getAttribute( 'data-date' ) ) {
+			openCreate( cell );
+		}
+	} );
+
+	// Keyboard equivalent of "click a day to create an event" (cells carry
+	// role="button" + tabindex="0" server-side). Chips are native anchors, so
+	// Enter on a chip already routes through the click handler above.
+	app.addEventListener( 'keydown', function ( e ) {
+		if ( 'Enter' !== e.key && ' ' !== e.key ) {
+			return;
+		}
+		if ( e.target.closest( '.vev-cal-event' ) || e.target.closest( '.vev-cal-nav' ) ) {
+			return;
+		}
+		var cell = e.target.closest( '.vev-cal-day' );
+		if ( cell && ! cell.classList.contains( 'vev-cal-day--empty' ) && cell.getAttribute( 'data-date' ) ) {
+			e.preventDefault();
 			openCreate( cell );
 		}
 	} );
