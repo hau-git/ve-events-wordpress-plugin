@@ -5,6 +5,53 @@ All notable changes to the VE Events plugin are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.4.0] - 2026-07-10
+
+Sustainability & hardening release — no new user-facing features, but the
+plugin is safer, faster, more accessible, and easier to maintain.
+
+### Security
+- The ChurchDesk partner token now renders as a masked password field and is
+  never echoed back into the admin form; an empty submit keeps the stored
+  token. (Deliberately not encrypted at rest — WordPress has no key-management
+  story, so encryption would not protect against a database-level attacker.)
+- Remote feed fetches use `wp_safe_remote_get()` (rejects loopback/private
+  hosts): the admin-supplied ICS URL in the vendored parser and the ChurchDesk
+  API client (defense-in-depth).
+
+### Performance
+- The import log table is now pruned daily (`Logger::prune()` was implemented
+  but never scheduled — it grew without bound on 15/30-minute feed schedules).
+- `AbstractRunner::delete_removed()` primes the post meta cache once instead
+  of issuing one query per tracked post.
+
+### Accessibility
+- The admin calendar is keyboard-operable: day cells are focusable buttons
+  (Enter/Space opens quick-create), popovers are proper modal dialogs
+  (`aria-modal`, labelled, focus trap, focus restoration), and the popover's
+  Edit link is the documented keyboard path for rescheduling.
+
+### Changed
+- Single sources of truth consolidated: the event-status allow-list and
+  post-state labels derive from `EventStatus::OPTIONS`/`label()`; all status
+  reads go through `EventStatus::for_post()`; Schema.org and iCal export use
+  the field registry's cached location/series lookups; registry keys are
+  `Constants::*`-driven throughout.
+- REST fields are now derived from the field registry instead of a second
+  hand-maintained list — newly exposed: `ve_price_formatted`, `ve_ical_url`,
+  `ve_event_status_label`, `ve_event_status_color`, `ve_category_class`, and
+  `ve_is_cancelled`/`ve_is_upcoming`/`ve_is_ongoing` (as JSON booleans).
+
+### Developer
+- New `tests/FieldMapperDateTest.php` locks the ICS date → UTC conversion
+  (TZID, Z-suffix, DATE-only, floating times, malformed input); 92 tests total.
+- `composer check` runs lint + tests in one command; the gettext regeneration
+  workflow is documented in CLAUDE.md.
+- German translation completed (492/492 — the ChurchDesk strings were
+  previously untranslated); `.pot` regenerated.
+- New `release.yml` workflow attaches a lean plugin zip (runtime files only)
+  to GitHub releases, which the self-updater prefers over the tag archive.
+
 ## [2.3.0] - 2026-07-08
 
 ### Added
