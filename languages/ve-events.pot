@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the VE Events package.
 msgid ""
 msgstr ""
-"Project-Id-Version: VE Events 2.1.0\n"
+"Project-Id-Version: VE Events 2.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-08 00:00+0000\n"
+"POT-Creation-Date: 2026-07-10 00:00+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -143,6 +143,10 @@ msgid "Sun"
 msgstr ""
 
 #, php-format
+msgid "%s — add event"
+msgstr ""
+
+#, php-format
 msgid "%s (draft)"
 msgstr ""
 
@@ -205,18 +209,6 @@ msgid "Ongoing"
 msgstr ""
 
 msgid "Past"
-msgstr ""
-
-msgid "Cancelled"
-msgstr ""
-
-msgid "Postponed"
-msgstr ""
-
-msgid "Rescheduled"
-msgstr ""
-
-msgid "Moved Online"
 msgstr ""
 
 msgid "Details"
@@ -1003,6 +995,10 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#, php-format
+msgid "ChurchDesk · %1$s · org %2$s"
+msgstr ""
+
 msgid "OK"
 msgstr ""
 
@@ -1027,13 +1023,74 @@ msgstr ""
 msgid "Feed Name"
 msgstr ""
 
+msgid "Source Type"
+msgstr ""
+
+msgid "iCal / ICS URL"
+msgstr ""
+
+msgid "ChurchDesk"
+msgstr ""
+
 msgid "ICS URL"
 msgstr ""
 
 msgid "The .ics subscription URL (e.g. from Outlook, Google Calendar, etc.)"
 msgstr ""
 
+msgid "Endpoint"
+msgstr ""
+
+msgid ""
+"Pull API: documented, versioned (api.churchdesk.com/v3.0.0), requires a "
+"partner token from ChurchDesk support. Calendar View: public portal "
+"endpoint, organization id only."
+msgstr ""
+
+msgid "Organization ID"
+msgstr ""
+
+msgid "Partner Token"
+msgstr ""
+
+msgid "Token saved — leave blank to keep"
+msgstr ""
+
+msgid ""
+"A partner token is stored. Enter a new one to replace it, or leave blank to "
+"keep it."
+msgstr ""
+
+msgid "Obtain a partner token from support@churchdesk.com (Pull API only)."
+msgstr ""
+
+msgid "Category Filter"
+msgstr ""
+
+msgid ""
+"Optional comma-separated category IDs to limit the import. Leave empty for "
+"all categories."
+msgstr ""
+
+msgid "Featured Image"
+msgstr ""
+
+msgid "Import the event image as the featured image"
+msgstr ""
+
+msgid "Image format"
+msgstr ""
+
+msgid "Pull API typically uses span7_16-9; Calendar View uses span6_16-9."
+msgstr ""
+
+msgid "Connection"
+msgstr ""
+
 msgid "Test Connection"
+msgstr ""
+
+msgid "Save the feed first, then test against the saved settings."
 msgstr ""
 
 msgid "Active"
@@ -1067,6 +1124,19 @@ msgid "Removed Events"
 msgstr ""
 
 msgid "Move to Trash if removed from source"
+msgstr ""
+
+msgid "Cross-feed Merge"
+msgstr ""
+
+msgid ""
+"Match the same event from other feeds and enrich it (e.g. add the image) "
+"instead of creating a duplicate"
+msgstr ""
+
+msgid ""
+"Matches on the ChurchDesk event id (e.g. iCal export + API of the same "
+"organization), with a start-time + title fallback."
 msgstr ""
 
 msgid "Field Mapping"
@@ -1178,6 +1248,28 @@ msgstr ""
 msgid "Clear all log entries for this feed?"
 msgstr ""
 
+#, php-format
+msgid "ChurchDesk API error (HTTP %1$d): %2$s"
+msgstr ""
+
+msgid "Unexpected response."
+msgstr ""
+
+msgid "ChurchDesk API returned invalid JSON."
+msgstr ""
+
+msgid "(Untitled Event)"
+msgstr ""
+
+msgid "Pull API (partner token)"
+msgstr ""
+
+msgid "Calendar View (organization id)"
+msgstr ""
+
+msgid "No ChurchDesk organization id configured."
+msgstr ""
+
 msgid "Import Feeds"
 msgstr ""
 
@@ -1242,9 +1334,6 @@ msgid "Location (Taxonomy)"
 msgstr ""
 
 msgid "Topic (Taxonomy)"
-msgstr ""
-
-msgid "(Untitled Event)"
 msgstr ""
 
 msgid "No ICS URL configured."
@@ -1473,6 +1562,18 @@ msgstr ""
 
 #, php-format
 msgid "%1$s %2$s – %3$s %4$s"
+msgstr ""
+
+msgid "Cancelled"
+msgstr ""
+
+msgid "Postponed"
+msgstr ""
+
+msgid "Rescheduled"
+msgstr ""
+
+msgid "Moved Online"
 msgstr ""
 
 msgid "Archived"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VE Events 1.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-08 00:00+0000\n"
+"POT-Creation-Date: 2026-07-10 00:00+0000\n"
 "PO-Revision-Date: 2026-03-21 00:00+0000\n"
 "Last-Translator: VE Events Team\n"
 "Language-Team: German\n"
@@ -151,6 +151,10 @@ msgid "Sun"
 msgstr "So"
 
 #, php-format
+msgid "%s — add event"
+msgstr "%s — Termin anlegen"
+
+#, php-format
 msgid "%s (draft)"
 msgstr "%s (Entwurf)"
 
@@ -221,19 +225,6 @@ msgstr "Laufend"
 msgid "Past"
 msgstr "Vergangene"
 
-# v1.8.0 – Event-Status-Überschreibung
-msgid "Cancelled"
-msgstr "Abgesagt"
-
-msgid "Postponed"
-msgstr "Verschoben"
-
-msgid "Rescheduled"
-msgstr "Neu terminiert"
-
-msgid "Moved Online"
-msgstr "Online verlegt"
-
 msgid "Details"
 msgstr "Details"
 
@@ -266,7 +257,7 @@ msgstr "Zusätzliche Hinweise"
 
 msgid ""
 "Short notes for listings: admission, dress code, registration info, etc."
-msgstr ""
+msgstr "Kurze Hinweise für Listen: Einlass, Dresscode, Anmeldung usw."
 
 msgid "Tickets &amp; Offer"
 msgstr "Tickets &amp; Angebot"
@@ -305,7 +296,7 @@ msgstr "Offline (Standard)"
 msgid ""
 "Sets Schema.org eventAttendanceMode. \"Moved Online\" status always outputs "
 "Online."
-msgstr ""
+msgstr "Setzt Schema.org eventAttendanceMode. Der Status „Moved Online“ gibt immer Online aus."
 
 # v1.9.0 – Serien-Vorschlag-Benachrichtigung
 msgid "Series Suggestion"
@@ -430,7 +421,7 @@ msgstr "Werkzeuge"
 msgid ""
 "Re-computes _vev_start_date, _vev_start_month and _vev_time_slot for all "
 "existing events. Run this once after updating the plugin."
-msgstr ""
+msgstr "Berechnet _vev_start_date, _vev_start_month und _vev_time_slot für alle vorhandenen Termine neu. Nach einem Plugin-Update einmal ausführen."
 
 msgid "Sync computed fields (JetEngine filters)"
 msgstr "Berechnete Felder synchronisieren (JetEngine-Filter)"
@@ -595,7 +586,7 @@ msgid ""
 "Every published event has an \"Add to Calendar\" .ics download (virtual "
 "field ve_ical_url). Optionally expose a subscribable feed of all upcoming "
 "events."
-msgstr ""
+msgstr "Jeder veröffentlichte Termin hat einen „Zum Kalender hinzufügen“-.ics-Download (virtuelles Feld ve_ical_url). Optional kann ein abonnierbarer Feed aller kommenden Termine bereitgestellt werden."
 
 msgid "Subscribable Feed"
 msgstr "Abonnierbarer Feed"
@@ -1083,6 +1074,10 @@ msgstr "Diesen Feed löschen?"
 msgid "Delete"
 msgstr "Löschen"
 
+#, php-format
+msgid "ChurchDesk · %1$s · org %2$s"
+msgstr "ChurchDesk · %1$s · Org %2$s"
+
 msgid "OK"
 msgstr "OK"
 
@@ -1107,14 +1102,75 @@ msgstr "Quelle"
 msgid "Feed Name"
 msgstr "Feed-Name"
 
+msgid "Source Type"
+msgstr "Quellentyp"
+
+msgid "iCal / ICS URL"
+msgstr "iCal-/ICS-URL"
+
+msgid "ChurchDesk"
+msgstr "ChurchDesk"
+
 msgid "ICS URL"
 msgstr "ICS-URL"
 
 msgid "The .ics subscription URL (e.g. from Outlook, Google Calendar, etc.)"
 msgstr "Die .ics-Abonnement-URL (z.B. von Outlook, Google Kalender, etc.)"
 
+msgid "Endpoint"
+msgstr "Endpunkt"
+
+msgid ""
+"Pull API: documented, versioned (api.churchdesk.com/v3.0.0), requires a "
+"partner token from ChurchDesk support. Calendar View: public portal "
+"endpoint, organization id only."
+msgstr "Pull API: dokumentiert, versioniert (api.churchdesk.com/v3.0.0), erfordert einen Partner-Token vom ChurchDesk-Support. Calendar View: öffentlicher Portal-Endpunkt, nur Organisations-ID."
+
+msgid "Organization ID"
+msgstr "Organisations-ID"
+
+msgid "Partner Token"
+msgstr "Partner-Token"
+
+msgid "Token saved — leave blank to keep"
+msgstr "Token gespeichert — leer lassen zum Behalten"
+
+msgid ""
+"A partner token is stored. Enter a new one to replace it, or leave blank to "
+"keep it."
+msgstr "Ein Partner-Token ist gespeichert. Neuen eingeben zum Ersetzen oder leer lassen zum Behalten."
+
+msgid "Obtain a partner token from support@churchdesk.com (Pull API only)."
+msgstr "Partner-Token bei support@churchdesk.com anfordern (nur Pull API)."
+
+msgid "Category Filter"
+msgstr "Kategorie-Filter"
+
+msgid ""
+"Optional comma-separated category IDs to limit the import. Leave empty for "
+"all categories."
+msgstr "Optionale, kommagetrennte Kategorie-IDs zur Eingrenzung des Imports. Leer lassen für alle Kategorien."
+
+msgid "Featured Image"
+msgstr "Beitragsbild"
+
+msgid "Import the event image as the featured image"
+msgstr "Termin-Bild als Beitragsbild importieren"
+
+msgid "Image format"
+msgstr "Bildformat"
+
+msgid "Pull API typically uses span7_16-9; Calendar View uses span6_16-9."
+msgstr "Pull API nutzt üblicherweise span7_16-9; Calendar View nutzt span6_16-9."
+
+msgid "Connection"
+msgstr "Verbindung"
+
 msgid "Test Connection"
 msgstr "Verbindung testen"
+
+msgid "Save the feed first, then test against the saved settings."
+msgstr "Feed zuerst speichern, dann gegen die gespeicherten Einstellungen testen."
 
 msgid "Active"
 msgstr "Aktiv"
@@ -1148,6 +1204,19 @@ msgstr "Entfernte Events"
 
 msgid "Move to Trash if removed from source"
 msgstr "In den Papierkorb verschieben, wenn aus Quelle entfernt"
+
+msgid "Cross-feed Merge"
+msgstr "Feed-übergreifendes Zusammenführen"
+
+msgid ""
+"Match the same event from other feeds and enrich it (e.g. add the image) "
+"instead of creating a duplicate"
+msgstr "Denselben Termin aus anderen Feeds erkennen und anreichern (z. B. Bild ergänzen), statt ein Duplikat anzulegen"
+
+msgid ""
+"Matches on the ChurchDesk event id (e.g. iCal export + API of the same "
+"organization), with a start-time + title fallback."
+msgstr "Abgleich über die ChurchDesk-Termin-ID (z. B. iCal-Export + API derselben Organisation), mit Startzeit-und-Titel-Fallback."
 
 msgid "Field Mapping"
 msgstr "Feld-Zuordnung"
@@ -1262,6 +1331,28 @@ msgstr "OK — %d Veranstaltung(en) gefunden."
 msgid "Clear all log entries for this feed?"
 msgstr "Alle Protokolleinträge für diesen Feed löschen?"
 
+#, php-format
+msgid "ChurchDesk API error (HTTP %1$d): %2$s"
+msgstr "ChurchDesk-API-Fehler (HTTP %1$d): %2$s"
+
+msgid "Unexpected response."
+msgstr "Unerwartete Antwort."
+
+msgid "ChurchDesk API returned invalid JSON."
+msgstr "ChurchDesk-API lieferte ungültiges JSON."
+
+msgid "(Untitled Event)"
+msgstr "(Unbenanntes Event)"
+
+msgid "Pull API (partner token)"
+msgstr "Pull API (Partner-Token)"
+
+msgid "Calendar View (organization id)"
+msgstr "Calendar View (Organisations-ID)"
+
+msgid "No ChurchDesk organization id configured."
+msgstr "Keine ChurchDesk-Organisations-ID konfiguriert."
+
 msgid "Import Feeds"
 msgstr "Import-Feeds"
 
@@ -1327,9 +1418,6 @@ msgstr "Ort (Taxonomie)"
 
 msgid "Topic (Taxonomy)"
 msgstr "Thema (Taxonomie)"
-
-msgid "(Untitled Event)"
-msgstr "(Unbenanntes Event)"
 
 msgid "No ICS URL configured."
 msgstr "Keine ICS-URL konfiguriert."
@@ -1560,6 +1648,19 @@ msgstr "%1$s, %2$s – %3$s"
 #, php-format
 msgid "%1$s %2$s – %3$s %4$s"
 msgstr "%1$s %2$s – %3$s %4$s"
+
+# v1.8.0 – Event-Status-Überschreibung
+msgid "Cancelled"
+msgstr "Abgesagt"
+
+msgid "Postponed"
+msgstr "Verschoben"
+
+msgid "Rescheduled"
+msgstr "Neu terminiert"
+
+msgid "Moved Online"
+msgstr "Online verlegt"
 
 msgid "Archived"
 msgstr "Archiviert"
