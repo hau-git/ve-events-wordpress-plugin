@@ -9,9 +9,11 @@
 namespace VEV\Export;
 
 use VEV\Constants;
+use VEV\Fields\Registry;
 use VEV\Settings;
 use VEV\Support\EventData;
 use VEV\Support\EventDescription;
+use VEV\Support\EventStatus;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -211,11 +213,11 @@ final class Endpoint {
 			return '';
 		}
 
-		$location  = '';
-		$loc_terms = get_the_terms( $post_id, Constants::TAX_LOCATION );
-		if ( is_array( $loc_terms ) && ! empty( $loc_terms ) ) {
-			$location = $loc_terms[0]->name;
-			$address  = (string) get_term_meta( $loc_terms[0]->term_id, Constants::TERM_META_LOCATION_ADDRESS, true );
+		// Location via the Registry's per-request term cache (matters for the
+		// feed loop over up to 200 posts).
+		$location = Registry::get_location_name( $post_id );
+		if ( '' !== $location ) {
+			$address = Registry::get_location_address( $post_id );
 			if ( '' !== $address ) {
 				$location .= ', ' . $address;
 			}
@@ -235,7 +237,7 @@ final class Endpoint {
 				'description'    => EventDescription::get( $post_id ),
 				'location'       => $location,
 				'url'            => (string) get_permalink( $post_id ),
-				'status'         => (string) get_post_meta( $post_id, Constants::META_EVENT_STATUS, true ),
+				'status'         => EventStatus::for_post( $post_id ),
 				'organizer_name' => (string) get_post_meta( $post_id, Constants::META_ORGANIZER, true ),
 				'organizer_url'  => (string) get_post_meta( $post_id, Constants::META_ORGANIZER_URL, true ),
 			)

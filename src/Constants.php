@@ -78,6 +78,16 @@ final class Constants {
 	public const VIRTUAL_PRICE_FORMATTED = 've_price_formatted';
 	public const VIRTUAL_ICAL_URL        = 've_ical_url';
 
+	// Virtual taxonomy-derived keys.
+	public const VIRTUAL_LOCATION_NAME     = 've_location_name';
+	public const VIRTUAL_LOCATION_ADDRESS  = 've_location_address';
+	public const VIRTUAL_LOCATION_MAPS_URL = 've_location_maps_url';
+	public const VIRTUAL_CATEGORY_NAME     = 've_category_name';
+	public const VIRTUAL_CATEGORY_COLOR    = 've_category_color';
+	public const VIRTUAL_CATEGORY_CLASS    = 've_category_class';
+	public const VIRTUAL_SERIES_NAME       = 've_series_name';
+	public const VIRTUAL_TOPIC_NAMES       = 've_topic_names';
+
 	public const QV_SCOPE            = 'vev_event_scope';
 	public const QV_INCLUDE_ARCHIVED = 'vev_include_archived';
 	public const QV_DATE_FROM        = 'vev_date_from';  // Y-m-d or UTC timestamp.

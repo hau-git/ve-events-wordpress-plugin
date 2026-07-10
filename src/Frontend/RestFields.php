@@ -8,6 +8,7 @@
 namespace VEV\Frontend;
 
 use VEV\Constants;
+use VEV\Fields\Registry;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -26,36 +27,31 @@ final class RestFields {
 	}
 
 	/**
-	 * Register each virtual field on the event post type.
+	 * Register every callback-backed (virtual) registry field on the event
+	 * post type, so REST exposure stays in sync with the field registry
+	 * instead of a second hand-maintained list.
+	 *
+	 * Boolean-typed fields are registered as JSON booleans; everything else
+	 * keeps the historical string representation (resolved via get_post_meta,
+	 * which routes through ComputedMetaFilter → Registry).
 	 */
 	public static function register(): void {
-		$fields = array(
-			've_start_date',
-			've_start_time',
-			've_end_date',
-			've_end_time',
-			've_date_range',
-			've_time_range',
-			've_datetime_formatted',
-			've_status',
-			've_location_name',
-			've_location_address',
-			've_location_maps_url',
-			've_category_name',
-			've_category_color',
-			've_series_name',
-			've_topic_names',
-		);
+		foreach ( Registry::get_fields() as $key => $field ) {
+			if ( empty( $field['callback'] ) ) {
+				continue;
+			}
 
-		foreach ( $fields as $field ) {
+			$is_bool = 'boolean' === ( $field['type'] ?? '' );
+
 			register_rest_field(
 				Constants::POST_TYPE,
-				$field,
+				$key,
 				array(
-					'get_callback' => static function ( array $object ) use ( $field ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.objectFound
-						return get_post_meta( (int) $object['id'], $field, true );
+					'get_callback' => static function ( array $object ) use ( $key, $is_bool ) { // phpcs:ignore Universal.NamingConventions.NoReservedKeywordParameterNames.objectFound
+						$value = get_post_meta( (int) $object['id'], $key, true );
+						return $is_bool ? (bool) $value : (string) $value;
 					},
-					'schema'       => array( 'type' => 'string' ),
+					'schema'       => array( 'type' => $is_bool ? 'boolean' : 'string' ),
 				)
 			);
 		}

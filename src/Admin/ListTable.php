@@ -156,15 +156,9 @@ final class ListTable {
 			$post_states['ve_past'] = __( 'Past', 've-events' );
 		}
 
-		$event_status = (string) get_post_meta( $post->ID, Constants::META_EVENT_STATUS, true );
-		if ( 'cancelled' === $event_status ) {
-			$post_states['ve_cancelled'] = __( 'Cancelled', 've-events' );
-		} elseif ( 'postponed' === $event_status ) {
-			$post_states['ve_postponed'] = __( 'Postponed', 've-events' );
-		} elseif ( 'rescheduled' === $event_status ) {
-			$post_states['ve_rescheduled'] = __( 'Rescheduled', 've-events' );
-		} elseif ( 'movedOnline' === $event_status ) {
-			$post_states['ve_movedonline'] = __( 'Moved Online', 've-events' );
+		$event_status = EventStatus::for_post( $post->ID );
+		if ( in_array( $event_status, EventStatus::OPTIONS, true ) ) {
+			$post_states[ 've_' . strtolower( $event_status ) ] = EventStatus::label( $event_status );
 		}
 
 		return $post_states;

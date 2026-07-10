@@ -222,7 +222,7 @@ final class CalendarPage {
 	public static function event_payload( \WP_Post $ev ): array {
 		$id          = (int) $ev->ID;
 		$data        = EventData::get( $id );
-		$status_key  = (string) get_post_meta( $id, Constants::META_EVENT_STATUS, true );
+		$status_key  = EventStatus::for_post( $id );
 		$post_status = (string) get_post_status( $ev );
 
 		return array(

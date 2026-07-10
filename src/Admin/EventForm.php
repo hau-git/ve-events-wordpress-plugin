@@ -11,6 +11,7 @@ use VEV\Constants;
 use VEV\Plugin;
 use VEV\PostType;
 use VEV\Support\DateParser;
+use VEV\Support\EventStatus;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -196,9 +197,8 @@ final class EventForm {
 			delete_post_meta( $post_id, Constants::META_INFO_URL );
 		}
 
-		$allowed_statuses = array( '', 'cancelled', 'postponed', 'rescheduled', 'movedOnline' );
-		$event_status     = sanitize_text_field( wp_unslash( $_POST['vev_event_status'] ?? '' ) );
-		$event_status     = in_array( $event_status, $allowed_statuses, true ) ? $event_status : '';
+		$event_status = sanitize_text_field( wp_unslash( $_POST['vev_event_status'] ?? '' ) );
+		$event_status = in_array( $event_status, EventStatus::OPTIONS, true ) ? $event_status : '';
 		if ( '' !== $event_status ) {
 			update_post_meta( $post_id, Constants::META_EVENT_STATUS, $event_status );
 		} else {
