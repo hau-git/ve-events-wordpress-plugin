@@ -1,0 +1,46 @@
+name: Release
+
+# Builds a lean plugin zip (runtime files only) and attaches it to the GitHub
+# release. src/Updater/GitHubUpdater.php prefers a .zip release asset over the
+# tag archive, so this is what self-updating installs will download.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build plugin zip
+        run: |
+          PLUGIN_DIR=ve-events-wordpress-plugin
+          mkdir -p "build/${PLUGIN_DIR}"
+          rsync -a \
+            --exclude='.git*' \
+            --exclude='.github' \
+            --exclude='tests' \
+            --exclude='vendor' \
+            --exclude='node_modules' \
+            --exclude='build' \
+            --exclude='composer.json' \
+            --exclude='composer.lock' \
+            --exclude='phpcs.xml.dist' \
+            --exclude='phpunit.xml.dist' \
+            --exclude='CLAUDE.md' \
+            --exclude='.DS_Store' \
+            ./ "build/${PLUGIN_DIR}/"
+          cd build
+          zip -rq "${PLUGIN_DIR}.zip" "${PLUGIN_DIR}"
+
+      - name: Attach zip to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/ve-events-wordpress-plugin.zip
+          generate_release_notes: true
