@@ -390,7 +390,7 @@ abstract class AbstractRunner {
 			wp_set_object_terms( $existing_id, (int) $row['series_term_id'], Constants::TAX_SERIES, true );
 		}
 
-		$this->maybe_set_featured_image( $existing_id, $row['image_url'] ?? null );
+		$this->maybe_set_featured_image( $existing_id, $row );
 
 		++$this->counts['updated'];
 	}
