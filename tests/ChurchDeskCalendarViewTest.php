@@ -118,4 +118,10 @@ final class ChurchDeskCalendarViewTest extends TestCase {
 			$row['image_url']
 		);
 	}
+
+	public function test_image_key_uses_churchdesk_media_id(): void {
+		// Stable across events that share the image — drives attachment de-duplication.
+		$row = $this->mapped();
+		$this->assertSame( 'cd:2196329', $row['image_key'] );
+	}
 }

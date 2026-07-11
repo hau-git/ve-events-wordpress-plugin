@@ -7,8 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [2.4.0] - 2026-07-10
 
-Sustainability & hardening release — no new user-facing features, but the
-plugin is safer, faster, more accessible, and easier to maintain.
+Sustainability & hardening release.
+
+### Added
+- **Featured-image de-duplication.** Imported events that share the same image
+  now reuse a single WordPress attachment instead of uploading a copy per
+  event. The match keys on the stable ChurchDesk media id (`imageObj.id`), with
+  the image filename as a fallback. (Only prevents new duplicates; images
+  imported before this release are not retroactively merged.)
+- **Automatic image alt text** set from the event title when the attachment
+  has none.
 
 ### Security
 - The ChurchDesk partner token now renders as a masked password field and is
